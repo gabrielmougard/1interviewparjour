@@ -1,0 +1,6 @@
+django
+django-mysql
+django-q
+django-url-filter
+prometheus_client
+requests
