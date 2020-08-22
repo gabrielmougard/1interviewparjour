@@ -1,4 +1,22 @@
-# 1interviewparjour.com : frontend
+# 1interviewparjour.com frontend
 
-It is the landing pages ==> The main LP, the CGU, Contact and Privacy pages
-but also the frontend for the payment gateway supporting Stripe and Paypal solutions.
+To run this application, execute the following commands:
+
+1. Install NPM modules
+
+```
+$ npm install (or yarn install)
+```
+
+2. Start the front-end dev server:
+
+```
+$ npm run start
+```
+
+3. Create the app distribution
+
+```
+$ npm run build
+```
+
