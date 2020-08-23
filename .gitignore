@@ -1,0 +1,29 @@
+# Python
+*.pyc
+# vim
+*.swp
+*.swo
+# emacs
+*~
+*#
+# VS Code
+.vscode
+.classpath
+.project
+.settings/
+# sqlite
+*.sql
+*.sqlite3
+*.sqlite
+# Testing
+.cache/
+.eggs/
+# virtualenv
+env*/
+.venv*/
+# Temporary data directory
+tmp/*
+.pytest_cache/*
+# OSX
+.DS_Store
+
