@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+    db:
+        image: mysql:latest
+        command: --default-authentication-plugin=mysql_native_password
+        restart: always
+        environment:
+            MYSQL_DATABASE: oneinterviewparjour
+            MYSQL_ROOT_PASSWORD: oneinterviewparjour
+            MYSQL_USER: oneinterviewparjour
+            MYSQL_PASSWORD: oneinterviewparjour
+        ports:
+            - "3306:3306"
+        volumes:
+            - "./db:/var/lib/mysql"

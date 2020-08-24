@@ -1,6 +1,13 @@
+django-filter
+django-import-export
+django-db-file-storage
+djangorestframework
 django
+docopt
+gunicorn
+mysqlclient
 django-mysql
 django-q
 django-url-filter
-prometheus_client
+prometheus-client
 requests
