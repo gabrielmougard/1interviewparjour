@@ -25,6 +25,7 @@ class Problem(models.Model):
             + f"correction : {self.correction}\n"\
             + f"difficulty : {self.difficulty}\n"
 
+
 class Program(models.Model):
     hour = models.IntegerField()
     user = models.ForeignKey(

@@ -1,5 +1,6 @@
 django-filter
 django-import-export
+django-picklefield
 django-db-file-storage
 djangorestframework
 django
@@ -11,3 +12,4 @@ django-q
 django-url-filter
 prometheus-client
 requests
+redis

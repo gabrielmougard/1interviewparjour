@@ -59,7 +59,8 @@ class MailTestCase(TestCase):
                 ['user3@gmail.com', 'Pb3', 'hard', 'Pb3 solution'],
                 ['user4@gmail.com', 'Pb4', 'ez'],
                 ['user1@gmail.com', 'Pb5', 'xhard', 'Pb5 solution'],
-                ['user2@gmail.com', 'Pb1', 'ez'], ['user5@gmail.com', 'Pb2', 'mid', 'Pb2 solution']
+                ['user2@gmail.com', 'Pb1', 'ez'],
+                ['user5@gmail.com', 'Pb2', 'mid', 'Pb2 solution']
             ]
         )
 
