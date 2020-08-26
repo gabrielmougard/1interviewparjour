@@ -4,7 +4,7 @@ from datetime import datetime
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from one_interviewparjour.core.models import (
+from oneinterviewparjour.core.models import (
     User,
     Program
 )

@@ -1,5 +1,5 @@
 import functools
-import loggin
+import logging
 import time
 
 from django.core.management import call_command
@@ -29,7 +29,7 @@ def has_pending_migrations():
     connection = connections["default"]
     connection.prepare_database()
     executor = MigrationExecutor(connection)
-    targetsw = executor.loader.graph.leaf_nodes()
+    targets = executor.loader.graph.leaf_nodes()
     _has_pending_migrations = bool(executor.migration_plan(targets))
     return _has_pending_migrations
 

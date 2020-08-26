@@ -1,5 +1,5 @@
 from django.test import TestCase
-from one_interviewparjour.core.models import (
+from oneinterviewparjour.core.models import (
     User,
     Program,
     Problem

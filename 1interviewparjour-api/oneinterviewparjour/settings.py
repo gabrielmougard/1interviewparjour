@@ -29,13 +29,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_q',
-    'one_interviewparjour.api',
-    'one_interviewparjour.core',
-    'one_interviewparjour.mail_scheduler',
-    'one_interviewparjour.observability',
-    'one_interviewparjour.paypal',
-    'one_interviewparjour.s3_backup',
-    'one_interviewparjour.stripe'
+    'oneinterviewparjour.api',
+    'oneinterviewparjour.core',
+    'oneinterviewparjour.mail_scheduler',
+    'oneinterviewparjour.observability',
+    'oneinterviewparjour.paypal',
+    'oneinterviewparjour.s3_backup',
+    'oneinterviewparjour.stripe'
 ]
 
 MIDDLEWARE = [
@@ -48,7 +48,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'one_interviewparjour.urls'
+ROOT_URLCONF = 'oneinterviewparjour.urls'
 
 TEMPLATES = [
     {
@@ -66,7 +66,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'one_interviewparjour.wsgi.application'
+WSGI_APPLICATION = 'oneinterviewparjour.wsgi.application'
 
 
 # Database
@@ -85,24 +85,16 @@ DATABASES = {
 
 Q_CLUSTER = {
     'name': 'oneinterviewparjourQCluster',
-    'workers': 8,
-    'recycle': 500,
-    'timeout': 60,
+    'workers': int(os.getenv('ASYNC_WORKER_COUNT', '1')),
+    'timeout': 3600,
+    'retry': 3600,
+    'ack_failure': True,
     'compress': True,
-    'save_limit': 250,
+    'save_limit': 2500,
     'queue_limit': 500,
-    'cpu_affinity': 1,
-    'label': 'Django Q',
-    'redis': {
-        'host': 'localhost',
-        'port': 6379,
-        'db': 0,
-        'password': None,
-        'socket_timeout': None,
-        'charset': 'utf-8',
-        'errors': 'strict',
-        'unix_socket_path': None
-    }
+    'catch_up': False,
+    'cpu_affinity': int(os.getenv('DJANGO_CPU_AFFINITY', '1')),
+    'orm': 'default',
 }
 
 

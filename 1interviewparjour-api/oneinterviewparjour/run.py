@@ -16,9 +16,9 @@ import docopt
 from django.core.management import call_command
 from django.core.wsgi import get_wsgi_application
 
-from one_interviewparjour.core.migrations import update_database
-from one_interviewparjour.core.workers import start_gunicorn_workers
-from one_interviewparjour.core.queue import start_django_queue_cluster, stop_django_queue_cluster
+from oneinterviewparjour.core.db_helper import update_database
+from oneinterviewparjour.core.workers import start_gunicorn_workers
+from oneinterviewparjour.core.queue import start_django_queue_cluster, stop_django_queue_cluster
 
 DEFAULT_GUNICORN_PORT = '8000'
 
@@ -35,22 +35,23 @@ ACTIONS = [
 
 
 def run(args):
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'oneinterviewparjour.settings')
     application = get_wsgi_application()
 
-    if "migrations" in args["action"]:
+    if "migrations" in args["actions"]:
         update_database(args)
 
-    if 'schedules' in args["action"]:
+    if 'schedules' in args["actions"]:
         my_call_command('schedule_management_commands')
 
-    if "qcluster" in args["action"]:
+    if "qcluster" in args["actions"]:
         # must be imported after application load
         from django_q.cluster import Cluster
         cluster = Cluster()
         start_django_queue_cluster(cluster)
         atexit.register(stop_django_queue_cluster, cluster)
 
-    if "workers" in args["action"]:
+    if "workers" in args["actions"]:
         start_gunicorn_workers(application, args)
 
 
@@ -61,8 +62,6 @@ def main():
         usage = textwrap.dedent(usage)
         args = docopt.docopt(usage)
         return args
-
-    django.setup()
 
     help_text = '''
         Run 1interviewparjour
@@ -89,8 +88,8 @@ def main():
     args["actions"] = set(args.pop("<action>") or ACTIONS)
     args["port"] = int(args.pop("--port"))
     args["http_worker_count"] = int(args.pop("--http_worker_count"))
-    args["app_name"] = "one_interviewparjour"
-    args["app_setting"] = "one_interviewparjour.settings"
+    args["app_name"] = "oneinterviewparjour"
+    args["app_setting"] = "oneinterviewparjour.settings"
 
     try:
         sys.exit(run(args))

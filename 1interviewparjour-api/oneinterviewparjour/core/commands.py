@@ -3,7 +3,7 @@ import datetime
 import re
 import arrow
 
-from one_interviewparjour.core.helpers import to_minutes
+from oneinterviewparjour.core.helpers import to_minutes
 
 SchedulingInfo = collections.namedtuple('SchedulingInfo', (
     'frequency_in_minutes', 'starting_datetime', 'ending_datetime'
@@ -20,7 +20,7 @@ def schedule(every, starting='09:00:00', ending='19:00:00'):
     update the DjangoQ's Schedule instances accordingly.
 
     Example:
-        >>> from one_interviewparjour.core.helpers import HOURS
+        >>> from oneinterviewparjour.core.helpers import HOURS
         >>> @schedule(every= HOURS, starting='09:00:00', ending='19:00:00')
         >>> class Command(MailScheduler):
         >>>     pass

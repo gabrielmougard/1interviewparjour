@@ -1,0 +1,3 @@
+export DJANGO_SETTINGS_MODULE=oneinterviewparjour.settings
+export PYTHONPATH=/Users/macbookpro/1interviewparjour/1interviewparjour-api
+python3 ./oneinterviewparjour/run.py
