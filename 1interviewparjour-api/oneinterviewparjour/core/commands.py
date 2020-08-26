@@ -6,11 +6,10 @@ import arrow
 from oneinterviewparjour.core.helpers import to_minutes
 
 SchedulingInfo = collections.namedtuple('SchedulingInfo', (
-    'frequency_in_minutes', 'starting_datetime', 'ending_datetime'
-))
+    'frequency_in_minutes', 'starting_datetime'))
 
 
-def schedule(every, starting='09:00:00', ending='19:00:00'):
+def schedule(every, starting='00:00:00'):
     """
     Returning a class decorator for scheduling a management command.
 
@@ -36,18 +35,16 @@ def schedule(every, starting='09:00:00', ending='19:00:00'):
             'Second parameter must be one of the following forms:'
             ' "YYYYY-MM-DDThh:mm:ss" or "hh:mm:ss"'
         )
-    if not re.match(datetime_or_time_pattern, ending):
-        raise ValueError(
-            'Third parameter must be one of the following forms:'
-            ' "YYYYY-MM-DDThh:mm:ss" or "hh:mm:ss"'
-        )
+
+    # Make sure `starting` is an ISO8601-compliant timestamp string
+    if len(starting) == 8:
+        starting = '1970-01-01T' + starting
 
     # Make sure `starting` and `ending` are ISO8601-compliant timestamp string
     def class_decorator(cls):
         cls.scheduling_info = SchedulingInfo(
             frequency_in_minutes=to_minutes(every),
-            starting_datetime=arrow.get(starting),
-            ending_datetime=arrow.get(ending)
+            starting_datetime=arrow.get(starting)
         )
         return cls
 
