@@ -4,6 +4,7 @@ django-picklefield
 django-db-file-storage
 djangorestframework
 django
+dj-stripe
 docopt
 gunicorn
 mysqlclient

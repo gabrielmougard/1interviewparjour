@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_q',
+    'djstripe',
     'oneinterviewparjour.api',
     'oneinterviewparjour.core',
     'oneinterviewparjour.mail_scheduler',
