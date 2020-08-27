@@ -3,6 +3,8 @@ import logging
 import datetime
 import math
 
+import django
+
 LOGGER = logging.getLogger(__name__)
 
 MINUTE = MINUTES = datetime.timedelta(minutes=1)

@@ -13,6 +13,10 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'temz1*^52h)yvm7-d6sfnav6n8co#i4o+qe2!x(py$3ertf05b'
 
+DEBUG = os.getenv('DEBUG', None)
+K8S_ENV = os.getenv('K8S_ENV')
+ENV = K8S_ENV or 'dev'
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 

@@ -55,7 +55,7 @@ class Command(BaseCommandWithLogger):
                 name=cmd.name,
                 repeats__lt=0,
             )
-        except Schedule.DoesNotExists:
+        except Schedule.DoesNotExist:
             current_schedule = None
         except Schedule.MultipleObjectsReturned:
             self.logger.exception()

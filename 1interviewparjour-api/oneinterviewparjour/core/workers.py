@@ -10,7 +10,7 @@ def start_gunicorn_workers(application, args):
     """
 
     class StandaloneApplication(BaseApplication):
-        def __init__(slef, app, opt=None):
+        def __init__(self, app, opt=None):
             self.app = app
             self.opt = opt or {}
             super(StandaloneApplication, self).__init__()
@@ -31,7 +31,7 @@ def start_gunicorn_workers(application, args):
             return self.app
 
     options = {
-        "bind": "{}".format(args["port"]),
+        "bind": "{}:{}".format(args["host"], args["port"]),
         "workers": args["http_worker_count"],
         "worker_class": "sync",
         "capture-output": True,

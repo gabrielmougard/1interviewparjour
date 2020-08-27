@@ -21,6 +21,7 @@ from oneinterviewparjour.core.workers import start_gunicorn_workers
 from oneinterviewparjour.core.queue import start_django_queue_cluster, stop_django_queue_cluster
 
 DEFAULT_GUNICORN_PORT = '8000'
+DEFAULT_GUNICORN_HOST = os.getenv('DEFAULT_GUNICORN_HOST', 'localhost')
 
 my_call_command = functools.partial(call_command, **{
     'traceback': True,
@@ -74,6 +75,7 @@ def main():
         Order does not matter. Default is to run all actions.
 
         Options:
+            --host=HOST                     TCP Host to bind [default: {default_host}]
             --port=PORT                     TCP Port to bind [default: {default_port}]
             --http_worker_count=COUNT       Number of parallel workers to spawn [default: 1]
             -h --help                       Show this screen
@@ -82,14 +84,16 @@ def main():
     args = parse_args(
         help_text.format(actions=", ".join(ACTIONS),
                          default_port=DEFAULT_GUNICORN_PORT,
+                         default_host=DEFAULT_GUNICORN_HOST
                         )
     )
 
     args["actions"] = set(args.pop("<action>") or ACTIONS)
     args["port"] = int(args.pop("--port"))
+    args["host"] = (args.pop("--host") or DEFAULT_GUNICORN_HOST)
     args["http_worker_count"] = int(args.pop("--http_worker_count"))
     args["app_name"] = "oneinterviewparjour"
-    args["app_setting"] = "oneinterviewparjour.settings"
+    args["app_settings"] = "oneinterviewparjour.settings"
 
     try:
         sys.exit(run(args))
