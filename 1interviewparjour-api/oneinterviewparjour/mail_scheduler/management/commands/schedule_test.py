@@ -16,7 +16,7 @@ class Command(BaseCommandWithLogger):
     def handle(self, *args, **kwargs):
         logging.info("Starting schedule test at %s", arrow.utcnow())
         Schedule.objects.update_or_create(
-            name=schedule_name,
+            name="1interviewparjour-mailer task for : {}".format(str(arrow.utcnow())),
             defaults={
                 'func': 'oneinterviewparjour.mail_scheduler.send_mail.main',
                 'args': arrow.utcnow().hour + 2, # hour in France timezone
