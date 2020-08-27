@@ -17,6 +17,17 @@ DEBUG = os.getenv('DEBUG', None)
 K8S_ENV = os.getenv('K8S_ENV')
 ENV = K8S_ENV or 'dev'
 
+# Payment credentials (tuto : https://testdriven.io/blog/django-stripe-tutorial/)
+STRIPE_LIVE_PUBLIC_KEY = os.environ.get("STRIPE_LIVE_PUBLIC_KEY")
+STRIPE_LIVE_SECRET_KEY = os.environ.get("STRIPE_LIVE_SECRET_KEY")
+STRIPE_LIVE_SUBSCRIPTION_PRICE_ID = os.environ.get("STRIPE_LIVE_SUBSCRIPTION_PRICE_ID")
+STRIPE_TEST_PUBLIC_KEY = os.environ.get("STRIPE_TEST_PUBLIC_KEY")
+STRIPE_TEST_SECRET_KEY = os.environ.get("STRIPE_TEST_SECRET_KEY")
+STRIPE_TEST_SUBSCRIPTION_PRICE_ID = os.environ.get("STRIPE_TEST_SUBSCRIPTION_PRICE_ID")
+
+STRIPE_LIVE_MODE = False  # Change to True in production
+
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -33,7 +44,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_q',
-    'djstripe',
     'oneinterviewparjour.api',
     'oneinterviewparjour.core',
     'oneinterviewparjour.mail_scheduler',
@@ -58,7 +68,7 @@ ROOT_URLCONF = 'oneinterviewparjour.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

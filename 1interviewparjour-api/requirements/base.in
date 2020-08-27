@@ -4,7 +4,6 @@ django-picklefield
 django-db-file-storage
 djangorestframework
 django
-dj-stripe
 docopt
 gunicorn
 mysqlclient
@@ -14,3 +13,4 @@ django-url-filter
 prometheus-client
 requests
 redis
+stripe
