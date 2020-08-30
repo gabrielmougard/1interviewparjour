@@ -12,6 +12,6 @@ django-mysql
 django-q
 django-url-filter
 prometheus-client
+pygments
 requests
-redis
 stripe

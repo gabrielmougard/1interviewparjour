@@ -36,10 +36,10 @@ mysqlclient==2.0.1        # via -r base.in
 odfpy==1.4.1              # via tablib
 openpyxl==3.0.5           # via tablib
 prometheus-client==0.8.0  # via -r base.in
+pygments==2.6.1           # via -r base.in
 python-dateutil==2.8.1    # via arrow, botocore
 pytz==2020.1              # via django
 pyyaml==5.3.1             # via tablib
-redis==3.5.3              # via -r base.in
 requests==2.24.0          # via -r base.in, stripe
 s3transfer==0.3.3         # via boto3
 six==1.15.0               # via blessed, django-url-filter, python-dateutil
