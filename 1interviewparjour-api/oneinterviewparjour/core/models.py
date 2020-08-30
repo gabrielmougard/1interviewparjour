@@ -1,5 +1,7 @@
 from django.db import models
 
+from oneinterviewparjour.mail_scheduler.models import CompanyLogo
+
 
 class User(models.Model):
     mail = models.CharField(max_length=250)
@@ -16,12 +18,22 @@ class User(models.Model):
 
 
 class Problem(models.Model):
+    title = models.CharField(max_length=250, default="")
+    company = models.ForeignKey(
+        CompanyLogo,
+        on_delete=models.CASCADE,
+        null=True
+    )
     exercise = models.TextField()
+    bootcode = models.TextField(default="")
     correction = models.TextField()
     difficulty = models.TextField()
 
     def __str__(self):
-        return f"exercise : {self.exercise}\n"\
+        return f"title : {self.title}\n"\
+            + f"company : {self.company}\n"\
+            + f"exercise : {self.exercise}\n"\
+            + f"bootcode : {self.bootcode}\n"\
             + f"correction : {self.correction}\n"\
             + f"difficulty : {self.difficulty}\n"
 
