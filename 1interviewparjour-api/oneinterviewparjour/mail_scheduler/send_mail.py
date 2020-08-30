@@ -61,15 +61,3 @@ class AmazonSender(object):
         return self.client
 
 
-#--- Helpers ----------------------------------------------
-def _convert_to_strings(list_of_strs):
-    if isinstance(list_of_strs, (list, tuple)):
-        result = COMMASPACE.join(list_of_strs)
-    else:
-        result = list_of_strs
-    return _encode_str(result)
-
-def _encode_str(s):
-    if type(s) == types.UnicodeType:
-        return s.encode('utf8')
-    return s
