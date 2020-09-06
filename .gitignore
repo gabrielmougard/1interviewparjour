@@ -27,5 +27,5 @@ tmp/*
 # OSX
 .DS_Store
 
-# payment credentials
-setup-payment-credentials.sh
+# Third-parties app credentials
+credentials.sh

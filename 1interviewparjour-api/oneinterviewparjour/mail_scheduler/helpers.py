@@ -1,5 +1,7 @@
 import re
 
+from secrets import token_hex
+
 from pygments import highlight
 from pygments.lexers import get_lexer_by_name
 from pygments.formatters import HtmlFormatter
@@ -70,7 +72,7 @@ def generate_template_mail(problem_metadata, pro):
     * `exercise_title` : <The title of the exercise>
     * `exercise_body` : <The exercise explanation>
     * `exercise_bootcode` : <The exercise starting code to bootstrap the problem>
-    * `exercise_solution` : <The exercise solution>
+    * `exercise_correction` : <The exercise solution>
     * `payment_gateway_link`: <secure generated URL to access the payment gateway for this exercise>
 
     """
@@ -85,30 +87,36 @@ def generate_template_mail(problem_metadata, pro):
         exercise_body_formatted += "\n"
     #
     # 2)
-    exercise_solution_formatted = ""
+    exercise_correction_formatted = ""
     if not pro:
-        exercise_solution_formatted = "\n".join(problem_metadata['exercise_solution'].split("\n")[:12])
+        exercise_correction_formatted = "\n".join(problem_metadata['exercise_correction'].split("\n")[:12])
     else:
-        exercise_solution_formatted = problem_metadata['exercise_solution']
+        exercise_correction_formatted = problem_metadata['exercise_correction']
     #
     # 3)
     exercise_bootcode_formatted = _to_HTML_code(problem_metadata['exercise_bootcode'], 'python', {}, 'default', False, 'padding:.2em .6em;')
-    exercise_solution_formatted = _to_HTML_code(exercise_solution_formatted, 'python', {}, 'default', False, 'padding:.2em .6em;')
+    exercise_correction_formatted = _to_HTML_code(exercise_correction_formatted, 'python', {}, 'default', False, 'padding:.2em .6em;')
     #
     # 4)
+    ctx = Context({
+        company_message: problem_metadata['company_message'],
+        company_logo: problem_metadata['company_logo'],
+        exercise_title: problem_metadata['exercise_title'],
+        exercise_body: exercise_body_formatted,
+        exercise_bootcode: exercise_bootcode_formatted,
+        exercise_correction: exercise_correction_formatted,
+        payment_gateway_link: problem_metadata['payment_gateway_link']
+    })
     if pro:
         htmlpro = get_template('mail-pro.html')
-        if problem_metadata['company']['name'] == "1interviewparjour":
-            # TODO
-        else:
-            # TODO
-    else:
-        htmlnotpro = get_template('mail-not-pro.html')
-        if problem_metadata['company']['name'] == "1interviewparjour":
-            # TODO
-        else:
-            # TODO
+        return htmlpro.render(ctx)
 
+    htmlnotpro = get_template('mail-not-pro.html')
+    return htmlnotpro.render(ctx)
+
+
+def generate_payment_token():
+    return token_hex(16)
 
 
 def _convert_to_strings(list_of_strs):
@@ -118,7 +126,14 @@ def _convert_to_strings(list_of_strs):
         result = list_of_strs
     return _encode_str(result)
 
+
 def _encode_str(s):
     if type(s) == types.UnicodeType:
         return s.encode('utf8')
     return s
+
+
+def hash_token(hash_algo, token):
+    hasher = hashlib.new(hash_algo)
+    hasher.update(token)
+    return hasher.hexdigest()

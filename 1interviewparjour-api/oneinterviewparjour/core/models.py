@@ -55,3 +55,21 @@ class Program(models.Model):
             + f"user : {self.user}\n"\
             + f"problem : {self.problem}\n"
 
+
+class ProgramHistory(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
+    )
+    problem = models.ForeignKey(
+        Problem,
+        on_delete=models.CASCADE
+    )
+
+    sent_timestamp = models.DateTimeField(auto_now_add=True)
+
+
+    def __str__(self):
+        return f"user : {self.user}\n"\
+            + f"problem : {self.problem}\n"
+            + f"sent_timestamp : {self.sent_timestamp}\n"
