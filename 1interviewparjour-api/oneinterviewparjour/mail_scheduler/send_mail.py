@@ -31,6 +31,7 @@ class AmazonSender(object):
     def __init__(self):
         self.aws_key = settings.AWS_SES_PUBLIC_KEY
         self.aws_secret = settings.AWS_SES_SECRET_KEY
+        self.aws_region_name = settings.AWS_REGION_NAME
         self.problem_metadata = dict()
 
     def __send_email(self, sender, to_addresses, subject, html):
@@ -45,7 +46,12 @@ class AmazonSender(object):
 
     def __get_client(self):
         if not self.client:
-            self.client = boto3.client('ses')
+            self.client = boto3.client(
+                'ses',
+                aws_access_key_id=self.aws_key,
+                aws_secret_access_key=self.aws_secret,
+                region_name=self.aws_region_name
+            )
         return self.client
 
     def run(self, problem_metadata):
@@ -119,11 +125,11 @@ def main(args):
             "exercise_body": program.problem.exercise,
             "exercise_bootcode": program.problem.bootcode,
             "exercise_correction": program.problem.correction,
-            "exercise_difficulty": program.problem.difficulty
+            "exercise_difficulty": program.prooblem.difficulty
         })
 
     ses_sender = AmazonSender()
     for program in scheduled_program:
         async_task(
-            'ses_sender.run', program, hook='oneinterviewparjour.observability.mailing_metrics.expose'
+            'ses_sender.run', program, hook='oneinterviewparjour.observability.mailing_metrics.expose_sent_mail'
         ) # the hook is a function in the observability packages which generates Prometheus metrics

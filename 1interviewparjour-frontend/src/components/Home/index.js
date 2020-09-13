@@ -21,7 +21,7 @@ export default () => (
       <Hero />
 
       <Header
-        label="Réussissez vos interview à votre rythme..."
+        label="Réussissez vos tests techniques à votre rythme..."
         summary={
           <Paragraph size="xxlarge" textAlign="center">
             <Box

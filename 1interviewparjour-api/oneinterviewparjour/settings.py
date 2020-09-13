@@ -28,6 +28,7 @@ STRIPE_TEST_SUBSCRIPTION_PRICE_ID = os.environ.get("STRIPE_TEST_SUBSCRIPTION_PRI
 STRIPE_LIVE_MODE = False  # Change to True in production
 
 # AWS SES credentials
+AWS_REGION_NAME = os.environ.get("AWS_REGION_NAME")
 AWS_PUBLIC_KEY = os.environ.get("AWS_PUBLIC_KEY")
 AWS_SECRET_KEY = os.environ.get("AWS_SECRET_KEY")
 
