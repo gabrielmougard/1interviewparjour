@@ -17,6 +17,9 @@ DEBUG = os.getenv('DEBUG', None)
 K8S_ENV = os.getenv('K8S_ENV')
 ENV = K8S_ENV or 'dev'
 
+#API related
+API_BASE_PATH = os.getenv('API_BASE_PATH', 'http://localhost:8000')
+
 # Payment credentials (tuto : https://testdriven.io/blog/django-stripe-tutorial/)
 STRIPE_LIVE_PUBLIC_KEY = os.environ.get("STRIPE_LIVE_PUBLIC_KEY")
 STRIPE_LIVE_SECRET_KEY = os.environ.get("STRIPE_LIVE_SECRET_KEY")

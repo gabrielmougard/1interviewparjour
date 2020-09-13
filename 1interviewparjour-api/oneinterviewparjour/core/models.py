@@ -70,6 +70,8 @@ class ProgramHistory(models.Model):
 
 
     def __str__(self):
-        return f"user : {self.user}\n"\
-            + f"problem : {self.problem}\n"
-            + f"sent_timestamp : {self.sent_timestamp}\n"
+        return (
+            f"user : {self.user}\n"
+            f"problem : {self.problem}\n"
+            f"sent_timestamp : {self.sent_timestamp}\n"
+        )

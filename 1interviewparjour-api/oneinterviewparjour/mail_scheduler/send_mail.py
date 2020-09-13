@@ -13,36 +13,47 @@ import boto3
 from oneinterviewparjour.core.models import (
     User,
     Program,
-    Problem
+    Problem,
+    ProgramHistory
 )
 
 from oneinterviewparjour.mail_scheduler.helpers import (
     generate_template_mail,
     generate_payment_token,
     _convert_to_strings,
-    _encode_str,
     hash_token
 )
 
 class AmazonSender(object):
-    #https://stackoverflow.com/questions/45298069/ses-attachments-with-python
+    #https://kb.databricks.com/_static/notebooks/notebooks/send-email-aws.html
     client = None
 
     def __init__(self):
-        self.aws_key = settings.AWS_SES_PUBLIC_KEY
-        self.aws_secret = settings.AWS_SES_SECRET_KEY
+        self.aws_key = settings.AWS_PUBLIC_KEY
+        self.aws_secret = settings.AWS_SECRET_KEY
         self.aws_region_name = settings.AWS_REGION_NAME
         self.problem_metadata = dict()
 
     def __send_email(self, sender, to_addresses, subject, html):
         client = self.__get_client()
-        message = MIMEMultipart('alternative')
-        message.set_charset('UTF-8')
-        message['Subject'] = _encode_str(subject)
-        message['From'] = _encode_str(sender)
-        message['To'] = _convert_to_strings(to_addresses)
-        message.attach(MIMEText(_encode_str(html), 'html'))
-        return client.send_raw_email(sender, message.as_string(), destinations=to_addresses)
+        return client.send_email(
+            Source=sender,
+            Destination={
+                'ToAddresses': to_addresses
+            },
+            Message={
+                'Subject': {
+                    'Data': subject,
+                    'Charset': 'UTF-8'
+                },
+                'Body': {
+                    'Html': {
+                        'Data': html,
+                        'Charset': 'UTF-8'
+                    }
+                }
+            }
+        )
 
     def __get_client(self):
         if not self.client:
@@ -52,6 +63,7 @@ class AmazonSender(object):
                 aws_secret_access_key=self.aws_secret,
                 region_name=self.aws_region_name
             )
+
         return self.client
 
     def run(self, problem_metadata):
@@ -68,8 +80,8 @@ class AmazonSender(object):
         mail_content = generate_template_mail(self.problem_metadata, self.problem_metadata['pro'])
         self.__send_email(
             "h3llb0t@1interviewparjour.com",
-            self.problem_metadata["mail"],
-            f"[1INTERVIEWPARJOUR] {self.problem_metadata["exercise_title"]}",
+            [self.problem_metadata["mail"]],
+            f"[1INTERVIEWPARJOUR] {self.problem_metadata['exercise_title']}",
             mail_content
         )
         # Insertion into `ProgramHistory`
@@ -110,7 +122,7 @@ def main(args):
 
     """
     logging.info("send_mail.main function called with params : {}", args)
-    programs = Program.objects.filter(hour=args[0])
+    programs = Program.objects.filter(hour=args)
     scheduled_program = []
     for program in programs:
         scheduled_program.append({
@@ -121,15 +133,15 @@ def main(args):
             "problem_id": program.problem.id,
             "exercise_title": program.problem.title,
             "company_name": program.problem.company.name,
-            "company_logo": program.problem.company.logo,
             "exercise_body": program.problem.exercise,
             "exercise_bootcode": program.problem.bootcode,
             "exercise_correction": program.problem.correction,
-            "exercise_difficulty": program.prooblem.difficulty
+            "exercise_difficulty": program.problem.difficulty
         })
 
     ses_sender = AmazonSender()
     for program in scheduled_program:
-        async_task(
-            'ses_sender.run', program, hook='oneinterviewparjour.observability.mailing_metrics.expose_sent_mail'
-        ) # the hook is a function in the observability packages which generates Prometheus metrics
+        #async_task(
+        #    'ses_sender.run', program, hook='oneinterviewparjour.observability.mailing_metrics.expose_sent_mail'
+        #) # the hook is a function in the observability packages which generates Prometheus metrics
+        ses_sender.run(program)

@@ -7,7 +7,6 @@ from pygments.lexers import get_lexer_by_name
 from pygments.formatters import HtmlFormatter
 
 from django.template.loader import get_template
-from django.template import Context
 
 
 def insert_line_numbers(html):
@@ -98,19 +97,27 @@ def generate_template_mail(problem_metadata, pro):
     exercise_correction_formatted = _to_HTML_code(exercise_correction_formatted, 'python', {}, 'default', False, 'padding:.2em .6em;')
     #
     # 4)
-    ctx = Context({
-        company_message: problem_metadata['company_message'],
-        company_logo: problem_metadata['company_logo'],
-        exercise_title: problem_metadata['exercise_title'],
-        exercise_body: exercise_body_formatted,
-        exercise_bootcode: exercise_bootcode_formatted,
-        exercise_correction: exercise_correction_formatted,
-        payment_gateway_link: problem_metadata['payment_gateway_link']
-    })
     if pro:
+        ctx_pro = {
+            'company_message': problem_metadata['company_message'],
+            'company_name': problem_metadata['company_name'],
+            'exercise_title': problem_metadata['exercise_title'],
+            'exercise_body': exercise_body_formatted,
+            'exercise_bootcode': exercise_bootcode_formatted,
+            'exercise_correction': exercise_correction_formatted
+        }
         htmlpro = get_template('mail-pro.html')
-        return htmlpro.render(ctx)
+        return htmlpro.render(ctx_pro)
 
+    ctx = {
+        'company_message': problem_metadata['company_message'],
+        'company_name': problem_metadata['company_name'],
+        'exercise_title': problem_metadata['exercise_title'],
+        'exercise_body': exercise_body_formatted,
+        'exercise_bootcode': exercise_bootcode_formatted,
+        'exercise_correction': exercise_correction_formatted,
+        'payment_gateway_link': problem_metadata['payment_gateway_link']
+    }
     htmlnotpro = get_template('mail-not-pro.html')
     return htmlnotpro.render(ctx)
 
@@ -124,13 +131,7 @@ def _convert_to_strings(list_of_strs):
         result = COMMASPACE.join(list_of_strs)
     else:
         result = list_of_strs
-    return _encode_str(result)
-
-
-def _encode_str(s):
-    if type(s) == types.UnicodeType:
-        return s.encode('utf8')
-    return s
+    return result
 
 
 def hash_token(hash_algo, token):

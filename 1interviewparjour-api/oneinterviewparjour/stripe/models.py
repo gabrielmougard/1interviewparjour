@@ -1,5 +1,7 @@
 from django.db import models
 
+from oneinterviewparjour.core.models import (Problem, User)
+
 # Create your models here.
 class BuyingHash(models.Model):
     problem = models.ForeignKey(
@@ -14,6 +16,8 @@ class BuyingHash(models.Model):
 
 
     def __str__(self):
-        return f"hashed_token : {self.hashed_token}\n"\
-            + f"user : {self.user}\n"\
-            + f"problem : {self.problem}\n"
+        return (
+            f"hashed_token : {self.hashed_token}\n"
+            f"user : {self.user}\n"\
+            f"problem : {self.problem}\n"
+        )
