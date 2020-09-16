@@ -1,6 +1,11 @@
 from django.db import models
 
-from oneinterviewparjour.mail_scheduler.models import CompanyLogo
+
+class Company(models.Model):
+    name = models.CharField(max_length=250, default="1interviewparjour")
+
+    def __str__(self):
+        return f"name : {self.name}\n"
 
 
 class User(models.Model):
@@ -20,7 +25,7 @@ class User(models.Model):
 class Problem(models.Model):
     title = models.CharField(max_length=250, default="")
     company = models.ForeignKey(
-        CompanyLogo,
+        Company,
         on_delete=models.CASCADE,
         null=True
     )
@@ -75,3 +80,4 @@ class ProgramHistory(models.Model):
             f"problem : {self.problem}\n"
             f"sent_timestamp : {self.sent_timestamp}\n"
         )
+

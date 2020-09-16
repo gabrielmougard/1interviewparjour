@@ -44,6 +44,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'admin_interface',
+    'colorfield',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -59,6 +61,8 @@ INSTALLED_APPS = [
     'oneinterviewparjour.s3_backup',
     'oneinterviewparjour.stripe'
 ]
+
+X_FRAME_OPTIONS='SAMEORIGIN' # only if django version >= 3.0s
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -156,4 +160,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+MEDIA_ROOT = ''
+MEDIA_URL = ''
 STATIC_URL = '/static/'

@@ -1,4 +1,5 @@
 boto3
+django-admin-interface
 django-filter
 django-import-export
 django-picklefield
