@@ -185,7 +185,6 @@ def max(a, b):
 
 class Solution:
   def partage_optimal(self, liste_prix, liste_masse, masse_max):
-  
     if len(liste_prix) != len(liste_masse):
       return False
     if masse_max <= 0:
