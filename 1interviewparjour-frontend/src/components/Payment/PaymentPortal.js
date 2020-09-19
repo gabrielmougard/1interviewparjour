@@ -1,6 +1,7 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
-
+import { useToasts } from 'react-toast-notifications'
+import Loader from 'react-loader-spinner'
 import {
   Anchor,
   Box,
@@ -36,37 +37,104 @@ const Subscription = ({ desc, price, link, src }) => {
   );
 };
 
-export const PaymentPortal = () => {
-  return (
-    <Box>
-      <Section>
-        <Nav />
-      </Section>
-      <Section pad={{ top: 'medium' }}s>
-        <Header
-          label="Choisissez votre offre !"
-          summary="Passez au niveau supérieur en analysant nos solutions optimisées aux petits oignon 😉"
-        />
-        <Box
-          direction="row-responsive"
-          justify="center"
-          gap="large"
-          margin={{ horizontal: 'large'}}
-        >
-          <Subscription
-            desc="Incroyable ! Vous recevez toutes les solutions des problèmes avec les explications détaillées ! C'est notre expérience ultime !"
-            price="11,99€/mois"
-            link="https://designer.grommet.io/"
-            src="https://1interviewparjour.s3.eu-central-1.amazonaws.com/landing+pages/payment/premium-logo.png"
+const PaymentPortalComponent = ({verifyIdentity, identityVerified, problemData}) => {
+  const { addToast } = useToasts()
+  useEffect(() => {
+    const query = new URLSearchParams(window.location.search)
+    const mail = query.get('mail')
+    const token = query.get('token')
+    setTimeout(() => {
+      verifyIdentity({mail, token}) // call saga
+    }, 1000);
+  }, []) // call this call back only after the first render
+
+  useEffect(() => {
+    // if its verified load the page and raise a success toast in upper right corner
+    console.log("retour de props : identityVerified is "+identityVerified)
+    if (identityVerified) {
+      addToast('Identification réussi pour le problème "'+problemData.problem_title+'"', { appearance: 'success' })
+    }
+  }, [identityVerified])
+
+  let portal = []
+  if (identityVerified) {
+    portal.push(
+      <Box>
+        <Section>
+          <Nav />
+        </Section>
+        <Section pad={{ top: 'medium' }}>
+          <Header
+            label="Choisissez votre offre !"
+            summary="Passez au niveau supérieur en analysant nos solutions optimisées aux petits oignon 😉"
           />
-          <Subscription
-            desc="Recevez la solution de ce problème uniquement avec les explications détaillées ! C'est moins cher qu'un café !"
-            price="0,80€"
-            link="https://theme-designer.grommet.io/"
-            src="https://1interviewparjour.s3.eu-central-1.amazonaws.com/landing+pages/payment/premium-logo.png"
-          />
-        </Box>
+          <Box
+            direction="row-responsive"
+            justify="center"
+            gap="large"
+            margin={{ horizontal: 'large'}}
+          >
+            <Subscription
+              desc="Incroyable ! Vous recevez toutes les solutions des problèmes avec les explications détaillées ! C'est notre expérience ultime !"
+              price="11,99€/mois"
+              link="https://designer.grommet.io/"
+              src="https://1interviewparjour.s3.eu-central-1.amazonaws.com/landing+pages/payment/premium-logo.png"
+            />
+            <Subscription
+              desc={
+                <span>Recevez la solution du problème <Anchor href="https://1interviewparjour.fr" a11yTitle="1interviewparjour">{problemData.problem_title} </Anchor>
+                avec les explications détaillées ! C'est moins cher qu'un café !
+                </span>
+              }
+              price="0,80€"
+              link="https://theme-designer.grommet.io/"
+              src="https://1interviewparjour.s3.eu-central-1.amazonaws.com/landing+pages/payment/premium-logo.png"
+            />
+          </Box>
       </Section>
     </Box>
+    )
+
+  } else {
+    if (identityVerified == undefined) {
+      portal.push(
+        <Box full={true}>
+          <Box align="center" pad={'xlarge'} background="brand" full={true} height="xlarge">
+            <Header
+              label="Vérification de l'identité..."
+              summary="Celà ne devrait durer que 0.00000231s"
+            />
+            <Loader
+              type="Grid"
+              color="#FFFFFF"
+              height={100}
+              width={100}
+            />
+          </Box>
+        </Box>
+      )
+    } else {
+      //the call to saga has been made but its false
+      portal.push(
+        <Box full={true}>
+          <Box align="center" pad={'xlarge'} background={"status-error"} full={true} height="xlarge">
+            <Header
+              label="Erreur lors de l'identification !"
+              summary="<message d'erreur>"
+            />
+            <Button primary label="Retour à l'accueil" />
+          </Box>
+        </Box>
+      )
+    }
+  }
+
+
+  return (
+    <>
+      {portal}
+    </>
   );
 };
+
+export default PaymentPortalComponent

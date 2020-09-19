@@ -1,4 +1,5 @@
 import re
+import hashlib
 
 from secrets import token_hex
 
@@ -136,5 +137,5 @@ def _convert_to_strings(list_of_strs):
 
 def hash_token(hash_algo, token):
     hasher = hashlib.new(hash_algo)
-    hasher.update(token)
+    hasher.update(token.encode('utf-8'))
     return hasher.hexdigest()

@@ -1,11 +1,11 @@
 from django.contrib import admin
 
-from .models import User, Program, Problem, Company
+from .models import User, Program, Problem, Company, ProgramHistory
 
 admin.site.register(User)
 admin.site.register(Program)
 admin.site.register(Company)
-
+admin.site.register(ProgramHistory)
 
 @admin.register(Problem)
 class ProblemAdmin(admin.ModelAdmin):

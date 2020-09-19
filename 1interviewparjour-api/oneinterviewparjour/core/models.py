@@ -30,17 +30,15 @@ class Problem(models.Model):
         null=True
     )
     exercise = models.TextField()
+    keywords = models.TextField(default="")
     bootcode = models.TextField(default="")
     correction = models.TextField()
+    explanation = models.TextField(default="")
     difficulty = models.TextField()
 
     def __str__(self):
         return f"title : {self.title}\n"\
-            + f"company : {self.company}\n"\
-            + f"exercise : {self.exercise}\n"\
-            + f"bootcode : {self.bootcode}\n"\
-            + f"correction : {self.correction}\n"\
-            + f"difficulty : {self.difficulty}\n"
+            + f"company : {self.company}\n"
 
 
 class Program(models.Model):

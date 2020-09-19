@@ -4,6 +4,7 @@ django-filter
 django-import-export
 django-picklefield
 django-db-file-storage
+django-cors-headers
 djangorestframework
 django
 docopt

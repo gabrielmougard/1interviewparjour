@@ -16,6 +16,7 @@ defusedxml==0.6.0         # via odfpy
 diff-match-patch==20200713  # via django-import-export
 django-admin-interface==0.13.5  # via -r requirements/base.in
 django-colorfield==0.3.2  # via django-admin-interface
+django-cors-headers==3.5.0  # via -r requirements/base.in
 django-db-file-storage==0.5.5  # via -r requirements/base.in
 django-filter==2.3.0      # via -r requirements/base.in
 django-flat-responsive==2.0  # via django-admin-interface
@@ -25,7 +26,7 @@ django-mysql==3.8.1       # via -r requirements/base.in
 django-picklefield==3.0.1  # via -r requirements/base.in, django-q
 django-q==1.3.3           # via -r requirements/base.in
 django-url-filter==0.3.15  # via -r requirements/base.in
-django==3.1               # via -r requirements/base.in, django-db-file-storage, django-filter, django-import-export, django-mysql, django-picklefield, django-q, django-url-filter, djangorestframework
+django==3.1               # via -r requirements/base.in, django-cors-headers, django-db-file-storage, django-filter, django-import-export, django-mysql, django-picklefield, django-q, django-url-filter, djangorestframework
 djangorestframework==3.11.1  # via -r requirements/base.in
 docopt==0.6.2             # via -r requirements/base.in
 docutils==0.15.2          # via botocore

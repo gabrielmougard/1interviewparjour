@@ -17,6 +17,10 @@ from oneinterviewparjour.core.models import (
     ProgramHistory
 )
 
+from oneinterviewparjour.stripe.models import (
+    BuyingHash
+)
+
 from oneinterviewparjour.mail_scheduler.helpers import (
     generate_template_mail,
     generate_payment_token,
@@ -93,7 +97,11 @@ class AmazonSender(object):
         # which are not already in `ProgramHistory`
         history = set(ProgramHistory.objects.filter(user_id=self.problem_metadata["user_id"]).values_list('problem_id', flat=True))
         problem_set = set(Problem.objects.all().values_list('id', flat=True))
-        next_problem_id = random.choice(tuple(problem_set - history))
+        choice = problem_set - history
+        if len(choice) == 0:  # in this case, the user finished the complete list of available problems. For now, let's choose a random one inside the problem set.
+            next_problem_id = random.choice(tuple(problem_set))
+        else:
+            next_problem_id = random.choice(tuple(problem_set - history))
         Program.objects.filter(id=self.problem_metadata["program_id"]).update(
             problem_id=next_problem_id
         )
