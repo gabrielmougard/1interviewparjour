@@ -1,5 +1,4 @@
 import React, { useContext, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import { useToasts } from 'react-toast-notifications'
 import Loader from 'react-loader-spinner'
 import {
@@ -12,13 +11,27 @@ import {
   Button
 } from 'grommet';
 
-import { Next } from 'grommet-icons';
-
 import Header from '../Header';
 import Section from '../Home/Section';
 import Nav from '../Nav';
+import { config } from '../../utils/config'
 
-const Subscription = ({ desc, price, link, src }) => {
+const buyProduct = (problem_data) => {
+  const stripe = problem_data.stripeClient
+  const { API_URL } = config
+  fetch(API_URL + "/stripe/create-checkout-session?problem_id="+problem_data.problem_id+"&subscription_type="+problem_data.subscriptionType)
+  .then((result) => { return result.json(); })
+  .then((data) => {
+    console.log(data);
+    // Redirect to Stripe Checkout
+    return stripe.redirectToCheckout({sessionId: data.sessionId})
+  })
+  .then((res) => {
+      console.log(res);
+  });
+}
+
+const Subscription = ({ desc, price, link, src, problem, subscriptionType, stripeClient }) => {
   const size = useContext(ResponsiveContext);
   const imgWidth = size === 'medium' ? 365 : 482;
   return (
@@ -31,30 +44,48 @@ const Subscription = ({ desc, price, link, src }) => {
       <Paragraph textAlign="center" size="xlarge" alignSelf="center">
         {desc}
       </Paragraph>
-      <Button primary label="Acheter" />
+      <Button
+        primary
+        label="Acheter"
+        onClick={() => buyProduct(
+          {
+            problem_id : problem.problem_id,
+            subscriptionType: subscriptionType,
+            stripeClient: stripeClient
+          }
+        )}
+      />
       <Box flex />
     </Box>
   );
 };
 
-const PaymentPortalComponent = ({verifyIdentity, identityVerified, problemData}) => {
+const PaymentPortalComponent = ({verifyIdentity, identityVerified, problemData, buy, stripePubKey}) => {
   const { addToast } = useToasts()
+  const [stripeClient, setStripeClient] = React.useState({})
+
   useEffect(() => {
     const query = new URLSearchParams(window.location.search)
     const mail = query.get('mail')
     const token = query.get('token')
     setTimeout(() => {
-      verifyIdentity({mail, token}) // call saga
+      verifyIdentity({mail, token}) // call saga to verify the identity and to fetch the stripePubKey. If both actions are ok, then identityVerified is true, else it's false.
     }, 1000);
   }, []) // call this call back only after the first render
 
   useEffect(() => {
     // if its verified load the page and raise a success toast in upper right corner
-    console.log("retour de props : identityVerified is "+identityVerified)
     if (identityVerified) {
       addToast('Identification réussi pour le problème "'+problemData.problem_title+'"', { appearance: 'success' })
     }
   }, [identityVerified])
+
+  useEffect(() => {
+    if (stripePubKey != "") {
+      const stripe = Stripe(stripePubKey)
+      setStripeClient(stripe)
+    }
+  }, [stripePubKey])
 
   let portal = []
   if (identityVerified) {
@@ -78,7 +109,11 @@ const PaymentPortalComponent = ({verifyIdentity, identityVerified, problemData})
               desc="Incroyable ! Vous recevez toutes les solutions des problèmes avec les explications détaillées ! C'est notre expérience ultime !"
               price="11,99€/mois"
               link="https://designer.grommet.io/"
-              src="https://1interviewparjour.s3.eu-central-1.amazonaws.com/landing+pages/payment/premium-logo.png"
+              src="https://1interviewparjour.s3.eu-central-1.amazonaws.com/landing+pages/payment/monthly-solution-logo.png"
+              buy={buy}
+              problem={problemData}
+              subscriptionType={"monthly"}
+              stripeClient={stripeClient}
             />
             <Subscription
               desc={
@@ -88,7 +123,11 @@ const PaymentPortalComponent = ({verifyIdentity, identityVerified, problemData})
               }
               price="0,80€"
               link="https://theme-designer.grommet.io/"
-              src="https://1interviewparjour.s3.eu-central-1.amazonaws.com/landing+pages/payment/premium-logo.png"
+              src="https://1interviewparjour.s3.eu-central-1.amazonaws.com/landing+pages/payment/unit-solution-logo.png"
+              buy={buy}
+              problem={problemData}
+              subscriptionType={"unit"}
+              stripeClient={stripeClient}
             />
           </Box>
       </Section>

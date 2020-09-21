@@ -1,7 +1,8 @@
 import "regenerator-runtime/runtime";
 import { call, put, takeEvery } from 'redux-saga/effects'
 import {
-    VERIFY_IDENTITY
+    VERIFY_IDENTITY,
+    BUY
 } from './constants'
 
 import {
@@ -11,27 +12,39 @@ import {
 
 import { config } from '../../utils/config'
 import request from '../../utils/request'
-import { getCors } from '../../utils/rulesCors'
 
 function* verifyIdentity({payload}) {
     const { API_URL } = config
-    const requestURL = API_URL + '/api/v1/identity_check?mail=' + payload.mail + '&token=' + payload.token
-
+    const requestURLIdentity = API_URL + '/api/v1/identity_check?mail=' + payload.mail + '&token=' + payload.token
+    const requestURLStripePubKey = API_URL + '/stripe/config'
     try {
-        const response = yield call(request, requestURL)
-        if (!response.success) {
-            yield put(verifyIdentityErrorAction(response))
+        const responseIdentity = yield call(request, requestURLIdentity)
+        if (responseIdentity.success) {
+            //fetch stripe public key
+            const responseStripeKey = yield call(request, requestURLStripePubKey)
+            console.log({...responseIdentity, ...responseStripeKey})
+            if (responseStripeKey.success) {
+                yield put(verifyIdentitySuccessAction({...responseIdentity, ...responseStripeKey}))
+            } else {
+                yield put(verifyIdentityErrorAction(responseIdentity))
+            }
         } else {
-            yield put(verifyIdentitySuccessAction(response))
+            yield put(verifyIdentityErrorAction(responseIdentity))
         }
     } catch(err) {
-        console.error('[route] => /stripe/verify_identity => ERROR => ', err)
+        console.error(err)
         yield put(verifyIdentityErrorAction({"msg": err}))
     }
 }
 
+function* buyProduct({payload}) {
+    const { API_URL } = config
+    const requestURL = API_URL + '/api/v1/identity_check?mail=' + payload.mail + '&token=' + payload.token
+}
+
 function* paymentSaga() {
     yield takeEvery(VERIFY_IDENTITY, verifyIdentity)
+    yield takeEvery(BUY, buyProduct)
 }
 
 export default paymentSaga

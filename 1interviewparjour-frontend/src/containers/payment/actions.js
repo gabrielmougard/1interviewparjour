@@ -1,7 +1,8 @@
 import {
     VERIFY_IDENTITY,
     VERIFY_IDENTITY_ERROR,
-    VERIFY_IDENTITY_SUCCESS
+    VERIFY_IDENTITY_SUCCESS,
+    BUY
 } from './constants'
 
 export function verifyIdentityAction(payload) {
@@ -21,6 +22,13 @@ export function verifyIdentityErrorAction(payload) {
 export function verifyIdentitySuccessAction(payload) {
     return {
         type: VERIFY_IDENTITY_SUCCESS,
+        payload,
+    }
+}
+
+export function buyAction(payload) {
+    return {
+        type: BUY,
         payload,
     }
 }

@@ -75,7 +75,7 @@ class AmazonSender(object):
         # generate payment_gateway_link, put it into self.problem_metadata
         # and register its hash into the `BuyingHash` model
         payment_token = generate_payment_token()
-        self.problem_metadata["payment_gateway_link"] = f"{settings.API_BASE_PATH}/payment?mail={self.problem_metadata['mail']}&token={payment_token}"
+        self.problem_metadata["payment_gateway_link"] = f"{settings.FRONT_BASE_PATH}/payment?mail={self.problem_metadata['mail']}&token={payment_token}"
         if self.problem_metadata["company_name"] == "1interviewparjour":
             self.problem_metadata["company_message"] = "Cette interview est une création originale"
         else:

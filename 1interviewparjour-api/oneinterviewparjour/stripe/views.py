@@ -21,16 +21,15 @@ class CancelledView(TemplateView):
 def stripe_config(request):
     if request.method == 'GET':
         if settings.STRIPE_LIVE_MODE:
-            stripe_config = {'publicKey': settings.STRIPE_LIVE_PUBLIC_KEY}
+            stripe_config = {'success': True, 'publicKey': settings.STRIPE_LIVE_PUBLIC_KEY}
         else:
-            stripe_config = {'publicKey': settings.STRIPE_TEST_PUBLIC_KEY}
+            stripe_config = {'success': True, 'publicKey': settings.STRIPE_TEST_PUBLIC_KEY}
         return JsonResponse(stripe_config, safe=False)
 
 
 @csrf_exempt
 def create_checkout_session(request):
     if request.method == 'GET':
-        domain_url = 'http://localhost:8000/stripe/'
         if settings.STRIPE_LIVE_MODE:
             stripe.api_key = settings.STRIPE_LIVE_SECRET_KEY
         else:
@@ -51,10 +50,10 @@ def create_checkout_session(request):
                 SUBSCRIPTION_PRICE_ID = settings.STRIPE_TEST_SUBSCRIPTION_PRICE_ID
 
             checkout_session = stripe.checkout.Session.create(
-                success_url=domain_url + 'success?session_id={CHECKOUT_SESSION_ID}',
-                cancel_url=domain_url + 'cancelled/',
+                success_url=settings.FRONT_BASE_PATH + '/payment_success?session_id={CHECKOUT_SESSION_ID}&token=' + request.GET["token"],
+                cancel_url=settings.FRONT_BASE_PATH + '/payment_canceled?token=' + request.GET["token"],
                 payment_method_types=['card'],
-                mode='subscription',
+                mode='subscription', # it depends 
                 line_items=[
                     {
                         'price': SUBSCRIPTION_PRICE_ID,

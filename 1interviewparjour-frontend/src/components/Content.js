@@ -13,8 +13,8 @@ import CGU from './Legal/CGU'
 import Privacy from './Legal/Privacy'
 import Contact from './Legal/Contact'
 import PaymentPortal from '../containers/payment/index'
-
-import CustomToast from './Payment/CustomToast'
+import PaymentSuccess from '../containers/payment_success/index'
+import PaymentCancel from '../containers/payment_cancel/index'
 
 export default () => (
   <Router>
@@ -35,6 +35,12 @@ export default () => (
             <ToastProvider>
               <PaymentPortal />
             </ToastProvider>
+          </Route>
+          <Route path="/payment_success" exact={true}>
+            <PaymentSuccess />
+          </Route>
+          <Route path="/payment_cancel" exact={true}>
+            <PaymentCancel />
           </Route>
     </Switch>
   </Router>

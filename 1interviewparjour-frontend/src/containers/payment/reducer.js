@@ -17,15 +17,13 @@ function paymentReducer(state = initialState, { type, payload }) {
             }
 
         case VERIFY_IDENTITY_SUCCESS:
-            console.log("LE PAYLOAD : ")
-            console.log(payload)
             return {
                 ...state,
                 identityVerified: true,
-                problemData: payload.data
+                problemData: payload.data,
+                stripePubKey: payload.publicKey
             }
         default:
-            //TODO
             return {
                 ...state,
             }
