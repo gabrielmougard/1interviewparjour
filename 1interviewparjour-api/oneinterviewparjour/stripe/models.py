@@ -3,8 +3,6 @@ import stripe
 from django.db import models
 from django.conf import settings
 
-from oneinterviewparjour.core.models import (Problem, User)
-
 
 class Product(models.Model):
 
@@ -15,7 +13,8 @@ class Product(models.Model):
 
     active = models.BooleanField(default=True, help_text="Whether the product is active or not.")
     name = models.CharField(max_length=255, help_text="Name of the product shown in the Stripe Checkout page.")
-    stripe_product_id = models.CharField(max_length=255, editable=False, null=True, help_text="The Stripe product_id. Something like 'prod_zefaXSszaf...'")
+    stripe_product_id_test = models.CharField(max_length=255, editable=False, null=True, help_text="The Stripe product_id for test mode. Something like 'prod_zefaXSszaf...'")
+    stripe_product_id_live = models.CharField(max_length=255, editable=False, null=True, help_text="The Stripe product_id for prod mode. Something like 'prod_zefaXSszaf...'")
     description = models.TextField(default="", help_text="A short product desc. which will appear in the Stripe Checkout page.")
     image_link = models.TextField(
         default="",
@@ -35,11 +34,8 @@ class Product(models.Model):
         Call Stripe API to create the Product on their side and then if its ok, save it
         in our DB with the generated stripe_product_id
         """
-        if settings.STRIPE_LIVE_MODE:
-            stripe.api_key = settings.STRIPE_LIVE_SECRET_KEY
-        else:
-            stripe.api_key = settings.STRIPE_TEST_SECRET_KEY
-        print(self.product_type)
+        # 1) register the test product id
+        stripe.api_key = settings.STRIPE_TEST_SECRET_KEY
         stripe_response = stripe.Product.create(
             active=self.active,
             name=self.name,
@@ -47,11 +43,23 @@ class Product(models.Model):
             images=[self.image_link],
             type=self.product_type,
         )
-        self.stripe_product_id = stripe_response["id"]  # register this in our DB
+        self.stripe_product_id_test = stripe_response["id"]  # register this in our DB
+        # 2) register the live product id
+        stripe.api_key = settings.STRIPE_LIVE_SECRET_KEY
+        stripe_response = stripe.Product.create(
+            active=self.active,
+            name=self.name,
+            description=self.description,
+            images=[self.image_link],
+            type=self.product_type,
+        )
+        self.stripe_product_id_live = stripe_response["id"]  # register this in our DB
         super(Product, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.name
+        return (
+            f"{self.name} | (test) : {self.stripe_product_id_test} (live) : {self.stripe_product_id_live}"
+        )
 
 
 class Price(models.Model):
@@ -87,7 +95,8 @@ class Price(models.Model):
     )
 
     active = models.BooleanField(default=True, help_text="If the price is active in Stripe")
-    stripe_price_id = models.CharField(max_length=255, editable=False, null=True, help_text="The Stripe price_id. Something like 'price_zezgfXSszaf...'")
+    stripe_price_id_test = models.CharField(max_length=255, editable=False, null=True, help_text="The Stripe price_id for test mode. Something like 'price_zezgfXSszaf...'")
+    stripe_price_id_live = models.CharField(max_length=255, editable=False, null=True, help_text="The Stripe price_id for prod mode. Something like 'price_zezgfXSszaf...'")
     created = models.DateTimeField(auto_now_add=True)
     livemode = models.BooleanField(default=False, help_text="If its only for test, then it should be False. Else, True.")
     unit_amount = models.IntegerField(help_text="The price of the product (in cents of the chosen currency. e.g : 699 is 6,99€ in EUR currency")
@@ -136,16 +145,13 @@ class Price(models.Model):
         Call Stripe API to create the Price on their side and then if its ok, save it
         in our DB with the generated stripe_price_id
         """
-        if settings.STRIPE_LIVE_MODE:
-            stripe.api_key = settings.STRIPE_LIVE_SECRET_KEY
-        else:
-            stripe.api_key = settings.STRIPE_TEST_SECRET_KEY
-
+        # 1) register the test price id
+        stripe.api_key = settings.STRIPE_TEST_SECRET_KEY
         if self.price_type == "recurring":
             stripe_response = stripe.Price.create(
                 unit_amount=self.unit_amount,
                 currency=self.currency,
-                product=self.product.stripe_product_id,
+                product=self.product.stripe_product_id_test,
                 active=self.active,
                 billing_scheme=self.billing_scheme,
                 recurring={
@@ -158,14 +164,43 @@ class Price(models.Model):
             stripe_response = stripe.Price.create(
                 unit_amount=self.unit_amount,
                 currency=self.currency,
-                product=self.product.stripe_product_id,
+                product=self.product.stripe_product_id_test,
                 active=self.active,
                 billing_scheme=self.billing_scheme,
             )
         else:
             raise ValueError(f"The price type {self.price_type} is not recognized.")
 
-        self.stripe_price_id = stripe_response["id"]  # register this in our DB
+        self.stripe_price_id_test = stripe_response["id"]  # register this in our DB
+
+        # 2) register the live price id
+        stripe.api_key = settings.STRIPE_LIVE_SECRET_KEY
+        if self.price_type == "recurring":
+            stripe_response = stripe.Price.create(
+                unit_amount=self.unit_amount,
+                currency=self.currency,
+                product=self.product.stripe_product_id_live,
+                active=self.active,
+                billing_scheme=self.billing_scheme,
+                recurring={
+                    "interval": self.recurring_interval,
+                    "interval_count": self.recurring_interval_count,
+                    "usage_type": self.recurring_usage_type
+                }
+            )
+        elif self.price_type == "one_time":
+            stripe_response = stripe.Price.create(
+                unit_amount=self.unit_amount,
+                currency=self.currency,
+                product=self.product.stripe_product_id_live,
+                active=self.active,
+                billing_scheme=self.billing_scheme,
+            )
+        else:
+            raise ValueError(f"The price type {self.price_type} is not recognized.")
+
+        self.stripe_price_id_live = stripe_response["id"]  # register this in our DB
+
         super(Price, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -175,26 +210,13 @@ class Price(models.Model):
             list_unit_amount.insert(0, '0')
         amount = f"{''.join(list_unit_amount)}{self.CURRENCY_SYMBOLS[self.currency]}"
         if self.price_type == "one_time":
-            return f"{self.product} | {amount} | {self.stripe_price_id} | active : {self.active} | livemode : {self.livemode}"
+            return (
+                f"{self.product} | {amount} | (test) : {self.stripe_price_id_test} (live) : {self.stripe_price_id_live}"
+                f"| active : {self.active} | livemode : {self.livemode}"
+            )
         # it's recurring
-        return f"{self.product} | {self.recurring_interval_count} x {amount}/{self.recurring_interval} | {self.stripe_price_id} | active : {self.active} | livemode : {self.livemode}"
-
-
-class BuyingHash(models.Model):
-    problem = models.ForeignKey(
-        Problem,
-        on_delete=models.CASCADE
-    )
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE
-    )
-    hashed_token = models.CharField(max_length=128)
-
-
-    def __str__(self):
         return (
-            f"hashed_token : {self.hashed_token}\n"
-            f"user : {self.user}\n"\
-            f"problem : {self.problem}\n"
+            f"{self.product} | {self.recurring_interval_count} x {amount}/{self.recurring_interval} "
+            f"| (test) : {self.stripe_price_id_test} (live) : {self.stripe_price_id_live} "
+            f"| active : {self.active} | livemode : {self.livemode}"
         )

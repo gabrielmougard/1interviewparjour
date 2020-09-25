@@ -5,6 +5,10 @@ from django.views.decorators.csrf import csrf_exempt
 
 import stripe
 
+from oneinterviewparjour.core.models import Problem
+from oneinterviewparjour.stripe.models import Price
+
+
 class HomePageView(TemplateView):
     template_name = 'home.html'
 
@@ -44,23 +48,38 @@ def create_checkout_session(request):
             # For full details see https:#stripe.com/docs/api/checkout/sessions/create
 
             # ?session_id={CHECKOUT_SESSION_ID} means the redirect will have the session ID set as a query param
-            if settings.STRIPE_LIVE_MODE:
-                SUBSCRIPTION_PRICE_ID = settings.STRIPE_LIVE_SUBSCRIPTION_PRICE_ID
+            problem_id = request.GET['problem_id']
+            subscription_type = request.GET['subscription_type']  # either 'unit' or 'monthly'
+
+            if subscription_type == "unit":
+                # get the price_id associated with the problem
+                if settings.STRIPE_LIVE_MODE:
+                    # take the production price_id
+                    price_id = Problem.objects.get(id=problem_id).unit_price.stripe_price_id_live
+                else:
+                    # take the test price_id
+                    price_id = Problem.objects.get(id=problem_id).unit_price.stripe_price_id_test
+
             else:
-                SUBSCRIPTION_PRICE_ID = settings.STRIPE_TEST_SUBSCRIPTION_PRICE_ID
+                # find the price_id of the basic monthly subscription
+                if settings.STRIPE_LIVE_MODE:
+                    price_id = Price.objects.filter(product__name="1interviewparjour PRO")[0].stripe_price_id_live
+                else:
+                    price_id = Price.objects.filter(product__name="1interviewparjour PRO")[0].stripe_price_id_test
 
             checkout_session = stripe.checkout.Session.create(
                 success_url=settings.FRONT_BASE_PATH + '/payment_success?session_id={CHECKOUT_SESSION_ID}&token=' + request.GET["token"],
                 cancel_url=settings.FRONT_BASE_PATH + '/payment_canceled?token=' + request.GET["token"],
                 payment_method_types=['card'],
-                mode='subscription', # it depends 
+                mode='subscription' if subscription_type == 'monthly' else 'payment',
                 line_items=[
                     {
-                        'price': SUBSCRIPTION_PRICE_ID,
+                        'price': price_id,
                         'quantity': 1,
                     }
                 ]
             )
+            
             return JsonResponse({'sessionId': checkout_session['id']})
         except Exception as e:
             return JsonResponse({'error': str(e)})

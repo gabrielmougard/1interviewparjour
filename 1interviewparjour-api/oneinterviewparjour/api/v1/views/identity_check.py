@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from oneinterviewparjour.stripe.models import BuyingHash
+from oneinterviewparjour.core.models import BuyingHash
 from oneinterviewparjour.mail_scheduler.helpers import (
     hash_token
 )
@@ -26,7 +26,8 @@ def check(request):
             'success': True,
             'data': {
                 "problem_id": problem.id,
-                "problem_title": problem.title
+                "problem_title": problem.title,
+                "token": token
             }
         }
     )

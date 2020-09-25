@@ -19,7 +19,7 @@ import { config } from '../../utils/config'
 const buyProduct = (problem_data) => {
   const stripe = problem_data.stripeClient
   const { API_URL } = config
-  fetch(API_URL + "/stripe/create-checkout-session?problem_id="+problem_data.problem_id+"&subscription_type="+problem_data.subscriptionType)
+  fetch(API_URL + "/stripe/create-checkout-session?problem_id="+problem_data.problem_id+"&subscription_type="+problem_data.subscriptionType+"&token="+problem_data.token)
   .then((result) => { return result.json(); })
   .then((data) => {
     console.log(data);
@@ -51,7 +51,8 @@ const Subscription = ({ desc, price, link, src, problem, subscriptionType, strip
           {
             problem_id : problem.problem_id,
             subscriptionType: subscriptionType,
-            stripeClient: stripeClient
+            stripeClient: stripeClient,
+            token: problem.token
           }
         )}
       />

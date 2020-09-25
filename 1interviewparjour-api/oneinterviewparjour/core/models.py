@@ -1,5 +1,6 @@
 from django.db import models
 
+from oneinterviewparjour.stripe.models import Price
 
 class Company(models.Model):
     name = models.CharField(max_length=250, default="1interviewparjour")
@@ -23,18 +24,32 @@ class User(models.Model):
 
 
 class Problem(models.Model):
+
+    DIFFICULTY = (
+        ("easy","easy"),
+        ("medium", "medium"),
+        ("advanced", "advanced"),
+        ("hard", "hard"),
+        ("extrem", "extrem"),
+    )
     title = models.CharField(max_length=250, default="")
+    difficulty = models.TextField(choices=DIFFICULTY, default="medium")
     company = models.ForeignKey(
         Company,
         on_delete=models.CASCADE,
         null=True
     )
-    exercise = models.TextField()
     keywords = models.TextField(default="")
+    unit_price = models.ForeignKey(
+        Price,
+        on_delete=models.CASCADE,
+        null=True,
+        help_text="When a Problem is bought, we need to know what's the unit price of it. It could be a basic problem or a mini-project (more expensive)"
+    )
+    exercise = models.TextField()
     bootcode = models.TextField(default="")
     correction = models.TextField()
     explanation = models.TextField(default="")
-    difficulty = models.TextField()
 
     def __str__(self):
         return f"title : {self.title}\n"\
@@ -79,3 +94,22 @@ class ProgramHistory(models.Model):
             f"sent_timestamp : {self.sent_timestamp}\n"
         )
 
+
+class BuyingHash(models.Model):
+    problem = models.ForeignKey(
+        Problem,
+        on_delete=models.CASCADE
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
+    )
+    hashed_token = models.CharField(max_length=128)
+
+
+    def __str__(self):
+        return (
+            f"hashed_token : {self.hashed_token}\n"
+            f"user : {self.user}\n"\
+            f"problem : {self.problem}\n"
+        )

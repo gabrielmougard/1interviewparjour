@@ -17,7 +17,7 @@ from oneinterviewparjour.core.models import (
     ProgramHistory
 )
 
-from oneinterviewparjour.stripe.models import (
+from oneinterviewparjour.core.models import (
     BuyingHash
 )
 
