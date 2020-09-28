@@ -40,6 +40,7 @@
     "prop-types": "^15.5.10",
     "react": "^16.8.0",
     "react-ace": "^9.1.2",
+    "react-checkmark": "^1.3.0",
     "react-desc": "^4.0.0",
     "react-dom": "^16.8.0",
     "react-formify": "^0.11.0",

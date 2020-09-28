@@ -68,8 +68,8 @@ def create_checkout_session(request):
                     price_id = Price.objects.filter(product__name="1interviewparjour PRO")[0].stripe_price_id_test
 
             checkout_session = stripe.checkout.Session.create(
-                success_url=settings.FRONT_BASE_PATH + '/payment_success?session_id={CHECKOUT_SESSION_ID}&token=' + request.GET["token"],
-                cancel_url=settings.FRONT_BASE_PATH + '/payment_canceled?token=' + request.GET["token"],
+                success_url=settings.FRONT_BASE_PATH + '/payment_success?session_id={CHECKOUT_SESSION_ID}&mail=' + request.GET['mail'] + '&token=' + request.GET["token"],
+                cancel_url=settings.FRONT_BASE_PATH + '/payment_canceled?mail=' + request.GET['mail'] + '&token=' + request.GET["token"],
                 payment_method_types=['card'],
                 mode='subscription' if subscription_type == 'monthly' else 'payment',
                 line_items=[
@@ -79,7 +79,7 @@ def create_checkout_session(request):
                     }
                 ]
             )
-            
+
             return JsonResponse({'sessionId': checkout_session['id']})
         except Exception as e:
             return JsonResponse({'error': str(e)})

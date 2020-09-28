@@ -27,6 +27,7 @@ def check(request):
             'data': {
                 "problem_id": problem.id,
                 "problem_title": problem.title,
+                "mail": mail,
                 "token": token
             }
         }
