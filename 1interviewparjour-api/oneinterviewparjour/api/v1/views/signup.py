@@ -32,7 +32,7 @@ def signup(request):
     program, created = Program.objects.get_or_create(
         hour=17, # defacto program hour for now
         user_id=user.id,
-        problem_id=1
+        problem_id=1 # TODO : choose a random id among the ones availables.
     )
 
     if not created:

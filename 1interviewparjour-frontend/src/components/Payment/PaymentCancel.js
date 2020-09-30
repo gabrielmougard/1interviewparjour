@@ -37,7 +37,7 @@ const PaymentCancelComponent = ({verifyIdentity, identityVerified}) => {
                         Paiement annulé !
                     </Heading>
                     <Paragraph size="xxlarge" textAlign={"center"} color="white">
-                        En raison d'un problème avec votre banque, le paiement n'a pas pu être réalisé.
+                        En raison d'un problème avec votre banque, le paiement n'a pas pu être réalisé. Votre compte ne sera pas débité.
                     </Paragraph>
                 </Box>
                 <Box align="center" pad={'xlarge'}>
@@ -73,8 +73,8 @@ const PaymentCancelComponent = ({verifyIdentity, identityVerified}) => {
                 <Box full={true}>
                     <Box align="center" pad={'xlarge'} background={"status-error"} full={true} height="xlarge">
                         <Header
-                        label="Erreur lors de l'identification !"
-                        summary="Veuillez contacter le support à l'adresse : contact@1interviewparjour.com"
+                            label="Erreur lors de l'identification !"
+                            summary="Veuillez contacter le support à l'adresse : contact@1interviewparjour.com"
                         />
                         <Button href={ROOT_URL} primary label="Retour à l'accueil" />
                     </Box>

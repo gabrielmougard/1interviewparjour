@@ -1,6 +1,10 @@
 from django.db import models
+from pygments.lexers import get_all_lexers
 
 from oneinterviewparjour.stripe.models import Price
+
+from oneinterviewparjour.mail_scheduler.send_mail import send
+
 
 class Company(models.Model):
     name = models.CharField(max_length=250, default="1interviewparjour")
@@ -32,6 +36,16 @@ class Problem(models.Model):
         ("hard", "hard"),
         ("extrem", "extrem"),
     )
+
+    LANGUAGES = [(l[1][0], l[0]) for l in get_all_lexers()]
+    active = models.BooleanField(
+        default=False,
+        help_text=(
+            f"Whether this problem is ready to be sent to the user."
+            f"We recommend letting this False, receive the preview "
+            f"and then update this field in True if the preview is OK."
+        )
+    )
     title = models.CharField(max_length=250, default="")
     difficulty = models.TextField(choices=DIFFICULTY, default="medium")
     company = models.ForeignKey(
@@ -47,9 +61,26 @@ class Problem(models.Model):
         help_text="When a Problem is bought, we need to know what's the unit price of it. It could be a basic problem or a mini-project (more expensive)"
     )
     exercise = models.TextField()
+    language = models.CharField(choices=LANGUAGES, max_length=250, default="Python")
     bootcode = models.TextField(default="")
     correction = models.TextField()
     explanation = models.TextField(default="")
+    mail_preview = models.CharField(max_length=250, default="")
+
+    def save(self, *args, **kwargs):
+        """
+        After effectively saving a problem to DB, we must
+        send a preview to the `mail_preview` address.
+        """
+        super(Problem, self).save(*args, **kwargs)
+        send(
+            exceptionnal_data={
+                "mail": self.mail_preview,
+                "problem_id": self.id
+            },
+            preview=True,
+            mail_preview=self.mail_preview
+        )
 
     def __str__(self):
         return f"title : {self.title}\n"\

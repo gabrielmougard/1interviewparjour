@@ -6,7 +6,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
@@ -14,8 +13,7 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 SECRET_KEY = 'temz1*^52h)yvm7-d6sfnav6n8co#i4o+qe2!x(py$3ertf05b'
 
 DEBUG = os.getenv('DEBUG', None)
-K8S_ENV = os.getenv('K8S_ENV')
-ENV = K8S_ENV or 'dev'
+ENV = os.getenv('ENV', 'dev')  # either 'prod' or 'dev'
 
 #API related
 API_BASE_PATH = os.getenv('API_BASE_PATH', 'http://localhost:8000')
@@ -29,7 +27,7 @@ STRIPE_TEST_PUBLIC_KEY = os.environ.get("STRIPE_TEST_PUBLIC_KEY")
 STRIPE_TEST_SECRET_KEY = os.environ.get("STRIPE_TEST_SECRET_KEY")
 STRIPE_TEST_SUBSCRIPTION_PRICE_ID = os.environ.get("STRIPE_TEST_SUBSCRIPTION_PRICE_ID")
 
-STRIPE_LIVE_MODE = False  # Change to True in production
+STRIPE_LIVE_MODE = os.getenv('STRIPE_LIVE_MODE', False)  # STRIPE_LIVE_MODE is True for production
 
 # AWS SES credentials
 AWS_REGION_NAME = os.environ.get("AWS_REGION_NAME")

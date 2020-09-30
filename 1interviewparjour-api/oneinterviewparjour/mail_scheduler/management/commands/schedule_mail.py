@@ -18,8 +18,10 @@ class Command(BaseCommandWithLogger):
         Schedule.objects.update_or_create(
             name="1interviewparjour-mailer task for : {}".format(str(arrow.utcnow())),
             defaults={
-                'func': 'oneinterviewparjour.mail_scheduler.send_mail.scheduled',
-                'args': arrow.utcnow().hour + 2, # hour in France timezone
+                'func': 'oneinterviewparjour.mail_scheduler.send_mail.send',
+                'kwargs':{
+                    "hour": arrow.utcnow().hour + 2
+                }, # hour in France timezone
                 'schedule_type': Schedule.ONCE,
                 'next_run': str(arrow.utcnow()),
             }

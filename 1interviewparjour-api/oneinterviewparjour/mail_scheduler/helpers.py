@@ -77,7 +77,7 @@ def generate_template_mail(problem_metadata, pro):
 
     """
     # 1)
-    exercise_body_list = problem_metadata['exercise_body'].split("\n")
+    exercise_body_list = problem_metadata["problem"].exercise_body.split("\n")
     exercise_body_formatted = ""
     for line in exercise_body_list:
         if len(line) == 0 or len(line.replace(" ", "")) == 0:
@@ -89,20 +89,20 @@ def generate_template_mail(problem_metadata, pro):
     # 2)
     exercise_correction_formatted = ""
     if not pro:
-        exercise_correction_formatted = "\n".join(problem_metadata['exercise_correction'].split("\n")[:12])
+        exercise_correction_formatted = "\n".join(problem_metadata["problem"].exercise_correction.split("\n")[:12])
     else:
-        exercise_correction_formatted = problem_metadata['exercise_correction']
+        exercise_correction_formatted = problem_metadata["problem"].exercise_correction
     #
     # 3)
-    exercise_bootcode_formatted = _to_HTML_code(problem_metadata['exercise_bootcode'], 'python', {}, 'default', False, 'padding:.2em .6em;')
-    exercise_correction_formatted = _to_HTML_code(exercise_correction_formatted, 'python', {}, 'default', False, 'padding:.2em .6em;')
+    exercise_bootcode_formatted = _to_HTML_code(problem_metadata[["problem"].exercise_bootcode, problem_metadata[["problem"].language, {}, 'default', False, 'padding:.2em .6em;')
+    exercise_correction_formatted = _to_HTML_code(exercise_correction_formatted, problem_metadata[["problem"].language, {}, 'default', False, 'padding:.2em .6em;')
     #
     # 4)
     if pro:
         ctx_pro = {
-            'company_message': problem_metadata['company_message'],
-            'company_name': problem_metadata['company_name'],
-            'exercise_title': problem_metadata['exercise_title'],
+            'company_message': problem_metadata["problem"].company_message,
+            'company_name': problem_metadata["problem"].company.name,
+            'exercise_title': problem_metadata["problem"].exercise_title,
             'exercise_body': exercise_body_formatted,
             'exercise_bootcode': exercise_bootcode_formatted,
             'exercise_correction': exercise_correction_formatted
@@ -112,8 +112,8 @@ def generate_template_mail(problem_metadata, pro):
 
     ctx = {
         'company_message': problem_metadata['company_message'],
-        'company_name': problem_metadata['company_name'],
-        'exercise_title': problem_metadata['exercise_title'],
+        'company_name': problem_metadata["problem"].company.name,
+        'exercise_title': problem_metadata["problem"].exercise_title,
         'exercise_body': exercise_body_formatted,
         'exercise_bootcode': exercise_bootcode_formatted,
         'exercise_correction': exercise_correction_formatted,

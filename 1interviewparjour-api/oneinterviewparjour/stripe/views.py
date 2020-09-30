@@ -9,6 +9,7 @@ from stripe.error import InvalidRequestError
 
 from oneinterviewparjour.core.models import Problem
 from oneinterviewparjour.stripe.models import Price, Session
+from oneinterviewparjour.mail_scheduler.send_mail import send
 
 
 @csrf_exempt
@@ -96,28 +97,12 @@ def success_product_buying(request):
                 if not Session.objects.filter(stripe_session_id=session_id).exists():
                     # Create a DjangoQ Task for sending the problem to the user in pro mode this time only
                     # and register the session_id
-                    """ (ONLY IN PROD WITH QCLUSTER)
-                    async_task(
-                        'oneinterviewparjour.mail_scheduler.send_mail.exceptionnal',
-                        {
-                            "mail": mail,
-                            "problem_id": problem_id,
-                            "session_id": session_id,
-                            "future_pro_user": False
-                        },
-                        hook='oneinterviewparjour.mail_scheduler.send_mail.exceptionnal_hook'
-                    )
-                    """
-                    from oneinterviewparjour.mail_scheduler.send_mail import exceptionnal, exceptionnal_hook
-                    res = exceptionnal(
-                        {
-                            "mail": mail,
-                            "problem_id": problem_id,
-                            "session_id": session_id,
-                            "future_pro_user": False
-                        }
-                    )
-                    exceptionnal_hook(res)
+                    send(exceptionnal_data={
+                        "mail": mail,
+                        "problem_id": problem_id,
+                        "session_id": session_id,
+                        "future_pro_user": False
+                    })
                     return JsonResponse({'status' : 200})
                 else:
                     # The session_id already exist, we do not send again the problem for security concerns.
@@ -127,28 +112,12 @@ def success_product_buying(request):
                 if not Session.objects.filter(stripe_session_id=session_id).exists():
                     # Create a DjangoQ Task for sending the problem to the user in pro mode this time
                     # , update the DB to put the user in pro and insert the session_id.
-                    """ (ONLY IN PROD WITH QCLUSTER)
-                    async_task(
-                        'oneinterviewparjour.mail_scheduler.send_mail.exceptionnal',
-                        {
-                            "mail": mail,
-                            "problem_id": problem_id,
-                            "session_id": session_id,
-                            "future_pro_user": True
-                        },
-                        hook='oneinterviewparjour.mail_scheduler.send_mail.exceptionnal_hook'
-                    )
-                    """
-                    from oneinterviewparjour.mail_scheduler.send_mail import exceptionnal, exceptionnal_hook
-                    res = exceptionnal(
-                        {
-                            "mail": mail,
-                            "problem_id": problem_id,
-                            "session_id": session_id,
-                            "future_pro_user": True
-                        }
-                    )
-                    exceptionnal_hook(res)
+                    send(exceptionnal_data={
+                        "mail": mail,
+                        "problem_id": problem_id,
+                        "session_id": session_id,
+                        "future_pro_user": True
+                    })
                     return JsonResponse({'status' : 200})
                 else:
                     # The session_id already exist, we do not send again the problem for security concerns.
@@ -164,3 +133,4 @@ def cancel_product_buying(request):
     # TODO : there is nothing much to be done here
     # We will just produce a metric for observability but that's all
     print("[CANCEL PRODUCT BUYING] Waiting for observability to be setup")
+    return JsonResponse({'status' : 200})
