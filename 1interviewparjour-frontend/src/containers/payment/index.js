@@ -12,7 +12,6 @@ import { verifyIdentityAction } from './actions'
 
 function PaymentPortal({
   verifyIdentityAction,
-  buyAction,
   identityVerified,
   problemData,
   stripePubKey
@@ -21,7 +20,6 @@ function PaymentPortal({
     return (
       <PaymentPortalComponent
         verifyIdentity={verifyIdentityAction}
-        buy={buyAction}
         identityVerified={identityVerified}
         problemData={problemData}
         stripePubKey={stripePubKey}
@@ -30,28 +28,27 @@ function PaymentPortal({
 }
 
 PaymentPortal.propTypes = {
-    verifyIdentityAction: PropTypes.func,
-    buyAction: PropTypes.func,
-    identityVerified: PropTypes.bool,
-    stripePubKey: PropTypes.string,
+  verifyIdentityAction: PropTypes.func,
+  identityVerified: PropTypes.bool,
+  problemData: PropTypes.object,
+  stripePubKey: PropTypes.string,
 }
 
 PaymentPortal.defaultProps = {
-    verifyIdentityAction: () => {},
-    buyAction: () => {},
-    verifyIdentity: false,
-    stripePubKey: "",
+  verifyIdentityAction: () => {},
+  identityVerified: false,
+  problemData: {},
+  stripePubKey: "",
 }
 
 const mapDispatchToProps = dispatch => ({
-    verifyIdentityAction: (payload) => dispatch(verifyIdentityAction(payload)),
-    buyAction: (payload) => dispatch(buyAction(payload))
+  verifyIdentityAction: (payload) => dispatch(verifyIdentityAction(payload)),
 })
 
 const mapStateToProps = ({ payment }) => ({
-    identityVerified: payment.identityVerified,
-    problemData: payment.problemData,
-    stripePubKey: payment.stripePubKey,
+  identityVerified: payment.identityVerified,
+  problemData: payment.problemData,
+  stripePubKey: payment.stripePubKey,
 })
 
 const withConnect = connect(

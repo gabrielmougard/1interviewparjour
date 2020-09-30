@@ -21,6 +21,8 @@ from oneinterviewparjour.core.models import (
     BuyingHash
 )
 
+from oneinterviewparjour.stripe.models import Session
+
 from oneinterviewparjour.mail_scheduler.helpers import (
     generate_template_mail,
     generate_payment_token,
@@ -38,7 +40,7 @@ class AmazonSender(object):
         self.aws_region_name = settings.AWS_REGION_NAME
         self.problem_metadata = dict()
 
-    def __send_email(self, sender, to_addresses, subject, html):
+    def send_email(self, sender, to_addresses, subject, html):
         client = self.__get_client()
         return client.send_email(
             Source=sender,
@@ -82,7 +84,7 @@ class AmazonSender(object):
             self.problem_metadata["company_message"] = "Ce probleme est inspiré d'une interview donnée par"
 
         mail_content = generate_template_mail(self.problem_metadata, self.problem_metadata['pro'])
-        self.__send_email(
+        self.send_email(
             "h3llb0t@1interviewparjour.com",
             [self.problem_metadata["mail"]],
             f"[1INTERVIEWPARJOUR] {self.problem_metadata['exercise_title']}",
@@ -114,8 +116,83 @@ class AmazonSender(object):
         )
 
 
-def main(args):
+def exceptionnal(payload):
     """
+    After a product is bought, the solution for the mail whose
+    the user clicked on is immediately sent either if the product
+    is a unitary solution or the monthly subscription.
+
+    When this function is called, the problem is alway in 'PRO' mode.
+    """
+    mail = payload["mail"]
+    problem_id = payload["problem_id"]
+    session_id = payload["session_id"]
+    future_pro_user = payload["future_pro_user"]
+
+    if Problem.objects.filter(id=problem_id).exists():
+        problem = Problem.objects.get(id=problem_id)
+        problem_metadata = {
+            "exercise_title": problem.title,
+            "company_name": problem.company.name,
+            "exercise_body": problem.exercise,
+            "exercise_bootcode": problem.bootcode,
+            "exercise_correction": problem.correction,
+            "exercise_difficulty": problem.difficulty
+        }
+        if problem.company.name == "1interviewparjour":
+            problem_metadata["company_message"] = "Cette interview est une création originale"
+        else:
+            problem_metadata["company_message"] = "Ce probleme est inspiré d'une interview donnée par"
+
+        mail_content = generate_template_mail(problem_metadata, True)
+        ses_sender = AmazonSender()
+        ses_sender.send_email(
+            "h3llb0t@1interviewparjour.com",
+            [mail],
+            f"[1INTERVIEWPARJOUR] {problem_metadata['exercise_title']}",
+            mail_content
+        )
+        return {
+            "status": True,
+            "session_id": session_id,
+            "mail": mail,
+            "future_pro_user": future_pro_user
+        }
+
+    else:
+        return {
+            "status": False,
+            "error": "problem_id does not exist."
+        }
+
+
+def exceptionnal_hook(result):
+    """
+    hook for the `exceptionnal` function above (`exceptionnal` is called
+    in a djangoQ async Task so we must have a hook to handle the result).
+    """
+    if result["status"]:
+        # do the update for the session_id
+        Session.objects.create(stripe_session_id=result["session_id"])
+        if result["future_pro_user"]:
+            # Change the status of the user for the future interview
+            user = User.objects.get(mail=result["mail"])
+            user.pro = True
+            user.save()
+            # TODO : trigger observability hook
+            print("TODO : [SUCCESS][FUTURE PRO USER] should trigger observability hook")
+        else:
+            # TODO : trigger observability hook
+            print("TODO : [SUCCESS][UNIT BUY] should trigger observability hook")
+    else:
+        # TODO : trigger observability hook
+        print("TODO : [ERROR] should trigger observability hook")
+
+
+def scheduled(args):
+    """
+    For the daily mails delivery.
+
     - args[0]: contains an integer corresponding to the hour of a program in the Paris Timezone
 
     This is the main function for the sending process of the mails

@@ -31,7 +31,7 @@ const buyProduct = (problem_data) => {
   });
 }
 
-const Subscription = ({ desc, price, link, src, problem, subscriptionType, stripeClient }) => {
+const Subscription = ({ desc, price, src, problem, subscriptionType, stripeClient }) => {
   const size = useContext(ResponsiveContext);
   const imgWidth = size === 'medium' ? 365 : 482;
   return (
@@ -62,7 +62,7 @@ const Subscription = ({ desc, price, link, src, problem, subscriptionType, strip
   );
 };
 
-const PaymentPortalComponent = ({verifyIdentity, identityVerified, problemData, buy, stripePubKey}) => {
+const PaymentPortalComponent = ({verifyIdentity, identityVerified, problemData, stripePubKey}) => {
   const { addToast } = useToasts()
   const [stripeClient, setStripeClient] = React.useState({})
 
@@ -112,7 +112,6 @@ const PaymentPortalComponent = ({verifyIdentity, identityVerified, problemData, 
               price="11,99€/mois"
               link="https://designer.grommet.io/"
               src="https://1interviewparjour.s3.eu-central-1.amazonaws.com/landing+pages/payment/monthly-solution-logo.png"
-              buy={buy}
               problem={problemData}
               subscriptionType={"monthly"}
               stripeClient={stripeClient}
@@ -126,7 +125,6 @@ const PaymentPortalComponent = ({verifyIdentity, identityVerified, problemData, 
               price="0,80€"
               link="https://theme-designer.grommet.io/"
               src="https://1interviewparjour.s3.eu-central-1.amazonaws.com/landing+pages/payment/unit-solution-logo.png"
-              buy={buy}
               problem={problemData}
               subscriptionType={"unit"}
               stripeClient={stripeClient}

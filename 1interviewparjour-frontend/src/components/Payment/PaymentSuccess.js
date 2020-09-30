@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useToasts } from 'react-toast-notifications'
 import Loader from 'react-loader-spinner'
 import {
   Box,
@@ -13,7 +14,8 @@ import { Checkmark } from 'react-checkmark'
 
 import { config } from '../../utils/config'
 
-const PaymentSuccessComponent = ({verifyIdentity, identityVerified}) => {
+const PaymentSuccessComponent = ({verifyIdentity, identityVerified, sendProduct, isProductSent}) => {
+    const { addToast } = useToasts()
     const [mailstate, setMail] = React.useState("")
     const { ROOT_URL } = config
 
@@ -28,6 +30,25 @@ const PaymentSuccessComponent = ({verifyIdentity, identityVerified}) => {
           verifyIdentity({mail, token}) // call saga to verify the identity and to fetch the stripePubKey. If both actions are ok, then identityVerified is true, else it's false.
         }, 1000);
     }, []) // call this call back only after the first render
+
+    useEffect(() => {
+        // if its verified load the page and raise a success toast in upper right corner
+        if (identityVerified) {
+            // send mail and eventually turns user to pro member
+            const query = new URLSearchParams(window.location.search)
+            const mail = query.get('mail')
+            const token = query.get('token')
+            const session_id = query.get("session_id")
+            const problem_id = query.get("problem_id")
+            sendProduct({mail, token, session_id, problem_id})
+        }
+    }, [identityVerified])
+
+    useEffect(() => {
+        if (isProductSent) {
+            addToast('Vous allez bientôt recevoir un mail ;)', { appearance: 'success' })
+        }
+    }, [isProductSent])
 
     let portal = []
     if (identityVerified) {
@@ -49,7 +70,9 @@ const PaymentSuccessComponent = ({verifyIdentity, identityVerified}) => {
                 <Box align="center" pad={'xlarge'}>
                     <Checkmark size='144' color='#7D4CDB' />
                 </Box>
-                <Button href={ROOT_URL} primary label="Retour à l'accueil" />
+                <Box align="center" pad={'medium'}>
+                    <Button href={ROOT_URL} primary label="Retour à l'accueil" />
+                </Box>
             </Box>
             </Box>
         )
@@ -78,9 +101,9 @@ const PaymentSuccessComponent = ({verifyIdentity, identityVerified}) => {
                     <Box align="center" pad={'xlarge'} background={"status-error"} full={true} height="xlarge">
                         <Header
                         label="Erreur lors de l'identification !"
-                        summary="<message d'erreur>"
+                        summary="Veuillez contacter le support à l'adresse : contact@1interviewparjour.com"
                         />
-                        <Button primary label="Retour à l'accueil" />
+                        <Button href={ROOT_URL} primary label="Retour à l'accueil" />
                     </Box>
                 </Box>
             )

@@ -220,3 +220,10 @@ class Price(models.Model):
             f"| (test) : {self.stripe_price_id_test} (live) : {self.stripe_price_id_live} "
             f"| active : {self.active} | livemode : {self.livemode}"
         )
+
+
+class Session(models.Model):
+    stripe_session_id = models.CharField(max_length=255, help_text="The Checkout Session id")
+
+    def __str__(self):
+        return f"Checkout Session id : {self.stripe_session_id}"

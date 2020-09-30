@@ -37,10 +37,15 @@ export default () => (
             </ToastProvider>
           </Route>
           <Route path="/payment_success" exact={true}>
-            <PaymentSuccess />
+            <ToastProvider>
+              <PaymentSuccess />
+            </ToastProvider>
           </Route>
           <Route path="/payment_cancel" exact={true}>
             <PaymentCancel />
+          </Route>
+          <Route path="*">
+            <Home />
           </Route>
     </Switch>
   </Router>

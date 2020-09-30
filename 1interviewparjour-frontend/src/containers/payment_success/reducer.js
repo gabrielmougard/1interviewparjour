@@ -1,6 +1,8 @@
 import {
     VERIFY_IDENTITY_SUCCESS,
-    VERIFY_IDENTITY_ERROR
+    VERIFY_IDENTITY_ERROR,
+    SEND_PRODUCT_SUCCESS,
+    SEND_PRODUCT_ERROR
 } from './constants'
 
 const initialState = {
@@ -23,6 +25,18 @@ function paymentSuccessReducer(state = initialState, { type, payload }) {
                 problemData: payload.data,
                 stripePubKey: payload.publicKey
             }
+
+        case SEND_PRODUCT_ERROR:
+            return {
+                ...state,
+                isProductSent: false
+            }
+        case SEND_PRODUCT_SUCCESS:
+            return {
+                ...state,
+                isProductSent: true
+            }
+
         default:
             return {
                 ...state,
