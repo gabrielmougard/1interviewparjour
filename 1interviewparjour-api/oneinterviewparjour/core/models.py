@@ -3,7 +3,8 @@ from pygments.lexers import get_all_lexers
 
 from oneinterviewparjour.stripe.models import Price
 
-from oneinterviewparjour.mail_scheduler.send_mail import send
+from oneinterviewparjour.core.helpers import send_preview
+from oneinterviewparjour.mail_scheduler.ses import AmazonSender
 
 
 class Company(models.Model):
@@ -69,18 +70,21 @@ class Problem(models.Model):
 
     def save(self, *args, **kwargs):
         """
-        After effectively saving a problem to DB, we must
+        After effectively creating a problem to DB, we must
         send a preview to the `mail_preview` address.
         """
         super(Problem, self).save(*args, **kwargs)
-        send(
-            exceptionnal_data={
-                "mail": self.mail_preview,
-                "problem_id": self.id
-            },
-            preview=True,
-            mail_preview=self.mail_preview
-        )
+        ses_client = AmazonSender()
+        send_preview(self, ses_client)
+
+    def update(self, *args, **kwargs):
+        """
+        After effectively updating a problem to DB, we must
+        send a preview to the `mail_preview` address.
+        """
+        super(Problem, self).update(*args, **kwargs)
+        ses_client = AmazonSender()
+        send_preview(self, ses_client)
 
     def __str__(self):
         return f"title : {self.title}\n"\

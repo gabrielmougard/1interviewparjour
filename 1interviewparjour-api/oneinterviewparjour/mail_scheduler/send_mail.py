@@ -2,10 +2,6 @@ import logging
 import types
 import random
 
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from email.utils import COMMASPACE
-
 from django_q.tasks import async_task, result
 from django.conf import settings
 
@@ -31,47 +27,7 @@ from oneinterviewparjour.mail_scheduler.helpers import (
     hash_token
 )
 
-class AmazonSender(object):
-    #https://kb.databricks.com/_static/notebooks/notebooks/send-email-aws.html
-    client = None
-
-    def __init__(self):
-        self.aws_key = settings.AWS_PUBLIC_KEY
-        self.aws_secret = settings.AWS_SECRET_KEY
-        self.aws_region_name = settings.AWS_REGION_NAME
-        self.problem_metadata = dict()
-
-    def send_email(self, sender, to_addresses, subject, html):
-        client = self.__get_client()
-        return client.send_email(
-            Source=sender,
-            Destination={
-                'ToAddresses': to_addresses
-            },
-            Message={
-                'Subject': {
-                    'Data': subject,
-                    'Charset': 'UTF-8'
-                },
-                'Body': {
-                    'Html': {
-                        'Data': html,
-                        'Charset': 'UTF-8'
-                    }
-                }
-            }
-        )
-
-    def __get_client(self):
-        if not self.client:
-            self.client = boto3.client(
-                'ses',
-                aws_access_key_id=self.aws_key,
-                aws_secret_access_key=self.aws_secret,
-                region_name=self.aws_region_name
-            )
-
-        return self.client
+from oneinterviewparjour.mail_scheduler.ses import AmazonSender
 
 
 def hook_run(result):
@@ -148,7 +104,7 @@ def run(scheduled_data, ses_client, exceptionnal_data, preview, mail_preview):
                 ses_client.send_email(
                     "h3llb0t@1interviewparjour.com",
                     [mail if not preview else mail_preview],
-                    f"[1INTERVIEWPARJOUR]{"[PREVIEW]" if preview else ""}{"[PRO]" if idx == 0 else ""} {problem_metadata['exercise_title']}",
+                    f"[1INTERVIEWPARJOUR]{'[PREVIEW]' if preview else ''}{'[PRO]' if idx == 0 else ''} {problem_metadata['exercise_title']}",
                     m
                 )
 
@@ -185,7 +141,7 @@ def run(scheduled_data, ses_client, exceptionnal_data, preview, mail_preview):
         ses_client.send_email(
             "h3llb0t@1interviewparjour.com",
             [scheduled_data["mail"]],
-            f"[1INTERVIEWPARJOUR]{"[PRO]" if scheduled_data['pro'] else ""} {scheduled_data["problem"].exercise_title}",
+            f"[1INTERVIEWPARJOUR]{'[PRO]' if scheduled_data['pro'] else ''} {scheduled_data['problem'].exercise_title}",
             mail_content
         )
         # Insertion into `ProgramHistory`
