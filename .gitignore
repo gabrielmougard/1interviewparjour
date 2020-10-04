@@ -29,3 +29,6 @@ tmp/*
 
 # Third-parties app credentials
 credentials.sh
+
+# SSH certificate
+*.pem

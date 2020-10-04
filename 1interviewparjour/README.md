@@ -1,4 +1,4 @@
-# 1interviewparjour-api
+# 1interviewparjour
 
 Features:
 * Platform powered by high performance WSGI Gunicorn server.
@@ -13,7 +13,7 @@ ___
 
 **1) clone and change directory**
 
-`git clone https://github.com/gabrielmougard/1interviewparjour.git && cd 1interviewparjour/1interviewparjour-api`
+`git clone https://github.com/gabrielmougard/1interviewparjour.git && cd 1interviewparjour/1interviewparjour`
 
 **2) create virtualenv (requirement: Python3 installed < 3.8.x)**
 
@@ -26,10 +26,10 @@ ___
 **4) Setup your MySQL connection**
 
 * With docker-compose(**recommended**)
-    * just run the command `docker-compose up` in the `1interviewparjour-api/` folder and you have your database already setup.
+    * just run the command `docker-compose up` in the `1interviewparjour/` folder and you have your database already setup.
 
 * With your local MySQL server
-    * Have a look at the `DATABASE` configuration in the `settings.py` file in `1interviewparjour-api/oneinterviewparjour/` folder.
+    * Have a look at the `DATABASE` configuration in the `settings.py` file in `1interviewparjour/oneinterviewparjour/` folder.
     * You can configure the access here to suit your needs.
 
 **5) Run the app**

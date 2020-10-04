@@ -12,7 +12,7 @@ import sys
 
 
 
-path = '~/1interviewparjour/1interviewparjour-api/oneinterviewparjour'
+path = '~/1interviewparjour/1interviewparjour/oneinterviewparjour'
 if path not in sys.path:
     sys.path.append(path)
 
