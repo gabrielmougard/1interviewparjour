@@ -17,15 +17,15 @@ pipeline {
         }
         */
         stage('Docker Up') {
-            withCredentials([
-                string(credentialsId: 'dd0d0766-4a8a-49b6-8368-b426bdfbcdeb', variable: 'APP_ROLE_ID'),
-                string(credentialsId: '6a3d47dd-06ed-4612-aaf1-aece42f9713f', variable: 'APP_ROLE_SECRET_ID')
-            ]) {
-                steps {
+            steps {
+                withCredentials([
+                    string(credentialsId: 'dd0d0766-4a8a-49b6-8368-b426bdfbcdeb', variable: 'APP_ROLE_ID'),
+                    string(credentialsId: '6a3d47dd-06ed-4612-aaf1-aece42f9713f', variable: 'APP_ROLE_SECRET_ID')
+                ]) {
                     echo "My APP_ROLE_ID is '${APP_ROLE_ID}'"
                     echo "My APP_ROLE_SECRET_ID is '${APP_ROLE_SECRET_ID}'"
-                    echo '> Building the docker containers ...'
-                    sh 'cd docker/ci && make build'
+                    //echo '> Building the docker containers ...'
+                    //sh 'cd docker/ci && make build'
                 }
             }
         }
