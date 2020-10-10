@@ -1,4 +1,4 @@
-# 1interviewparjour.com
+# 1interviewparjour.com [![Build Status](https://jenkins.1interviewparjour.com/buildStatus/icon?job=1interviewparjour)](http://jenkins.1interviewparjour.com/job/1interviewparjour/)
 
 This is the repo of 1interviewparjour.com platform. The app is hosted on EC2 VM (t3.medium) for now.
 
