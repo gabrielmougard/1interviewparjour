@@ -32,6 +32,3 @@ credentials.sh
 
 # SSH certificate
 *.pem
-
-# docker .env files
-*.env
