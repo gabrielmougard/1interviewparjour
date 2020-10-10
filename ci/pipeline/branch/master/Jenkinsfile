@@ -31,13 +31,16 @@ pipeline {
         }
         stage('Showing Dockerfiles content') {
             steps {
+                sh "pwd"
                 echo "> showing docker/ci/web/Dockerfile ..."
                 sh "cat docker/ci/web/Dockerfile"
                 sh "cat docker/ci/web/Dockerfile-temp"
+                /*
                 echo "> showing docker/ci/1interviewparjour/Dockerfile ..."
                 sh "cat docker/ci/1interviewparjour/Dockerfile"
                 sh "cat docker/ci/1interviewparjour/Dockerfile-temp"
                 sh "pwd"
+                */
             }
         }
     }
