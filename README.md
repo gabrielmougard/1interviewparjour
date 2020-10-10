@@ -140,3 +140,55 @@ I like to keep all my metrics centralized. Everything, from the containers CPU u
 
 I like to keep all my secrets in one place. Every sensitive data is stored in Vault which is configured to use S3 as its storage engine. The data can either be accessed using `AppRole` authentication (for the apps) or with `Token/MasterKeys` (for root ops) or classical `Userpass` authentication when managing the secrets in the UI at vault.1interviewparjour.com
 
+## Using the Hashicorp Vault API Client (HVAC)
+
+We created a Vault `AppRole` named `1interviewparjour-app` with the following policy :
+```hcl
+# Enable key/value secrets engine at the secret path
+path "sys/mounts/secret" {
+  capabilities = ["update"]
+}
+
+# List and read key/value secrets only
+path "secret/*"
+{
+  capabilities = [ "read", "list" ]
+}
+```
+
+Then, when the apps are deploying in Jenkins, we inject the `role-id` and the `secret-id` for `1interviewparjour-app` as environment variables (these two credentials are stored in Jenkins credentials).
+
+Then, an authenticated HVAC with the above policy can be created like that :
+
+```python
+# In settings.py (we are in a Django App)
+import os
+
+APPROLE_ID = os.environ.get("APPROLE_ID")
+APPROLE_SECRET_ID = os.environ.get("APPROLE_SECRET_ID")
+VAULT_ENDPOINT = os.getenv("VAULT_ENDPOINT", "http://127.0.0.1:8200")
+```
+
+```python
+# Somewhere in the Django apps...
+from django.conf import settings
+from hvac.v1 import Client as AppRoleTokenBuilder
+from hvac import Client as AppRoleClient
+
+token = AppRoleTokenBuilder(url=settings.VAULT_ENDPOINT)
+    .auth_approle(
+        settings.APPROLE_ID,
+        secret_id=settings.APPROLE_SECRET_ID
+    )
+)['auth']['client_token']
+
+client = AppRoleClient(url=settings.VAULT_ENDPOINT, token=token)
+
+# reading secrets using your Vault paths (i.e : 1interviewparjour/mysql)
+response = client.secrets.kv.v2.read_secret_version(path='1interviewparjour/mysql')
+# `content` is sth like {key_1: secret_1, ..., key_n: secret_n}
+content = response["data"]["data"]
+```
+
+
+
