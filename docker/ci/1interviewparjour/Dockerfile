@@ -11,7 +11,7 @@ ENV APPROLE_ID ${approle_id}
 ENV APPROLE_SECRET_ID ${approle_secret_id}
 
 # install dependencies
-RUN pip install --upgrde pip
+RUN pip install --upgrade pip
 COPY ../../../1interviewparjour/requirements/base.txt /usr/src/app/base.txt
 RUN pip install -r base.txt
 
