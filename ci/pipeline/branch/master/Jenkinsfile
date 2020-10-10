@@ -29,6 +29,8 @@ pipeline {
                     //echo '> Building the docker containers ...'
                     //sh 'cd docker/ci && make build'
                 }
+            }
+            steps {
                 echo "> showing docker/ci/web/Dockerfile ..."
                 sh "cat docker/ci/web/Dockerfile"
                 echo "> showing docker/ci/1interviewparjour/Dockerfile ..."
