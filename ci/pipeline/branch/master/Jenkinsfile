@@ -24,8 +24,8 @@ pipeline {
                 steps {
                     echo "My APP_ROLE_ID is '${APP_ROLE_ID}'"
                     echo "My APP_ROLE_SECRET_ID is '${APP_ROLE_SECRET_ID}'"
-                    echo '> Building the docker containers ...'
-                    sh 'cd docker/ci && make build'
+                    //echo '> Building the docker containers ...'
+                    //sh 'cd docker/ci && make build'
                 }
             }
         }
