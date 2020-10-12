@@ -4,7 +4,6 @@ import URLSearchParams from 'url-search-params';
 import Helmet from 'react-helmet';
 import { Grommet } from 'grommet';
 import { grommet, dark } from 'grommet/themes';
-//import { hpe } from 'grommet-theme-hpe';
 import { aruba } from 'grommet-theme-aruba';
 import { hp } from 'grommet-theme-hp';
 import { dxc } from 'grommet-theme-dxc';
@@ -15,7 +14,6 @@ import Content from './components/Content';
 const THEMES = {
   grommet,
   dark,
-  //hpe,
   aruba,
   hp,
   dxc,
@@ -40,8 +38,8 @@ const App = ({ initialPath }) => {
   return (
     <Router initialPath={initialPath} search={search}>
       <Helmet titleTemplate="%s - 1interviewparjour.com" defaultTitle="1interviewparjour.com">
-        <meta 
-          name="description" 
+        <meta
+          name="description"
           content="1interviewparjour.com - Mettez vous en mode marathon pour réussir toutes vos interviews techniques !" 
         />
         <meta

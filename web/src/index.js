@@ -6,6 +6,7 @@ import { PersistGate } from 'redux-persist/integration/react'
 import 'core-js/features/string/starts-with'; // used by react-router
 import 'core-js/features/string/ends-with'; // used by components/Doc/ThemeProps
 import configureStore from './configureStore'
+import * as serviceWorker from './serviceWorker';
 import App from './App';
 
 if (typeof window !== 'undefined') {
@@ -36,3 +37,8 @@ if (env === 'production') {
 }
 
 document.body.classList.remove('loading');
+
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: https://bit.ly/CRA-PWA
+serviceWorker.unregister();

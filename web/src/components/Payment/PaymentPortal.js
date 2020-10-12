@@ -84,6 +84,7 @@ const PaymentPortalComponent = ({verifyIdentity, identityVerified, problemData, 
 
   useEffect(() => {
     if (stripePubKey != "") {
+      /* global Stripe */
       const stripe = Stripe(stripePubKey)
       setStripeClient(stripe)
     }

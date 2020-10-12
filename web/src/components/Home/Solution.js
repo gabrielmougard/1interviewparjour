@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Anchor, Stack, Image } from 'grommet';
 import Tile from './Tile';
 
-import pro from '../../../public/img/pro.png'
+import pro from '../../img/pro.png'
 
 export default () => {
 

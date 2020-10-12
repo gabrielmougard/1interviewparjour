@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Stack } from 'grommet';
 import Tile from './Tile';
-import mailopeningv2 from '../../../public/img/mailopeningv2.gif' 
+import mailopeningv2 from '../../img/mailopeningv2.gif'
 
 export default () => {
   const [build, setBuild] = React.useState(true);

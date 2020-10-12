@@ -13,6 +13,9 @@ import Enonce from './Enonce';
 import Companies from './Companies';
 import { Us } from './Us';
 
+//imgs
+import stak from "../../img/stak-hurrah.svg"
+
 export default () => (
   <Box>
     <Section>
@@ -138,7 +141,7 @@ export default () => (
           </Paragraph>
         </Box>
 
-        <Image src="/img/stak-hurrah.svg" a11yTitle="gremlin" />
+        <Image src={stak} a11yTitle="gremlin" />
       </Box>
     </Section>
   </Box>

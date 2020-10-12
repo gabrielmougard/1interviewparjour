@@ -1,6 +1,9 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 
+import today_problem_picture from "../../img/Before1interviewparjour2.gif"
+import today_problem_solution from "../../img/After1interviewparjour.gif"
+
 import {
   Anchor,
   Box,
@@ -48,33 +51,35 @@ export const Us = () => {
     <Box>
       <Section pad={{ top: 'xlarge' }} background="neutral-2">
         <Header
-          label="Rencontrez l'équipe"
-          summary="Ils et elles sont les humbles créateurs des problèmes de 1interviewparjour.com"
+          label="Les sprints de 1 semaine avant le test... ça peut être chaud."
+          summary="Dans la vie, il y a deux type de personnes :"
         />
         <Box
-      
           justify="center"
           gap="large"
           margin={{ horizontal: 'large', top: 'large' }}
         >
-          <Tile
-            desc="Je suis Software Engineer Intern à Criteo. Je termine mes études à Oslo University College et aussi... j'adore le code !"
-            label="Gabriel Mougard"
-            link="https://www.linkedin.com/in/gabriel-mougard/"
-            src="/img/gab-datacenter.png"
-          />
-          <Tile
-            desc="Je suis Data Scientist à <ENTREPRISE>. Je suis diplomée de l'université Polytechnique Montréal et SQL n'a aucun secret pour moi !"
-            label="Myriam Njoya"
-            link="https://www.linkedin.com/in/myriam-njoya-7610b5161/"
-            src="/img/myriam.png"
-          />
-          <Tile
-            desc="Je suis une IA développée afin de noter vos réponses et aussi... vous faire subir l'enfer niark !"
-            label="HellBot aka. H3ll-807"
-            link="https://github.com/gabrielmougard/"
-            src="/img/hell-bot.png"
-          />
+          <Box align="center" size="small" pad={{ horizontal: 'large' }}>
+            <Paragraph textAlign="center" size="xlarge" alignSelf="center">
+            Ceux qui se donne bonne conscience en s'entraînant un peu avant (ou pas)... ouch !"
+            </Paragraph>
+            <Box flex />
+            <Image width={482} src={today_problem_picture} />
+          </Box>
+          <Box align="center" size="small" pad={{ horizontal: 'large' }}>
+            <Paragraph textAlign="center" size="xlarge" alignSelf="center">
+            Ceux qui ont adopté la routine et intégré durablement les connaissances avec
+            <Anchor
+              size="xlarge"
+              href={"https://1interviewparjour.com"}
+              label={<Text size="large"> 1interviewparjour</Text>}
+              reverse
+              target="_blank"
+            />... yay !
+            </Paragraph>
+            <Box flex />
+            <Image width={482} src={today_problem_solution} />
+          </Box>
         </Box>
       </Section>
     </Box>
