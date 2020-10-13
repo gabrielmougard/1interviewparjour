@@ -8,15 +8,14 @@ pipeline {
                     string(credentialsId: 'dd0d0766-4a8a-49b6-8368-b426bdfbcdeb', variable: 'APP_ROLE_ID'),
                     string(credentialsId: '6a3d47dd-06ed-4612-aaf1-aece42f9713f', variable: 'APP_ROLE_SECRET_ID')
                 ]) {
-                    echo "> Injecting Vault AppRole into docker/ci/web/Dockerfile ..."
-                    sh "cd docker/ci/web && sed -e 's/\${approle_id}/${APP_ROLE_ID}/' -e 's/\${approle_secret_id}/${APP_ROLE_SECRET_ID}/' Dockerfile > Dockerfile-temp && rm Dockerfile && cat Dockerfile-temp > Dockerfile && rm Dockerfile-temp"
-                    echo "> Injecting Vault AppRole into docker/ci/1interviewparjour/Dockerfile ..."
-                    sh "cd docker/ci/1interviewparjour && sed -e 's/\${approle_id}/${APP_ROLE_ID}/' -e 's/\${approle_secret_id}/${APP_ROLE_SECRET_ID}/' Dockerfile > Dockerfile-temp && rm Dockerfile && cat Dockerfile-temp > Dockerfile && rm Dockerfile-temp"
+                    echo "> Injecting Vault AppRole into web/Dockerfile ..."
+                    sh "cd web && sed -e 's/\${approle_id}/${APP_ROLE_ID}/' -e 's/\${approle_secret_id}/${APP_ROLE_SECRET_ID}/' Dockerfile > Dockerfile-temp && rm Dockerfile && cat Dockerfile-temp > Dockerfile && rm Dockerfile-temp"
+                    echo "> Injecting Vault AppRole into 1interviewparjour/Dockerfile ..."
+                    sh "cd 1interviewparjour && sed -e 's/\${approle_id}/${APP_ROLE_ID}/' -e 's/\${approle_secret_id}/${APP_ROLE_SECRET_ID}/' Dockerfile > Dockerfile-temp && rm Dockerfile && cat Dockerfile-temp > Dockerfile && rm Dockerfile-temp"
                 }
             }
         }
-        /*
-        stage('Docker up') {
+        stage('Blue/Green deployment') {
             steps {
                 echo "> Building the Docker Compose stack at docker/ci/docker-compose.yml ..."
                 sh "cd docker/ci && docker-compose build"
@@ -24,6 +23,5 @@ pipeline {
                 sh "cd docker/ci && docker-compose up -d"
             }
         }
-        */
     }
 }
