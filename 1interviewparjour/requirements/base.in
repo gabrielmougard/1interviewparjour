@@ -9,6 +9,7 @@ djangorestframework
 django
 docopt
 gunicorn
+hvac
 mysqlclient
 django-mysql
 django-q

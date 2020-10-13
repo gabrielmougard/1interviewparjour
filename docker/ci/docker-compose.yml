@@ -23,30 +23,30 @@ services:
             - "3001:80"
         networks:
             - app
-    #1interviewparjour-backend-blue:
-    #    build:
-    #        context: 1interviewparjour
-    #    container_name: 1interviewparjour-backend-blue
-    #    hostname: 1interviewparjour-backend-blue
-    #    env_file:
-    #        - back.env
-    #    ports:
-    #        - "8000:8000"
-    #    networks:
-    #        - app
-    #    network_mode: "host" # can also communicate to service outside of the docker network (example : MySQL and Prometheus which are not dockerized)
-    #1interviewparjour-backend-green:
-    #    build:
-    #        context: 1interviewparjour
-    #    container_name: 1interviewparjour-backend-green
-    #    hostname: 1interviewparjour-backend-green
-    #    env_file:
-    #        - back.env
-    #    ports:
-    #        - "8001:8000"
-    #    networks:
-    #        - app
-    #    network_mode: "host" # can also communicate to service outside of the docker network (example : MySQL and Prometheus which are not dockerized)
+    1interviewparjour-backend-blue:
+        build:
+            context: ../../1interviewparjour
+        container_name: 1interviewparjour-backend-blue
+        hostname: 1interviewparjour-backend-blue
+        env_file:
+            - back.env
+        ports:
+            - "8000:8000"
+        networks:
+            - app
+        network_mode: "host" # can also communicate to service outside of the docker network (example : MySQL and Prometheus which are not dockerized)
+    1interviewparjour-backend-green:
+        build:
+            context: ../../1interviewparjour
+        container_name: 1interviewparjour-backend-green
+        hostname: 1interviewparjour-backend-green
+        env_file:
+            - back.env
+        ports:
+            - "8001:8000"
+        networks:
+            - app
+        network_mode: "host" # can also communicate to service outside of the docker network (example : MySQL and Prometheus which are not dockerized)
     ####### OBSERVABILITY STACK ####### (TODO)
     ## see: https://grafana.com/grafana/dashboards/893
     #grafana:

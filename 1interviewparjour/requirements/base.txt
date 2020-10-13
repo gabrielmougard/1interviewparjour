@@ -33,6 +33,7 @@ docutils==0.15.2          # via botocore
 enum-compat==0.0.3        # via django-url-filter
 et-xmlfile==1.0.1         # via openpyxl
 gunicorn==20.0.4          # via -r requirements/base.in
+hvac
 idna==2.10                # via requests
 jdcal==1.4.1              # via openpyxl
 jmespath==0.10.0          # via boto3, botocore

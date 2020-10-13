@@ -6,39 +6,82 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'temz1*^52h)yvm7-d6sfnav6n8co#i4o+qe2!x(py$3ertf05b'
-
-DEBUG = os.getenv('DEBUG', None)
+############ START OF PUBLIC ENV DATA #####################
+DEBUG = os.getenv('DEBUG', True)
+DEBUG = False if DEBUG == "False" else True
 ENV = os.getenv('ENV', 'dev')  # either 'prod' or 'dev'
-
-#API related
-API_BASE_PATH = os.getenv('API_BASE_PATH', 'http://localhost:8000')
-FRONT_BASE_PATH = os.getenv('FRONT_BASE_PATH', 'http://localhost:8567')
-
-# Payment credentials (tuto : https://testdriven.io/blog/django-stripe-tutorial/)
-STRIPE_LIVE_PUBLIC_KEY = os.environ.get("STRIPE_LIVE_PUBLIC_KEY")
-STRIPE_LIVE_SECRET_KEY = os.environ.get("STRIPE_LIVE_SECRET_KEY")
-STRIPE_LIVE_SUBSCRIPTION_PRICE_ID = os.environ.get("STRIPE_LIVE_SUBSCRIPTION_PRICE_ID")
-STRIPE_TEST_PUBLIC_KEY = os.environ.get("STRIPE_TEST_PUBLIC_KEY")
-STRIPE_TEST_SECRET_KEY = os.environ.get("STRIPE_TEST_SECRET_KEY")
-STRIPE_TEST_SUBSCRIPTION_PRICE_ID = os.environ.get("STRIPE_TEST_SUBSCRIPTION_PRICE_ID")
-
+FRONT_BASE_PATH = os.getenv('FRONT_BASE_PATH', 'http://localhost:3000')
 STRIPE_LIVE_MODE = os.getenv('STRIPE_LIVE_MODE', False)  # STRIPE_LIVE_MODE is True for production
+STRIPE_LIVE_MODE = True if STRIPE_LIVE_MODE == "True" else False
+DB_HOST = os.getenv('DB_HOST', '127.0.0.1')
+DB_PORT = os.getenv('DB_PORT', '3306')
+SECRET_KEY="temz1*^52h)yvm7-d6sfnav6n8co#i4o+qe2!x(py$3ertf05b"
+############ END OF PUBLIC ENV DATA #####################
 
-# AWS SES credentials
-AWS_REGION_NAME = os.environ.get("AWS_REGION_NAME")
-AWS_PUBLIC_KEY = os.environ.get("AWS_PUBLIC_KEY")
-AWS_SECRET_KEY = os.environ.get("AWS_SECRET_KEY")
+############ START OF SENSITIVE AREA #############
+if ENV == 'prod':
+    """
+    We use HVAC to get the information that we need and not environment variable
+    """
+    from hvac.v1 import Client as AppRoleTokenBuilder
+    from hvac import Client as AppRoleClient
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+    APPROLE_ID = os.environ.get("APPROLE_ID")
+    APPROLE_SECRET_ID = os.environ.get("APPROLE_SECRET_ID")
+    VAULT_ENDPOINT = os.getenv("VAULT_ENDPOINT", "http://127.0.0.1:8200")
+
+    token = AppRoleTokenBuilder(url=VAULT_ENDPOINT).auth_approle(
+        APPROLE_ID,
+        secret_id=APPROLE_SECRET_ID
+    )['auth']['client_token']
+
+    vault_client = AppRoleClient(url=settings.VAULT_ENDPOINT, token=token)
+    if vault_client.is_authenticated():
+        #STRIPE
+        STRIPE_CREDENTIALS = vault_client.secrets.kv.v2.read_secret_version(path='1interviewparjour/stripe')["data"]["data"]
+        STRIPE_LIVE_PUBLIC_KEY = STRIPE_CREDENTIALS["STRIPE_LIVE_PUBLIC_KEY"]
+        STRIPE_LIVE_SECRET_KEY = STRIPE_CREDENTIALS["STRIPE_LIVE_SECRET_KEY"]
+        STRIPE_TEST_PUBLIC_KEY = STRIPE_CREDENTIALS["STRIPE_TEST_PUBLIC_KEY"]
+        STRIPE_TEST_SECRET_KEY = STRIPE_CREDENTIALS["STRIPE_TEST_SECRET_KEY"]
+
+        #AWS
+        AWS_CREDENTIALS = vault_client.secrets.kv.v2.read_secret_version(path='1interviewparjour/aws')["data"]["data"]
+        AWS_REGION_NAME = AWS_CREDENTIALS["AWS_REGION_NAME"]
+        AWS_PUBLIC_KEY = AWS_CREDENTIALS["AWS_PUBLIC_KEY"]
+        AWS_SECRET_KEY = AWS_CREDENTIALS["AWS_SECRET_KEY"]
+
+        #MYSQL
+        MYSQL_CREDENTIALS = vault_client.secrets.kv.v2.read_secret_version(path='1interviewparjour/mysql')["data"]["data"]
+        MYSQL_USERNAME = MYSQL_CREDENTIALS["MYSQL_USERNAME"]
+        MYSQL_PASSWORD = MYSQL_CREDENTIALS["MYSQL_PASSWORD"]
+        MYSQL_DBNAME = MYSQL_CREDENTIALS["MYSQL_DBNAME"]
+
+    else:
+        raise Exception("Could not instantiate the HVAC")
+
+else:
+    """
+    Use environment variable, in credentials.sh
+    """
+    #STRIPE
+    STRIPE_LIVE_PUBLIC_KEY = os.environ.get("STRIPE_LIVE_PUBLIC_KEY")
+    STRIPE_LIVE_SECRET_KEY = os.environ.get("STRIPE_LIVE_SECRET_KEY")
+    STRIPE_TEST_PUBLIC_KEY = os.environ.get("STRIPE_TEST_PUBLIC_KEY")
+    STRIPE_TEST_SECRET_KEY = os.environ.get("STRIPE_TEST_SECRET_KEY")
+
+    #AWS
+    AWS_REGION_NAME = os.environ.get("AWS_REGION_NAME")
+    AWS_PUBLIC_KEY = os.environ.get("AWS_PUBLIC_KEY")
+    AWS_SECRET_KEY = os.environ.get("AWS_SECRET_KEY")
+
+    #MYSQL
+    MYSQL_USERNAME = os.environ.get("MYSQL_USERNAME")
+    MYSQL_PASSWORD = os.environ.get("MYSQL_PASSWORD")
+    MYSQL_DBNAME = os.environ.get("MYSQL_DBNAME")
+
+############ END OF SENSITIVE AREA ###############
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -95,18 +138,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'oneinterviewparjour.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.mysql'),
-        'NAME': os.getenv('DB_NAME', 'oneinterviewparjour'),
-        'USER': os.getenv('DB_USER', 'root'),
-        'PASSWORD': os.getenv('DB_PASSWORD', 'oneinterviewparjour'),
-        'HOST': os.getenv('DB_HOST', '127.0.0.1'),
-        'PORT': os.getenv('DB_PORT', '3306')
+        'NAME': MYSQL_DBNAME,
+        'USER': MYSQL_USERNAME,
+        'PASSWORD': MYSQL_PASSWORD,
+        'HOST': DB_HOST,
+        'PORT': DB_PORT
     }
 }
 
@@ -123,7 +162,6 @@ Q_CLUSTER = {
     'cpu_affinity': int(os.getenv('DJANGO_CPU_AFFINITY', '1')),
     'orm': 'default',
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -143,20 +181,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
@@ -167,9 +199,11 @@ STATIC_URL = '/static/'
 
 # CORS PARAMETERS
 CORS_ORIGIN_ALLOW_ALL = False
+
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:8567',
 )
+
 CORS_ALLOW_METHODS = [
     'DELETE',
     'GET',
@@ -178,6 +212,7 @@ CORS_ALLOW_METHODS = [
     'POST',
     'PUT',
 ]
+
 CORS_ALLOW_HEADERS = [
     'accept',
     'accept-encoding',
