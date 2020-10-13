@@ -18,10 +18,10 @@ pipeline {
         stage('Blue/Green deployment') {
             steps {
                 echo "> Building the Docker Compose stack at docker/ci/docker-compose.yml ..."
-                sh "cd docker/ci && docker-compose build"
+                sh "cd docker/ci && sudo docker-compose build"
                 echo "> Launching the Docker Compose stack at docker/ci/docker-compose.yml ..."
                 echo "> Blue/Green deployment started ..."
-                sh "./deploy-blue-green.sh"
+                sh "sudo ./deploy-blue-green.sh"
             }
         }
     }
