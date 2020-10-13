@@ -18,7 +18,15 @@ echo "Stopping "$OLD_BACK" container"
 docker-compose --project-name=$OLD_BACK stop
 
 # frontend configuration
-sed -e 's/\${backend-endpoint}/$ENV_BACK/' web.env > web-temp.env && rm web.env && cat web-temp.env > web.env && rm web-temp.env
+if [ $ENV_BACK == "ci_1interviewparjour-backend-green" ]; then
+    BACKEND_ENDPOINT="http://localhost:8001"
+    echo "The backend endpoint (green mode) is $BACKEND_ENDPOINT"
+else
+    BACKEND_ENDPOINT="http://localhost:8000"
+    echo "The backend endpoint (blue mode) is $BACKEND_ENDPOINT"
+fi
+sed -e "s/\${backend-endpoint}/$BACKEND_ENDPOINT/" web.env > web-temp.env && rm web.env && cat web-temp.env > web.env && rm web-temp.env
+#
 
 if [ $(docker ps -f name=ci_1interviewparjour-web-blue -q) ]
 then

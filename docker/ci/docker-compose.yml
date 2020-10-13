@@ -10,8 +10,6 @@ services:
             - web.env
         ports:
             - "3000:80"
-        networks:
-            - app
     1interviewparjour-web-green:
         build:
             context: ../../web
@@ -21,8 +19,6 @@ services:
             - web.env
         ports:
             - "3001:80"
-        networks:
-            - app
     1interviewparjour-backend-blue:
         build:
             context: ../../1interviewparjour
@@ -32,8 +28,6 @@ services:
             - back.env
         ports:
             - "8000:8000"
-        networks:
-            - app
         network_mode: "host" # can also communicate to service outside of the docker network (example : MySQL and Prometheus which are not dockerized)
     1interviewparjour-backend-green:
         build:
@@ -44,8 +38,6 @@ services:
             - back.env
         ports:
             - "8001:8000"
-        networks:
-            - app
         network_mode: "host" # can also communicate to service outside of the docker network (example : MySQL and Prometheus which are not dockerized)
     ####### OBSERVABILITY STACK ####### (TODO)
     ## see: https://grafana.com/grafana/dashboards/893
