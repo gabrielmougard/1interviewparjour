@@ -15,6 +15,13 @@ pipeline {
                 }
             }
         }
+        stage('Moving project to home directory') {
+            steps {
+                echo "> Moving project to /home/ubuntu ..."
+                sh "cp -r * /home/ubuntu/1interviewparjour"
+            }
+        }
+        /*
         stage('Blue/Green deployment') {
             steps {
                 echo "> Building the Docker Compose stack at docker/ci/docker-compose.yml ..."
@@ -24,5 +31,6 @@ pipeline {
                 sh "sudo ./deploy-blue-green.sh"
             }
         }
+        */
     }
 }
