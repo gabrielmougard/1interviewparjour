@@ -20,7 +20,8 @@ pipeline {
                 echo "> Building the Docker Compose stack at docker/ci/docker-compose.yml ..."
                 sh "cd docker/ci && docker-compose build"
                 echo "> Launching the Docker Compose stack at docker/ci/docker-compose.yml ..."
-                sh "cd docker/ci && docker-compose up -d"
+                echo "> Blue/Green deployment started ..."
+                sh "./deploy-blue-green.sh"
             }
         }
     }
