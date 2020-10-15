@@ -5,7 +5,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django_q.tasks import async_task, result
 
 import stripe
-from stripe.error import InvalidRequestError
 
 from oneinterviewparjour.core.models import Problem
 from oneinterviewparjour.stripe.models import Price, Session
@@ -124,7 +123,7 @@ def success_product_buying(request):
                     return JsonResponse({'error': "The session_id already exists.", 'status' : 500})
             else:
                 return JsonResponse({'error': "Wrong stripe payment mode.", 'status' : 500})  # should never happen in practice.
-        except InvalidRequestError:
+        except:
             return JsonResponse({'error': "Wrong session_id", 'status' : 500})
 
 

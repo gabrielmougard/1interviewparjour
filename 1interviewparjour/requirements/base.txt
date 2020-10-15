@@ -50,7 +50,7 @@ requests==2.24.0          # via -r requirements/base.in, stripe
 s3transfer==0.3.3         # via boto3
 six==1.15.0               # via blessed, django-admin-interface, django-url-filter, python-dateutil
 sqlparse==0.3.1           # via django
-stripe==2.50.0            # via -r requirements/base.in
+stripe==2.55.0            # via -r requirements/base.in
 tablib[html,ods,xls,xlsx,yaml]==2.0.0  # via django-import-export
 urllib3==1.25.10          # via botocore, requests
 wcwidth==0.2.5            # via blessed
