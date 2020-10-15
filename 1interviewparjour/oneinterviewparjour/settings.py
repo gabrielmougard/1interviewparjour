@@ -35,7 +35,7 @@ if ENV == 'prod':
         secret_id=APPROLE_SECRET_ID
     )['auth']['client_token']
 
-    vault_client = AppRoleClient(url=settings.VAULT_ENDPOINT, token=token)
+    vault_client = AppRoleClient(url=VAULT_ENDPOINT, token=token)
     if vault_client.is_authenticated():
         #STRIPE
         STRIPE_CREDENTIALS = vault_client.secrets.kv.v2.read_secret_version(path='1interviewparjour/stripe')["data"]["data"]
@@ -52,9 +52,9 @@ if ENV == 'prod':
 
         #MYSQL
         MYSQL_CREDENTIALS = vault_client.secrets.kv.v2.read_secret_version(path='1interviewparjour/mysql')["data"]["data"]
-        MYSQL_USERNAME = MYSQL_CREDENTIALS["MYSQL_USERNAME"]
-        MYSQL_PASSWORD = MYSQL_CREDENTIALS["MYSQL_PASSWORD"]
-        MYSQL_DBNAME = MYSQL_CREDENTIALS["MYSQL_DBNAME"]
+        MYSQL_USERNAME = MYSQL_CREDENTIALS["AWS_MYSQL_USER"]
+        MYSQL_PASSWORD = MYSQL_CREDENTIALS["AWS_MYSQL_PASSWORD"]
+        MYSQL_DBNAME = MYSQL_CREDENTIALS["AWS_MYSQL_DB_NAME"]
 
     else:
         raise Exception("Could not instantiate the HVAC")

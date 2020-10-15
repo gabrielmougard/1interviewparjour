@@ -45,6 +45,3 @@ services:
     #cadvisor:
     #node-exporter
     #(Prometheuse runs on bare metal)
-networks:
-    app:
-        driver: bridge
