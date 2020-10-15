@@ -2,7 +2,6 @@ FROM node:14.1-alpine AS builder
 
 WORKDIR /opt/web
 COPY package.json ./
-COPY package-lock.json ./
 RUN npm install
 
 COPY . ./
