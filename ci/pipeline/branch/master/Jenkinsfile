@@ -21,6 +21,7 @@ pipeline {
                 sh "cp -r * /home/ubuntu/1interviewparjour"
             }
         }
+        /*
         stage('Blue/Green deployment') {
             steps {
                 echo "> Building the Docker Compose stack at docker/ci/docker-compose.yml ..."
@@ -32,5 +33,6 @@ pipeline {
                 //sh "cd /home/ubuntu/1interviewparjour/docker/ci && chmod +x deploy-blue-green.sh && ./deploy-blue-green.sh"
             }
         }
+        */
     }
 }
