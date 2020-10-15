@@ -38,6 +38,11 @@ if ENV == 'prod':
     vault_client = AppRoleClient(url=VAULT_ENDPOINT, token=token)
     if vault_client.is_authenticated():
         #STRIPE
+        token = AppRoleTokenBuilder(url=VAULT_ENDPOINT).auth_approle(
+            APPROLE_ID,
+            secret_id=APPROLE_SECRET_ID
+        )['auth']['client_token']
+        vault_client = AppRoleClient(url=VAULT_ENDPOINT, token=token)
         STRIPE_CREDENTIALS = vault_client.secrets.kv.v2.read_secret_version(path='1interviewparjour/stripe')["data"]["data"]
         STRIPE_LIVE_PUBLIC_KEY = STRIPE_CREDENTIALS["STRIPE_LIVE_PUBLIC_KEY"]
         STRIPE_LIVE_SECRET_KEY = STRIPE_CREDENTIALS["STRIPE_LIVE_SECRET_KEY"]
@@ -45,12 +50,22 @@ if ENV == 'prod':
         STRIPE_TEST_SECRET_KEY = STRIPE_CREDENTIALS["STRIPE_TEST_SECRET_KEY"]
 
         #AWS
+        token = AppRoleTokenBuilder(url=VAULT_ENDPOINT).auth_approle(
+            APPROLE_ID,
+            secret_id=APPROLE_SECRET_ID
+        )['auth']['client_token']
+        vault_client = AppRoleClient(url=VAULT_ENDPOINT, token=token)
         AWS_CREDENTIALS = vault_client.secrets.kv.v2.read_secret_version(path='1interviewparjour/aws')["data"]["data"]
         AWS_REGION_NAME = AWS_CREDENTIALS["AWS_REGION_NAME"]
         AWS_PUBLIC_KEY = AWS_CREDENTIALS["AWS_PUBLIC_KEY"]
         AWS_SECRET_KEY = AWS_CREDENTIALS["AWS_SECRET_KEY"]
 
         #MYSQL
+        token = AppRoleTokenBuilder(url=VAULT_ENDPOINT).auth_approle(
+            APPROLE_ID,
+            secret_id=APPROLE_SECRET_ID
+        )['auth']['client_token']
+        vault_client = AppRoleClient(url=VAULT_ENDPOINT, token=token)
         MYSQL_CREDENTIALS = vault_client.secrets.kv.v2.read_secret_version(path='1interviewparjour/mysql')["data"]["data"]
         MYSQL_USERNAME = MYSQL_CREDENTIALS["AWS_MYSQL_USER"]
         MYSQL_PASSWORD = MYSQL_CREDENTIALS["AWS_MYSQL_PASSWORD"]
