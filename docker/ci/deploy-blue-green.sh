@@ -1,4 +1,5 @@
 #!/bin/sh
+
 if [ $(docker ps -f name=ci_1interviewparjour-backend-blue -q) ]
 then
     ENV_BACK="ci_1interviewparjour-backend-green"
