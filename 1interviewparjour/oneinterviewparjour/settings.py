@@ -96,7 +96,7 @@ else:
 
 ############ END OF SENSITIVE AREA ###############
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["admin.1interviewparjour.com"]
 
 # Application definition
 
@@ -216,7 +216,7 @@ STATIC_URL = '/static/'
 CORS_ORIGIN_ALLOW_ALL = False
 
 CORS_ORIGIN_WHITELIST = (
-    'http://localhost:8567',
+    'http://localhost:3000','http://localhost:3001',
 )
 
 CORS_ALLOW_METHODS = [
