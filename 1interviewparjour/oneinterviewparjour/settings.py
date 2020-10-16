@@ -4,8 +4,8 @@ import sys
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
-
+BASE_DIR = Path(__file__).resolve(strict=True).parent
+print(os.path.join(BASE_DIR, 'static'))
 ############ START OF PUBLIC ENV DATA #####################
 DEBUG = os.getenv('DEBUG', True)
 DEBUG = False if DEBUG == "False" else True
@@ -96,7 +96,7 @@ else:
 
 ############ END OF SENSITIVE AREA ###############
 
-ALLOWED_HOSTS = ["admin.1interviewparjour.com"]
+ALLOWED_HOSTS = ["admin.1interviewparjour.com", "localhost"]
 
 # Application definition
 
