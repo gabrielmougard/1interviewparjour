@@ -18,3 +18,4 @@ prometheus-client
 pygments
 requests
 stripe
+whitenoise

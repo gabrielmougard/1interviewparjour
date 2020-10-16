@@ -4,8 +4,8 @@ import sys
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve(strict=True).parent
-print(os.path.join(BASE_DIR, 'static'))
+BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
+
 ############ START OF PUBLIC ENV DATA #####################
 DEBUG = os.getenv('DEBUG', True)
 DEBUG = False if DEBUG == "False" else True
@@ -131,8 +131,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
-
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 ROOT_URLCONF = 'oneinterviewparjour.urls'
 
 TEMPLATES = [
