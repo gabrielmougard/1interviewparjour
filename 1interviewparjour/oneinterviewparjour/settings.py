@@ -59,6 +59,7 @@ if ENV == 'prod':
         AWS_REGION_NAME = AWS_CREDENTIALS["AWS_REGION_NAME"]
         AWS_PUBLIC_KEY = AWS_CREDENTIALS["AWS_PUBLIC_KEY"]
         AWS_SECRET_KEY = AWS_CREDENTIALS["AWS_SECRET_KEY"]
+        AWS_DBBACKUP_S3_NAME = AWS_CREDENTIALS["AWS_DBBACKUP_S3_NAME"]
 
         #MYSQL
         token = AppRoleTokenBuilder(url=VAULT_ENDPOINT).auth_approle(
@@ -88,6 +89,7 @@ else:
     AWS_REGION_NAME = os.environ.get("AWS_REGION_NAME")
     AWS_PUBLIC_KEY = os.environ.get("AWS_PUBLIC_KEY")
     AWS_SECRET_KEY = os.environ.get("AWS_SECRET_KEY")
+    AWS_DBBACKUP_S3_NAME = os.environ.get("AWS_DBBACKUP_S3_NAME")
 
     #MYSQL
     MYSQL_USERNAME = os.environ.get("MYSQL_USERNAME")
@@ -111,6 +113,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_q',
+    'dbbackup',
     'oneinterviewparjour.api',
     'oneinterviewparjour.core',
     'oneinterviewparjour.mail_scheduler',
@@ -163,6 +166,16 @@ DATABASES = {
         'HOST': DB_HOST,
         'PORT': DB_PORT
     }
+}
+
+######## DATABASE BACKUP ###########
+DBBACKUP_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+DBBACKUP_STORAGE_OPTIONS = {
+    'access_key': AWS_PUBLIC_KEY,
+    'secret_key': AWS_SECRET_KEY,
+    'region_name': AWS_REGION_NAME,
+    'bucket_name': AWS_DBBACKUP_S3_NAME,
+    'default_acl': 'private'
 }
 
 Q_CLUSTER = {

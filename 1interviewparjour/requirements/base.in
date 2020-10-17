@@ -5,6 +5,8 @@ django-import-export
 django-picklefield
 django-db-file-storage
 django-cors-headers
+django-dbbackup
+django-storages[boto3]
 djangorestframework
 django
 docopt
