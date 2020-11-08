@@ -1,12 +1,13 @@
 from django.contrib import admin
 
-from .models import User, Program, Problem, Company, ProgramHistory, BuyingHash
+from .models import User, Program, Problem, Company, ProgramHistory, BuyingHash, SupportedLanguage
 
 admin.site.register(User)
 admin.site.register(Program)
 admin.site.register(Company)
 admin.site.register(ProgramHistory)
 admin.site.register(BuyingHash)
+admin.site.register(SupportedLanguage)
 
 @admin.register(Problem)
 class ProblemAdmin(admin.ModelAdmin):

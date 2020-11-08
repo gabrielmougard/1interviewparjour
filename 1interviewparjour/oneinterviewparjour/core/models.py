@@ -16,6 +16,7 @@ class Company(models.Model):
 
 class User(models.Model):
     mail = models.CharField(max_length=250)
+    training_languages = models.CharField(max_length=250, default="python")
     pro = models.BooleanField(default=False)
     inscription_timestamp = models.DateTimeField(auto_now_add=True)
     deinscription_timestamp = models.DateTimeField(null=True, blank=True)
@@ -148,3 +149,14 @@ class BuyingHash(models.Model):
             f"user : {self.user}\n"\
             f"problem : {self.problem}\n"
         )
+
+
+class SupportedLanguage(models.Model):
+    LANGUAGES = [(l[1][0], l[0]) for l in get_all_lexers()]
+    language = models.CharField(choices=LANGUAGES, max_length=100, default="Python")
+    description = models.TextField(default="")
+
+
+    def __str__(self):
+        return f"language : {self.language}\n"\
+            + f"description : {self.description}\n"

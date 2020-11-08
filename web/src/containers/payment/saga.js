@@ -21,7 +21,6 @@ function* verifyIdentity({payload}) {
         if (responseIdentity.success) {
             //fetch stripe public key
             const responseStripeKey = yield call(request, requestURLStripePubKey)
-            console.log({...responseIdentity, ...responseStripeKey})
             if (responseStripeKey.success) {
                 yield put(verifyIdentitySuccessAction({...responseIdentity, ...responseStripeKey}))
             } else {

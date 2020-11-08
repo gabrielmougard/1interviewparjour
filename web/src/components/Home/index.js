@@ -1,100 +1,186 @@
-import React from 'react';
-import { Anchor, Box, Image, Paragraph, TextInput, Button } from 'grommet';
+import React, { useEffect } from 'react';
+import { Anchor, Box, Image, Paragraph, TextInput, Button, Layer, Text } from 'grommet';
+import { ToastProvider, useToasts } from 'react-toast-notifications'
 import { Github, Linkedin } from 'grommet-icons';
 import Nav from '../../components/Nav';
 import Header from '../../components/Header';
 import Section from './Section';
 import Hero from './Hero'
-import MailInput from './MailInput';
 import MailGif from './MailGif';
 import Tree from './Tree';
 import Solution from './Solution';
 import Enonce from './Enonce';
 import Companies from './Companies';
 import { Us } from './Us';
+import Tile from './Tile';
 
 //imgs
 import stak from "../../img/stak-hurrah.svg"
+import LanguagePicker from './LanguagePicker';
 
-export default () => (
-  <Box>
-    <Section>
-      <Nav />
+//utils
+import { validateEmail } from '../../utils/formatters'
 
-      <Hero />
+function HomeComponent({fetchSupportedLanguages, supportedLanguages, finalizeSignup, signupCompleted, closeFromInside, closedFromInside}) {
+  const { addToast } = useToasts()
+  const [languagePicker, setLanguagePicker] = React.useState();
+  const [mail, setMail] = React.useState("")
+
+  const handleSignupClick = () => {
+    if (validateEmail(mail)) {
+      setLanguagePicker(true)
+    } else {
+      addToast("Votre email n'est pas valide.", { appearance: 'error' })
+    }
+  }
+
+  useEffect(() => {
+    setLanguagePicker(false)
+  }, [closedFromInside])
+
+  return (
+    <Box>
+      <Section>
+        <Nav />
+
+        <Hero />
+
+        <Header
+          label="Réussissez vos tests techniques à votre rythme..."
+          summary={
+            <Paragraph size="xxlarge" textAlign="center">
+              <Box
+                direction="row-responsive"
+                gap="large"
+                justify="center"
+                margin={{ vertical: 'large' }}
+              >
+                <TextInput
+                  size="medium"
+                  placeholder="Votre email !"
+                  value={mail}
+                  onChange={event => setMail(event.target.value)}
+                />
+                <Button primary label="Inscription gratuite !" onClick={() => handleSignupClick()}/>
+                {languagePicker && (
+                  <Layer
+                    margin="large"
+                    onEsc={() => setLanguagePicker(false)}
+                    onClickOutside={() => setLanguagePicker(false)}
+                  >
+                    <ToastProvider>
+                      <LanguagePicker
+                        mail={mail}
+                        fetchSupportedLanguages={fetchSupportedLanguages}
+                        supportedLanguages={supportedLanguages}
+                        finalizeSignup={finalizeSignup}
+                        signupCompleted={signupCompleted}
+                        closeFromInside={closeFromInside}
+                        closedFromInside={closedFromInside}
+                      />
+                    </ToastProvider>
+                  </Layer>
+                )}
+              </Box>
+              Ce n'est pas un sprint.. C'est un marathon !{' '}
+              <Anchor href="https://1interviewparjour.com" a11yTitle="1interviewparjour">
+                1 interview par jour
+              </Anchor>
+              {' '}sans prise de tête... Gratuitement.
+            </Paragraph>
+          }
+        />
+      </Section>
+
+      <Section background="light-1" pad={{ top: 'xlarge' }} width="auto">
+        <Header
+          level={2}
+          label="Comment marche notre système ?"
+        />
+
+        <Box direction="row" wrap justify="center">
+          <Box direction="row-responsive" justify="center">
+            <Tile
+              name="1. Inscrivez vous"
+              summary={
+                <span>
+                  Rentrez votre mail ci-dessus. Notre équipe se charge du reste et vous concocte des problèmes intriguant !
+                </span>
+              }
+              direction="row"
+              wrap
+              justify="between"
+            >
+              <Box elevation="medium">
+                <Box
+                  width="medium"
+                  direction="row"
+                  align="center"
+                  justify="between"
+                  gap="medium"
+                  pad={{ vertical: 'small', horizontal: 'medium' }}
+                >
+
+                  <Box animation="fadeIn" align="center" pad={{ vertical: 'small', horizontal: 'large' }}>
+                    <TextInput
+                      size="medium"
+                      placeholder="Votre email !"
+                      value={mail}
+                      onChange={event => setMail(event.target.value)}
+                    />
+                  </Box>
+                </Box>
+                <Box
+                  direction="row"
+                  justify="between"
+                  pad={{ vertical: 'small', horizontal: 'medium' }}
+                  background="light-2"
+                >
+                  <Box direction="row" gap="small" align="center" pad={{ vertical: 'small', horizontal: 'large' }}>
+                      <Box animation="fadeIn">
+                        <Button primary label="Inscription gratuite !" onClick={() => handleSignupClick()} />
+                      </Box>
+                  </Box>
+                </Box>
+              </Box>
+            </Tile>
+            <MailGif />
+          </Box>
+          <Box direction="row-responsive" justify="center">
+            <Tree />
+            <Solution />
+          </Box>
+        </Box>
+      </Section>
+
+      <Enonce />
+
+      <Companies />
+
+      <Us />
+
+      <Section pad={{ top: 'xlarge', left: 'xlarge', right: 'xlarge' }}>
 
       <Header
-        label="Réussissez vos tests techniques à votre rythme..."
+        level={2}
+        label="1interviewparjour.com"
         summary={
           <Paragraph size="xxlarge" textAlign="center">
             <Box
               direction="row-responsive"
               gap="large"
               justify="center"
-              margin={{ vertical: 'large' }}
             >
-        <TextInput
-          size="medium"
-          placeholder="Votre email !"
-        />
-        <Button primary label="Inscription gratuite !" />
-      </Box>
-            Ce n'est pas un sprint.. C'est un marathon !{' '}
-            <Anchor href="https://1interviewparjour.fr" a11yTitle="1interviewparjour">
-              1 interview par jour
-            </Anchor>
-            {' '}sans prise de tête... Gratuitement.
+              <TextInput
+                size="medium"
+                placeholder="Votre email !"
+                value={mail}
+                onChange={event => setMail(event.target.value)}
+              />
+              <Button primary label="Inscription gratuite !" onClick={() => handleSignupClick()} />
+            </Box>
           </Paragraph>
         }
-      />
-
-      
-    </Section>
-
-    <Section background="light-1" pad={{ top: 'xlarge' }} width="auto">
-      <Header
-        level={2}
-        label="Comment marche notre système ?"
-      />
-
-      <Box direction="row" wrap justify="center">
-        <Box direction="row-responsive" justify="center">
-          <MailInput />
-          <MailGif />
-        </Box>
-
-        <Box direction="row-responsive" justify="center">
-          <Tree />
-          <Solution />
-        </Box>
-      </Box>
-    </Section>
-
-    <Enonce />
-
-    <Companies />
-
-    <Us />
-
-    <Section pad={{ top: 'xlarge', left: 'xlarge', right: 'xlarge' }}>
-      
-      <Header
-        level={2}
-        label="1interviewparjour.com"
-        summary={
-        <Paragraph size="xxlarge" textAlign="center">
-          <Box
-            direction="row-responsive"
-            gap="large"
-            justify="center"
-          >
-            <TextInput
-              size="medium"
-              placeholder="Votre email !"
-            />
-            <Button primary label="Inscription gratuite !" />
-          </Box>
-        </Paragraph>}
       />
 
       <Box direction="row-responsive" justify="between" align="end">
@@ -140,9 +226,11 @@ export default () => (
             </Anchor> |
           </Paragraph>
         </Box>
-
         <Image src={stak} a11yTitle="gremlin" />
       </Box>
     </Section>
   </Box>
-);
+  );
+}
+
+export default HomeComponent

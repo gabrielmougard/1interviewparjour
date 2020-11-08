@@ -22,7 +22,6 @@ const buyProduct = (problem_data) => {
   fetch(API_URL + "/stripe/create-checkout-session?problem_id="+problem_data.problem_id+"&subscription_type="+problem_data.subscriptionType+"&mail="+problem_data.mail+"&token="+problem_data.token)
   .then((result) => { return result.json(); })
   .then((data) => {
-    console.log(data);
     // Redirect to Stripe Checkout
     return stripe.redirectToCheckout({sessionId: data.sessionId})
   })

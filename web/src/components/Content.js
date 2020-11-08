@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 import { ToastProvider } from 'react-toast-notifications'
 
-import Home from './Home';
+import Home from '../containers/home/index';
 import CGU from './Legal/CGU'
 import Privacy from './Legal/Privacy'
 import Contact from './Legal/Contact'
@@ -20,7 +20,9 @@ export default () => (
   <Router>
     <Switch>
         <Route path="/" exact={true}>
-          <Home />
+          <ToastProvider>
+            <Home />
+          </ToastProvider>
         </Route>
           <Route path="/cgu" exact={true}>
             <CGU />

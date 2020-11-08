@@ -23,7 +23,7 @@ export default () => {
                 gap="large"
                 justify="center"
               >
-                Myriam et Gabriel ont eu l'idée de faire des gâteaux pour vendre des parts 
+                Myriam et Gabriel ont eu l'idée de faire des gâteaux pour vendre des parts
                 lors d'un évènement associatif. Plus la part est grosse (ou pèse lourd) plus son prix est élevé.
                 Un tableau de conversion du prix des parts en fonction de sa grosseur est donné ci-dessous :
               </Box>
@@ -32,6 +32,7 @@ export default () => {
                 direction="row-responsive"
                 gap="large"
                 justify="center"
+                align="center"
               >
                 <Grid
                   rows={['xxsmall', 'xxsmall']}
@@ -83,8 +84,8 @@ export default () => {
                 gap="large"
                 justify="center"
               >
-                Chaque gâteau fait 800g (oui ils sont gros). Le but de ce problème est de 
-                trouver le partage optimal du gâteau pour récolter le plus d'argent. 
+                Chaque gâteau fait 800g (oui ils sont gros). Le but de ce problème est de
+                trouver le partage optimal du gâteau pour récolter le plus d'argent.
                 (i.e : Vais-je vendre 4 parts à 200g pour un total de 20€ par exemple, ou y a-t-il une meilleure répartition ?)
                 La fonction doit renvoyer le prix maximal atteignable pour un partage.
               </Box>
