@@ -10,6 +10,7 @@ import { dxc } from 'grommet-theme-dxc';
 import { v1 } from 'grommet-theme-v1';
 import { Router } from './Router';
 import Content from './components/Content';
+import styled from 'styled-components'
 
 const THEMES = {
   grommet,
@@ -19,6 +20,10 @@ const THEMES = {
   dxc,
   v1,
 };
+
+const BlurredGrommet = styled(Grommet)`
+    background-color: rgb(255, 255, 255, .7);
+`
 
 const App = ({ initialPath }) => {
   const [themeName, setThemeName] = React.useState('grommet');
@@ -47,9 +52,9 @@ const App = ({ initialPath }) => {
           content="interviews, technique, python, algorithmes, réussite, mail, daily"
         />
       </Helmet>
-      <Grommet theme={THEMES[themeName || 'grommet']}>
+      <BlurredGrommet theme={THEMES[themeName || 'grommet']}>
         <Content />
-      </Grommet>
+      </BlurredGrommet>
     </Router>
   );
 };

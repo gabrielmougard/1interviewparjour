@@ -14,6 +14,7 @@ import { INITIAL_EVENTS, createEventId } from './event-utils'
 import pythonLogo from '../../../img/python-logo-planning.ico'
 import golangLogo from '../../../img/golang-logo-planning.png'
 import rustLogo from '../../../img/rust-logo-planning.png'
+import Sky from 'react-sky';
 
 import styled from 'styled-components'
 
@@ -115,6 +116,17 @@ export function PlanningComponent() {
                         Composez le planning parfait !
                     </Heading>
                 </Box>
+                <Sky
+                images={{
+                    0: pythonLogo,
+                    1: golangLogo,
+                    2: rustLogo
+                }}
+                how={130} /* Pass the number of images Sky will render chosing randomly */
+                time={40} /* time of animation */
+                size={'50px'} /* size of the rendered images */
+                background={'palettedvioletred'} /* color of background */
+                />
             </Section>
             <Box align="center" direction="row" pad={{right: "large", left: "large"}}>
                 <Box align="center" direction="column" background="brand" round="small" margin={{right: "medium"}}>
