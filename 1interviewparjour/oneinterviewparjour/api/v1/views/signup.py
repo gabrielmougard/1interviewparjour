@@ -1,4 +1,5 @@
 import json
+import sys
 
 from datetime import datetime
 from django.http import JsonResponse
@@ -6,8 +7,42 @@ from django.views.decorators.csrf import csrf_exempt
 
 from oneinterviewparjour.core.models import (
     User,
-    Program
+    Program,
+    PlanningEvent
 )
+
+def generate_initial_planning(user):
+    """
+    We generate the initial planning for a user.
+    By default, it's one interview per day starting at 5pm.
+    If the user's training_languages field have multiple languages,
+    we schedule each of them equally in the week
+    """
+    t_languages = user.training_languages.split(",")
+    t_languages_count = [{"lang": lang, "count": 0} for lang in t_languages]
+    least_idx = 0
+    least_count = sys.maxsize
+
+    for day in range(7):
+        # get the least used language
+        chosen_language = min(t_languages_count, key=lambda elt: elt["count"])["lang"]
+
+        newEvent = PlanningEvent(
+            user=user,
+            title=f"Interview {chosen_language}",
+            day=day,
+            time="17:00",
+            language=chosen_language,
+            difficulty="medium",
+            topics="Aléatoire"
+        )
+        newEvent.save()
+
+        # increment the count
+        for lang in t_languages_count:
+            if lang["lang"] == chosen_language:
+                lang["count"] += 1
+                break
 
 
 @csrf_exempt
@@ -28,6 +63,9 @@ def signup(request):
             pro=False,
             inscription_timestamp=datetime.utcnow()
         )
+
+        # create one EventPlanning models on each day
+        generate_initial_planning(user)
 
         # For now the program is each day at 5pm
         program, created = Program.objects.get_or_create(

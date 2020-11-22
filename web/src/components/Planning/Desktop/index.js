@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { Box, Heading, Text, Button, TextInput, Image } from 'grommet';
+import React, { useEffect } from 'react';
+import { Box, Heading, Text, Button, Image, Layer } from 'grommet';
 import Nav from '../../../components/Nav';
 import Section from '../../Home/Section';
 
@@ -7,8 +7,14 @@ import Section from '../../Home/Section';
 import FullCalendar, { formatDate } from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
-import interactionPlugin, { Draggable } from '@fullcalendar/interaction'
-import { INITIAL_EVENTS, createEventId } from './event-utils'
+import interactionPlugin, { Draggable, To } from '@fullcalendar/interaction'
+import { createEventId } from './event-utils'
+
+// Toast
+import { useToasts } from 'react-toast-notifications'
+
+//Loader
+import Loader from 'react-loader-spinner'
 
 // img
 import pythonLogo from '../../../img/python-logo-planning.ico'
@@ -17,98 +23,343 @@ import rustLogo from '../../../img/rust-logo-planning.png'
 import Sky from 'react-sky';
 
 import styled from 'styled-components'
+import PlanningEventModal from './PlanningEventModal';
 
 
 const DraggableButton = styled(Button)`
     cursor: move;
 `
 
-export function PlanningComponent() {
+export function PlanningComponent({
+    savePlanning,
+    getTopics,
+    getDifficulties,
+    availableTopics,
+    avaiblableDifficulties,
+    fetchInitialPlanning,
+    initialPlanningData
+}) {
 
-    const [weekendsVisible, setWeekendsVisible] = React.useState(true)
-    const [currentEvents, setCurrentEvents] = React.useState([])
-    const [searchInterviewCode, setSearchInterviewCode] = React.useState('')
+    const [initialCalendarStates, setInitialCalendarStates] = React.useState([])
+    const [calendarStates, setCalendarStates] = React.useState([])
+    const [mail, setMail] = React.useState('')
+    //modal
+    const [openInterviewModal, setOpenInterviewModal] = React.useState([false, {}])
+    const { addToast, removeToast } = useToasts()
 
     useEffect(() => {
+
+        //fetch initial planning
+        const query = new URLSearchParams(window.location.search)
+        const mail = query.get('mail')
+        setMail(mail) // get the mail for saving purposes
+        fetchInitialPlanning({mail})
+
         let draggableElements = document.getElementById('external-events');
 
         new Draggable(draggableElements, {
             itemSelector: '.external-event',
             eventData: function(eventEl) {
                 return {
-                    title: eventEl.innerText
+                    id: createEventId(),
+                    title: "Interview " + eventEl.innerText.toLowerCase(),
+                    extendedProps: {
+                        difficulty: "medium",
+                        topics: ["Aléatoire"],
+                        language: eventEl.innerText
+                    }
                 };
             }
         })
+
+        setInterval(function() { //network state polling
+
+            const onlineCallback = () => {
+                removeToast(localStorage.getItem('offlineToastId'))
+                localStorage.removeItem('offlineToastId')
+            }
+
+            const offlineCallback = id => {
+                localStorage.setItem('offlineToastId', id)
+            }
+
+            if (!window.navigator.onLine) {
+                if (!localStorage.getItem("offlineToastId")) {
+                    addToast(
+                        <div>
+                            <strong>Hors ligne</strong>
+                            <div>Les futurs changements ne seront pas enregistrés.</div>
+                        </div>,
+                        {
+                            appearance: 'info',
+                            autoDismiss: false,
+                        },
+                        offlineCallback
+                    )
+                }
+            } else {
+                if (localStorage.getItem("offlineToastId")) {
+                    addToast(
+                        <div>
+                            <strong>En ligne</strong>
+                            <div>Le mode édition est de nouveau disponible.</div>
+                        </div>,
+                        {
+                            appearance: 'success',
+                            autoDismiss: true,
+                        },
+                        onlineCallback
+                    )
+                }
+            }
+        }, 2000)
+
+        setInterval(function() { //regularly save the data to backend using calendarSavingBuffer
+            const storedPlanning = sessionStorage.getItem('1interviewparjour-planning')
+            if (storedPlanning !== undefined && storedPlanning.length > 0) {
+                addToast(
+                    "Sauvegarde automatique...",
+                    {
+                        appearance: 'info',
+                        autoDismiss: true,
+                    }
+                )
+                savePlanning({planning: JSON.parse(storedPlanning), mail: mail})
+                sessionStorage.setItem('1interviewparjour-planning', [])
+            }
+        }, 2000)
     }, [])
 
-    const handleEventClick = (clickInfo) => {
-        // eslint-disable-next-line no-restricted-globals
-        if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
-            clickInfo.event.remove()
+    useEffect(() => {
+        if (calendarStates.length > 0) {
+            sessionStorage.setItem('1interviewparjour-planning', JSON.stringify(calendarStates))
         }
+    }, [calendarStates])
+
+    useEffect(() => {
+        //pre-populate calendar states with the existing data
+        let formattedExistingData = []
+        for (let i = 0; i < initialPlanningData.length; i++) {
+            formattedExistingData.push(
+                {
+                    id: createEventId(),
+                    title: initialPlanningData[i].title,
+                    start: initialPlanningData[i].startStr,
+                    extendedProps: {
+                        difficulty: initialPlanningData[i].difficulty,
+                        topics: initialPlanningData[i].topics,
+                        language: initialPlanningData[i].language
+                    }
+                }
+            )
+        }
+        //set the inital data for the fullcalendar
+        setInitialCalendarStates(formattedExistingData)
+
+        let calendar = []
+        for (let i = 0; i < formattedExistingData.length; i++) {
+            calendar.push(
+                {
+                    id: formattedExistingData[i].id,
+                    title: formattedExistingData[i].title,
+                    start: formattedExistingData[i].start,
+                    end: formattedExistingData[i].start,
+                    language: formattedExistingData[i].extendedProps.language,
+                    difficulty: formattedExistingData[i].extendedProps.difficulty,
+                    topics: formattedExistingData[i].extendedProps.topics
+                }
+            )
+        }
+        //set the calendar for later (we don't want it to be empty since the existing events maybe be edited)
+        setCalendarStates(calendar)
+    }, [initialPlanningData])
+
+    const handleEventClick = (info) => {
+        let event = info.event
+        // open the PlanningEventModal and pass the `event` variable in props
+        setOpenInterviewModal([true, event])
     }
 
-    const handleEvents = (events) => {
-        setCurrentEvents(events)
+    const handleEventChange = (info) => {
+        let id = info.event.id
+        let updated = []
+        for (let i = 0; i < calendarStates.length; i++) {
+            let event = calendarStates[i]
+            if (event.id === id) {
+                let updatedEvent = {
+                    id: id,
+                    title: info.event.title,
+                    start: info.event.startStr,
+                    end: info.event.endStr,
+                    language: info.event.extendedProps.language,
+                    difficulty: info.event.extendedProps.difficulty,
+                    topics: info.event.extendedProps.topics
+                }
+                updated.push(updatedEvent)
+            } else {
+                updated.push(event)
+            }
+        }
+        setCalendarStates(updated)
     }
 
-    const handleWeekendsToggle = () => {
-        setWeekendsVisible(!weekendsVisible)
+    const handleEventAdd = (info) => {
+        let event = info.event
+        let newEvent = {
+            id: event.id,
+            title: event.title,
+            start: event.startStr,
+            end: event.endStr,
+            language: event.extendedProps.language,
+            difficulty: event.extendedProps.difficulty,
+            topics: event.extendedProps.topics
+        }
+        setCalendarStates([...calendarStates, newEvent])
+    }
+
+    const handleEventRemove = (info) => {
+        let id = info.event.id
+        let filtered = calendarStates.filter((value) => { return value.id !== id})
+        setCalendarStates(filtered)
+        setOpenInterviewModal([false, info.event]) // close the modal when the 'remove' button is clicked inside the modal.
+    }
+
+    const handleEventReceive = (info) => {
+        let event = info.event
+        let newEvent = {
+            id: event.id,
+            title: event.title,
+            start: event.startStr,
+            end: event.endStr,
+            language: event.extendedProps.language,
+            difficulty: event.extendedProps.difficulty,
+            topics: event.extendedProps.topics
+        }
+        setCalendarStates([...calendarStates, newEvent])
     }
 
     const handleDateSelect = (selectInfo) => {
-        let title = prompt('Please enter a new title for your event')
-        let calendarApi = selectInfo.view.calendar
 
-        calendarApi.unselect() // clear date selection
-
-        if (title) {
-            calendarApi.addEvent({
-                id: createEventId(),
-                title,
-                start: selectInfo.startStr,
-                end: selectInfo.endStr,
-                allDay: selectInfo.allDay
-            })
+        let event = {
+            id: createEventId(),
+            title: "Interview", // this is temporary. Should be modified once the PlanningEventModal component call changeEvent to set the language.
+            start: selectInfo.start,
+            end: selectInfo.end,
+            extendedProps: {
+                difficulty: "medium",
+                topics: ["Aléatoire"]
+            }
         }
+        let calendarApi = selectInfo.view.calendar
+        calendarApi.unselect() // clear date selection
+        calendarApi.addEvent(event)
+        // open the PlanningEventModal and pass the `event` variable in props
+        setOpenInterviewModal([true, calendarApi.getEventById(event.id)])
     }
 
-    const renderEventContent = (eventInfo) => {
+    const renderEventContent = (info) => {
         let logo
-        switch (eventInfo.event.title) {
-            case "Python":
+        switch (info.event.extendedProps.language) {
+            case "python":
                 logo = <Image src={pythonLogo} width={20}/>
                 break
-            case "Golang":
+            case "golang":
                 logo = <Image src={golangLogo} width={20}/>
                 break
-            case "Rust":
+            case "rust":
                 logo = <Image src={rustLogo} width={20}/>
                 break
             default:
                 break
         }
 
+        // TODO : implement a tooltip here for difficulty and the topics of the problem
+
         return (
             <>
                 <div>
-                    <b>{eventInfo.timeText}</b>
+                    <b>{info.timeText}</b>
                 </div>
                 <Box direction="row">
                     {logo}
-                    <b>Test {eventInfo.event.title}</b>
+                    <b>{info.event.title}</b>
                 </Box>
-                <div>
-                    Difficulté : <b>moyenne</b><br></br>
-                    Sujet : <b>mystère...</b>
-                </div>
             </>
         )
     }
+    //
+
+    let calendarContent
+    if (initialCalendarStates.length > 0) {
+        calendarContent =
+        <Box flex={true} height="large">
+            <FullCalendar
+                plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                headerToolbar={{
+                    left: '',
+                    center: 'title',
+                    right: ''
+                }}
+                initialView='timeGridWeek'
+                locale='fr'
+                contentHeight={'60vh'}
+                buttonText={{
+                    today: "Aujourd'hui",
+                    month: "mois",
+                    week: "semaine",
+                    day: "jour",
+                    list: "liste"
+                }}
+                scrollTime={'12:00:00'}
+                firstDay={1}
+                eventColor={'#7D4CDB'}
+                allDaySlot={false}
+                droppable={true}
+                editable={true}
+                selectable={true}
+                selectMirror={true}
+                dayMaxEvents={true}
+                weekends={true}
+                initialEvents={initialCalendarStates} // alternatively, use the `events` setting to fetch from a feed
+                eventContent={renderEventContent} // custom render function
+                select={handleDateSelect}
+                eventClick={handleEventClick}
+                eventAdd={handleEventAdd}
+                eventChange={handleEventChange}
+                eventRemove={handleEventRemove}
+                eventReceive={handleEventReceive}
+            />
+        </Box>
+    } else {
+        calendarContent =
+            <Box flex={true} align="center">
+                <Loader
+                    type="Grid"
+                    color="#7D4CDB"
+                    height={100}
+                    width={100}
+                />
+            </Box>
+    }
+
 
     return (
         <Box>
+            {openInterviewModal[0] && (
+                <Layer
+                    margin="large"
+                    onEsc={() => setOpenInterviewModal([false, openInterviewModal[1]])}
+                    onClickOutside={() => setOpenInterviewModal([false, openInterviewModal[1]])}
+                >
+                    <PlanningEventModal
+                        getTopics={getTopics}
+                        getDifficulties={getDifficulties}
+                        availableTopics={availableTopics}
+                        avaiblableDifficulties={avaiblableDifficulties}
+                        event={openInterviewModal[1]}
+                    />
+                </Layer>
+            )}
             <Section>
                 <Nav />
                 <Box align="center" pad={{top: "large", bottom: "large"}}>
@@ -136,13 +387,13 @@ export function PlanningComponent() {
                     </Box>
                     <Box direction="column" align="center" id="external-events">
                         <Box pad={{"top": "small"}} direction="column" align="center">
-                            <DraggableButton className="external-event" icon={<Image src={pythonLogo} width={30}/>} primary label="Python" />
+                            <DraggableButton className="external-event" icon={<Image src={pythonLogo} width={30}/>} primary label="python" />
                         </Box>
                         <Box pad={{"top": "small"}} direction="column" align="center">
-                            <DraggableButton className="external-event" icon={<Image src={golangLogo} width={30}/>} primary label="Golang" />
+                            <DraggableButton className="external-event" icon={<Image src={golangLogo} width={30}/>} primary label="golang" />
                         </Box>
                         <Box pad={{"top": "small", "bottom": "small"}} direction="column" align="center">
-                            <DraggableButton className="external-event" icon={<Image src={rustLogo} width={30}/>} primary label="Rust" />
+                            <DraggableButton className="external-event" icon={<Image src={rustLogo} width={30}/>} primary label="rust" />
                         </Box>
                     </Box>
                     <Box pad="medium" direction="column" align="center" border={{"color": "white", "size": "medium","style": "dashed","side": "top"}}>
@@ -154,46 +405,7 @@ export function PlanningComponent() {
                         <Text>... et d'autres paramètres !</Text>
                     </Box>
                 </Box>
-                <Box flex={true} height="large">
-                    <FullCalendar
-                        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-                        headerToolbar={{
-                            left: 'prev,next today',
-                            center: 'title',
-                            right: 'timeGridWeek,timeGridDay'
-                        }}
-                        initialView='timeGridWeek'
-                        locale='fr'
-                        contentHeight={'60vh'}
-                        buttonText={{
-                            today: "Aujourd'hui",
-                            month: "mois",
-                            week: "semaine",
-                            day: "jour",
-                            list: "liste"
-                        }}
-                        droppable={true}
-                        drop={(info) => (
-                            console.log(info)
-                        )}
-                        editable={true}
-                        eventColor={'#7D4CDB'}
-                        selectable={true}
-                        selectMirror={true}
-                        dayMaxEvents={true}
-                        weekends={weekendsVisible}
-                        initialEvents={INITIAL_EVENTS} // alternatively, use the `events` setting to fetch from a feed
-                        select={handleDateSelect}
-                        eventContent={renderEventContent} // custom render function
-                        eventClick={handleEventClick}
-                        eventsSet={handleEvents} // called after events are initialized/added/changed/removed
-                        /* you can update a remote database when these fire:
-                        eventAdd={function(){}}
-                        eventChange={function(){}}
-                        eventRemove={function(){}}
-                        */
-                    />
-                </Box>
+                {calendarContent}
             </Box>
         </Box>
     )

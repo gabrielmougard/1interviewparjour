@@ -9,10 +9,11 @@ import {
 import { ToastProvider } from 'react-toast-notifications'
 
 import Home from '../containers/home/index'
-import Planning from '../containers/planning/index'
 import CGU from './Legal/CGU'
 import Privacy from './Legal/Privacy'
 import Contact from './Legal/Contact'
+import MailAuth from '../containers/mail_auth/index'
+import Planning from '../containers/planning/index'
 import PaymentPortal from '../containers/payment/index'
 import PaymentSuccess from '../containers/payment_success/index'
 import PaymentCancel from '../containers/payment_cancel/index'
@@ -26,8 +27,15 @@ export default () => (
         </ToastProvider>
       </Route>
       <Route path="/planning" exact={true}>
-        <ToastProvider>
-          <Planning />
+        <ToastProvider
+          placement="top-center"
+          autoDismissTimeout={1000}
+        >
+          <MailAuth
+            childComponent={
+              <Planning />
+            }
+          />
         </ToastProvider>
       </Route>
       <Route path="/cgu" exact={true}>
@@ -45,15 +53,31 @@ export default () => (
         </ToastProvider>
       </Route>
       <Route path="/payment_success" exact={true}>
-        <ToastProvider>
-          <PaymentSuccess />
+        <ToastProvider
+          placement="top-center"
+          autoDismissTimeout={1000}
+        >
+          <MailAuth
+            childComponent={
+              <PaymentSuccess />
+            }
+          />
         </ToastProvider>
       </Route>
       <Route path="/payment_cancel" exact={true}>
-        <PaymentCancel />
+        <ToastProvider
+          placement="top-center"
+          autoDismissTimeout={1000}
+        >
+          <MailAuth
+            childComponent={<PaymentCancel />}
+          />
+        </ToastProvider>
       </Route>
       <Route path="*">
-        <Home />
+        <ToastProvider>
+          <Home />
+        </ToastProvider>
       </Route>
     </Switch>
   </Router>

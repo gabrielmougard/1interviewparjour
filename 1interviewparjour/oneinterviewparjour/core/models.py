@@ -1,8 +1,8 @@
 from django.db import models
 from pygments.lexers import get_all_lexers
+from multiselectfield import MultiSelectField
 
 from oneinterviewparjour.stripe.models import Price
-
 from oneinterviewparjour.core.helpers import send_preview
 from oneinterviewparjour.mail_scheduler.ses import AmazonSender
 
@@ -27,6 +27,13 @@ class User(models.Model):
             + f"pro : {self.pro}\n"\
             + f"inscription : {self.inscription_timestamp}\n"\
             + f"deinscription : {self.deinscription_timestamp}\n"
+
+
+class Topic(models.Model):
+    topic = models.CharField(max_length=50, default="aléatoire")
+
+    def __str__(self):
+        return f"topic : {self.topic}"
 
 
 class Problem(models.Model):
@@ -55,6 +62,9 @@ class Problem(models.Model):
         on_delete=models.CASCADE,
         null=True
     )
+
+
+    topics = MultiSelectField(choices=tuple([(idx, t['topic']) for idx, t in enumerate(Topic.objects.values('topic'))]), default="Aléatoire")
     keywords = models.TextField(default="")
     unit_price = models.ForeignKey(
         Price,
@@ -160,3 +170,25 @@ class SupportedLanguage(models.Model):
     def __str__(self):
         return f"language : {self.language}\n"\
             + f"description : {self.description}\n"
+
+
+class PlanningEvent(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
+    )
+    title = models.TextField(default="Interview")
+    day = models.IntegerField() # 0 to 6
+    time = models.CharField(max_length=6) # ex: 12:30
+    language = models.CharField(max_length=100, default="Python")
+    difficulty = models.CharField(max_length=20, default="medium")
+    topics = models.TextField(default="Aléatoire")
+
+    def __str__(self):
+        return (
+            f"user : {self.user.mail}\n"
+            f"title : {self.title}\n"
+            f"language : {self.language}\n"
+            f"difficulty : {self.difficulty}\n"
+            f"topics : {self.topics}\n"
+        )

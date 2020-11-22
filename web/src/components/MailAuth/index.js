@@ -1,0 +1,74 @@
+import React, { useEffect } from 'react';
+import { useToasts } from 'react-toast-notifications'
+import Loader from 'react-loader-spinner'
+import {
+  Box,
+  Button
+} from 'grommet';
+
+import Header from '../Header';
+
+const MailAuthComponent = ({childComponent, verifyIdentity, identityVerified, problemData}) => {
+  const { addToast } = useToasts()
+
+  useEffect(() => {
+    const query = new URLSearchParams(window.location.search)
+    const mail = query.get('mail')
+    const token = query.get('token')
+    setTimeout(() => {
+      verifyIdentity({mail, token}) // call saga to verify the identity and to fetch the stripePubKey. If both actions are ok, then identityVerified is true, else it's false.
+    }, 1000);
+  }, []) // call this call back only after the first render
+
+  useEffect(() => {
+    // if its verified load the page and raise a success toast in upper right corner
+    if (identityVerified) {
+      addToast('Identification réussi !', { autoDismiss: true, appearance: 'success' })
+    }
+  }, [identityVerified])
+
+  let portal = []
+  if (identityVerified) {
+    portal.push(childComponent)
+  } else {
+    if (identityVerified === undefined) {
+      portal.push(
+        <Box full={true}>
+          <Box align="center" pad={'xlarge'} background="brand" full={true} height="xlarge">
+            <Header
+              label="Vérification de l'identité..."
+              summary="Celà ne devrait durer que 0.00000231s"
+            />
+            <Loader
+              type="Grid"
+              color="#FFFFFF"
+              height={100}
+              width={100}
+            />
+          </Box>
+        </Box>
+      )
+    } else {
+      //the call to saga has been made but its false
+      portal.push(
+        <Box full={true}>
+          <Box align="center" pad={'xlarge'} background={"status-error"} full={true} height="xlarge">
+            <Header
+              label="Erreur lors de l'identification !"
+              summary="Veuillez contacter le support à l'adresse : contact@1interviewparjour.com"
+            />
+            <Button primary label="Retour à l'accueil" />
+          </Box>
+        </Box>
+      )
+    }
+  }
+
+  return (
+    <>
+      {portal}
+    </>
+  );
+};
+
+export default MailAuthComponent

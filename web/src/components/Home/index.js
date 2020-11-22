@@ -10,7 +10,7 @@ import MailGif from './MailGif';
 import Tree from './Tree';
 import Solution from './Solution';
 import Enonce from './Enonce';
-import Companies from './Companies';
+import PlanningFeature from './PlanningFeature';
 import { Us } from './Us';
 import Tile from './Tile';
 
@@ -155,7 +155,7 @@ function HomeComponent({fetchSupportedLanguages, supportedLanguages, finalizeSig
 
       <Enonce />
 
-      <Companies />
+      <PlanningFeature />
 
       <Us />
 

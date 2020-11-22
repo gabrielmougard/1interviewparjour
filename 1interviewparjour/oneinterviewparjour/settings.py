@@ -114,6 +114,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_q',
     'dbbackup',
+    'multiselectfield',
     'oneinterviewparjour.api',
     'oneinterviewparjour.core',
     'oneinterviewparjour.mail_scheduler',

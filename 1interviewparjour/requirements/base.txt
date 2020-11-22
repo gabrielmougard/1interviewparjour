@@ -19,6 +19,7 @@ django-colorfield==0.3.2  # via django-admin-interface
 django-cors-headers==3.5.0  # via -r requirements/base.in
 django-db-file-storage==0.5.5  # via -r requirements/base.in
 django-dbbackup
+django-multiselectfield
 django-storages[boto3]
 django-filter==2.3.0      # via -r requirements/base.in
 django-flat-responsive==2.0  # via django-admin-interface

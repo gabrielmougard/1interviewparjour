@@ -7,38 +7,17 @@ import { compose } from 'redux'
 // Components
 import PaymentCancelComponent from '../../components/Payment/PaymentCancel'
 
-// Actions
-import { verifyIdentityAction } from './actions'
-
-function PaymentCancel({
-    verifyIdentityAction,
-    identityVerified,
-}) {
+function PaymentCancel() {
 
     return (
-        <PaymentCancelComponent
-            verifyIdentity={verifyIdentityAction}
-            identityVerified={identityVerified}
-        />
+        <PaymentCancelComponent/>
     )
 }
 
-PaymentCancel.propTypes = {
-    verifyIdentityAction: PropTypes.func,
-    identityVerified: PropTypes.bool
-}
-
-PaymentCancel.defaultProps = {
-    verifyIdentityAction: () => {},
-    verifyIdentity: false
-}
-
 const mapDispatchToProps = dispatch => ({
-    verifyIdentityAction: (payload) => dispatch(verifyIdentityAction(payload))
 })
 
 const mapStateToProps = ({ payment_cancel }) => ({
-    identityVerified: payment_cancel.identityVerified
 })
 
 const withConnect = connect(

@@ -12,20 +12,6 @@ const initialState = {
 function paymentSuccessReducer(state = initialState, { type, payload }) {
     switch (type) {
 
-        case VERIFY_IDENTITY_ERROR:
-            return {
-                ...state,
-                identityVerified: false
-            }
-
-        case VERIFY_IDENTITY_SUCCESS:
-            return {
-                ...state,
-                identityVerified: true,
-                problemData: payload.data,
-                stripePubKey: payload.publicKey
-            }
-
         case SEND_PRODUCT_ERROR:
             return {
                 ...state,

@@ -19,7 +19,7 @@
 .cache/
 .eggs/
 # virtualenv
-env*/
+.env*/
 .venv*/
 # Temporary data directory
 tmp/*

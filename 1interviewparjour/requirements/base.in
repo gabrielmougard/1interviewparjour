@@ -6,6 +6,7 @@ django-picklefield
 django-db-file-storage
 django-cors-headers
 django-dbbackup
+django-multiselectfield
 django-storages[boto3]
 djangorestframework
 django

@@ -15,23 +15,11 @@ import request from '../../utils/request'
 function* verifyIdentity({payload}) {
     const { API_URL } = config
     const requestURLIdentity = API_URL + '/api/v1/identity_check?mail=' + payload.mail + '&token=' + payload.token
-    const requestURLStripePubKey = API_URL + '/stripe/config'
 
     try {
         const responseIdentity = yield call(request, requestURLIdentity)
         if (responseIdentity.success) {
-            if (payload.stripeNeeded) {
-                //fetch stripe public key
-                const responseStripeKey = yield call(request, requestURLStripePubKey)
-                if (responseStripeKey.success) {
-                    yield put(verifyIdentitySuccessAction({...responseIdentity, ...responseStripeKey}))
-                } else {
-                    yield put(verifyIdentityErrorAction(responseIdentity))
-                }
-            } else {
-                // no need for a stripe public key in some calls
-                yield put(verifyIdentitySuccessAction(responseIdentity))
-            }
+            yield put(verifyIdentitySuccessAction(responseIdentity))
         } else {
             yield put(verifyIdentityErrorAction(responseIdentity))
         }
@@ -41,8 +29,8 @@ function* verifyIdentity({payload}) {
     }
 }
 
-function* paymentSaga() {
+function* mailAuthSaga() {
     yield takeEvery(VERIFY_IDENTITY, verifyIdentity)
 }
 
-export default paymentSaga
+export default mailAuthSaga

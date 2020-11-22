@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 
-import today_problem_picture from "../../img/Before1interviewparjour2.gif"
-import today_problem_solution from "../../img/After1interviewparjour.gif"
+import today_problem_picture from "../../img/before_1interviewparjour.gif"
+import today_problem_solution from "../../img/after_1interviewparjour.gif"
 
 import {
   Anchor,
@@ -49,7 +49,7 @@ Tile.propTypes = {
 export const Us = () => {
   return (
     <Box>
-      <Section pad={{ top: 'xlarge' }} background="neutral-2">
+      <Section pad={{ top: 'xlarge' }} background="brand">
         <Header
           label="Les sprints de 1 semaine avant le test... ça peut être chaud."
           summary="Dans la vie, il y a deux type de personnes :"
@@ -64,9 +64,9 @@ export const Us = () => {
             Ceux qui se donne bonne conscience en s'entraînant un peu avant (ou pas)... ouch !"
             </Paragraph>
             <Box flex />
-            <Image width={482} src={today_problem_picture} />
+            <Image width={500} src={today_problem_picture} />
           </Box>
-          <Box align="center" size="small" pad={{ horizontal: 'large' }}>
+          <Box align="center" size="small" pad={{ horizontal: 'large', "bottom": 'large' }}>
             <Paragraph textAlign="center" size="xlarge" alignSelf="center">
             Ceux qui ont adopté la routine et intégré durablement les connaissances avec
             <Anchor
@@ -78,7 +78,7 @@ export const Us = () => {
             />... yay !
             </Paragraph>
             <Box flex />
-            <Image width={482} src={today_problem_solution} />
+            <Image width={500} src={today_problem_solution} />
           </Box>
         </Box>
       </Section>
