@@ -9,20 +9,13 @@ from oneinterviewparjour import settings
 from oneinterviewparjour.core.base import BaseCommandWithLogger
 from oneinterviewparjour.core.commands import schedule
 from oneinterviewparjour.core.helpers import MINUTES
+from oneinterviewparjour.mail_scheduler.engine import MailingFactory
 
 
 @schedule(every= 1 * MINUTES, starting='10:00:00') # 10am in UTC is noon in France timezone
 class Command(BaseCommandWithLogger):
     def handle(self, *args, **kwargs):
         logging.info("Starting schedule test at %s", arrow.utcnow())
-        Schedule.objects.update_or_create(
-            name="1interviewparjour-mailer task for : {}".format(str(arrow.utcnow())),
-            defaults={
-                'func': 'oneinterviewparjour.mail_scheduler.send_mail.send',
-                'kwargs':{
-                    "hour": arrow.utcnow().hour + 2
-                }, # hour in France timezone
-                'schedule_type': Schedule.ONCE,
-                'next_run': str(arrow.utcnow()),
-            }
-        )
+        now = arrow.utcnow()
+        mailing_instance = MailingFactory("batch")
+        mailing_instance.run(day=now.weekday(), hour=(now.hour + 1), minute=now.minute)

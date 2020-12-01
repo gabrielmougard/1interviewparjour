@@ -1,10 +1,9 @@
+from django.conf import settings
 from django.db import models
 from pygments.lexers import get_all_lexers
 from multiselectfield import MultiSelectField
 
 from oneinterviewparjour.stripe.models import Price
-from oneinterviewparjour.core.helpers import send_preview
-from oneinterviewparjour.mail_scheduler.ses import AmazonSender
 
 
 class Company(models.Model):
@@ -63,8 +62,11 @@ class Problem(models.Model):
         null=True
     )
 
+    # A Problem model can have up to 3 different topics
+    topic1 = MultiSelectField(choices=tuple([(idx, t['topic']) for idx, t in enumerate(Topic.objects.values('topic'))]), default="Aléatoire")
+    topic2 = MultiSelectField(choices=tuple([(idx, t['topic']) for idx, t in enumerate(Topic.objects.values('topic'))]), default="Aléatoire")
+    topic3 = MultiSelectField(choices=tuple([(idx, t['topic']) for idx, t in enumerate(Topic.objects.values('topic'))]), default="Aléatoire")
 
-    topics = MultiSelectField(choices=tuple([(idx, t['topic']) for idx, t in enumerate(Topic.objects.values('topic'))]), default="Aléatoire")
     keywords = models.TextField(default="")
     unit_price = models.ForeignKey(
         Price,
@@ -79,48 +81,13 @@ class Problem(models.Model):
     explanation = models.TextField(default="")
     mail_preview = models.CharField(max_length=250, default="")
 
-    def save(self, *args, **kwargs):
-        """
-        After effectively creating a problem to DB, we must
-        send a preview to the `mail_preview` address.
-        """
-        super(Problem, self).save(*args, **kwargs)
-        ses_client = AmazonSender()
-        send_preview(self, ses_client)
-
-    def update(self, *args, **kwargs):
-        """
-        After effectively updating a problem to DB, we must
-        send a preview to the `mail_preview` address.
-        """
-        super(Problem, self).update(*args, **kwargs)
-        ses_client = AmazonSender()
-        send_preview(self, ses_client)
 
     def __str__(self):
         return f"title : {self.title}\n"\
             + f"company : {self.company}\n"
 
 
-class Program(models.Model):
-    hour = models.IntegerField()
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE
-    )
-    problem = models.ForeignKey(
-        Problem,
-        on_delete=models.CASCADE
-    )
-
-
-    def __str__(self):
-        return f"hour : {self.hour}\n"\
-            + f"user : {self.user}\n"\
-            + f"problem : {self.problem}\n"
-
-
-class ProgramHistory(models.Model):
+class ProblemHistory(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE

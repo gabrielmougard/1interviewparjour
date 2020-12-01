@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Anchor, Box, Image, Paragraph, TextInput, Button, Layer, Text } from 'grommet';
+import { Anchor, Box, Image, Paragraph, TextInput, Button, Layer } from 'grommet';
 import { ToastProvider, useToasts } from 'react-toast-notifications'
 import { Github, Linkedin } from 'grommet-icons';
 import Nav from '../../components/Nav';

@@ -18,6 +18,7 @@ const MailAuthComponent = ({childComponent, verifyIdentity, identityVerified, pr
     setTimeout(() => {
       verifyIdentity({mail, token}) // call saga to verify the identity and to fetch the stripePubKey. If both actions are ok, then identityVerified is true, else it's false.
     }, 1000);
+    // eslint-disable-next-line
   }, []) // call this call back only after the first render
 
   useEffect(() => {
@@ -25,6 +26,7 @@ const MailAuthComponent = ({childComponent, verifyIdentity, identityVerified, pr
     if (identityVerified) {
       addToast('Identification réussi !', { autoDismiss: true, appearance: 'success' })
     }
+    // eslint-disable-next-line
   }, [identityVerified])
 
   let portal = []

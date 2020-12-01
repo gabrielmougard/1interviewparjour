@@ -25,6 +25,7 @@ const PaymentSuccessComponent = ({ sendProduct, isProductSent}) => {
         const problem_id = query.get("problem_id")
         // send mail and eventually turns user to pro member
         sendProduct({mail, token, session_id, problem_id})
+        // eslint-disable-next-line
     }, []) // call this call back only after the first render
 
     useEffect(() => {
@@ -32,6 +33,7 @@ const PaymentSuccessComponent = ({ sendProduct, isProductSent}) => {
             //once the product is sent, notify user.
             addToast('Vous allez bientôt recevoir un mail ;)', { appearance: 'success' })
         }
+        // eslint-disable-next-line
     }, [isProductSent])
 
     return (

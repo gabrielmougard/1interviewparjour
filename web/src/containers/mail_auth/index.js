@@ -13,8 +13,7 @@ import { verifyIdentityAction } from './actions'
 function MailAuth({
     childComponent, // direct props
     verifyIdentityAction, // saga
-    identityVerified, // from redux
-    problemData // from redux
+    identityVerified // from redux
 }) {
 
     return (
@@ -22,21 +21,18 @@ function MailAuth({
         childComponent={childComponent}
         verifyIdentity={verifyIdentityAction}
         identityVerified={identityVerified}
-        problemData={problemData}
       />
     )
 }
 
 MailAuth.propTypes = {
   verifyIdentityAction: PropTypes.func,
-  identityVerified: PropTypes.bool,
-  problemData: PropTypes.object
+  identityVerified: PropTypes.bool
 }
 
 MailAuth.defaultProps = {
   verifyIdentityAction: () => {},
-  identityVerified: undefined,
-  problemData: {}
+  identityVerified: undefined
 }
 
 const mapDispatchToProps = dispatch => ({
@@ -44,8 +40,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 const mapStateToProps = ({ mailAuth }) => ({
-  identityVerified: mailAuth.identityVerified,
-  problemData: mailAuth.problemData
+  identityVerified: mailAuth.identityVerified
 })
 
 const withConnect = connect(

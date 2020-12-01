@@ -20,8 +20,7 @@ function mailAuthReducer(state = initialState, { type, payload }) {
             return {
                 ...state,
                 identityVerified: true,
-                problemData: payload.data,
-                stripePubKey: payload.publicKey
+                problemData: payload.data
             }
         default:
             return {

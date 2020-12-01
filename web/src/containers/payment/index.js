@@ -8,19 +8,17 @@ import { compose } from 'redux'
 import PaymentPortalComponent from '../../components/Payment/PaymentPortal'
 
 // Actions
-import { verifyIdentityAction } from './actions'
+import { getStripePubKeyAction } from './actions'
 
 function PaymentPortal({
-  verifyIdentityAction,
-  identityVerified,
+  getStripePubKeyAction,
   problemData,
   stripePubKey
 }) {
 
     return (
       <PaymentPortalComponent
-        verifyIdentity={verifyIdentityAction}
-        identityVerified={identityVerified}
+        getStripePubKey={getStripePubKeyAction}
         problemData={problemData}
         stripePubKey={stripePubKey}
       />
@@ -35,19 +33,17 @@ PaymentPortal.propTypes = {
 }
 
 PaymentPortal.defaultProps = {
-  verifyIdentityAction: () => {},
-  identityVerified: false,
+  getStripePubKeyAction: () => {},
   problemData: {},
   stripePubKey: "",
 }
 
 const mapDispatchToProps = dispatch => ({
-  verifyIdentityAction: (payload) => dispatch(verifyIdentityAction(payload)),
+  getStripePubKeyAction: (payload) => dispatch(getStripePubKeyAction(payload)),
 })
 
-const mapStateToProps = ({ payment }) => ({
-  identityVerified: payment.identityVerified,
-  problemData: payment.problemData,
+const mapStateToProps = ({ payment, mailAuth }) => ({
+  problemData: mailAuth.problemData,
   stripePubKey: payment.stripePubKey,
 })
 

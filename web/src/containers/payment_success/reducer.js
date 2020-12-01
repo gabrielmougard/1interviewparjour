@@ -1,6 +1,4 @@
 import {
-    VERIFY_IDENTITY_SUCCESS,
-    VERIFY_IDENTITY_ERROR,
     SEND_PRODUCT_SUCCESS,
     SEND_PRODUCT_ERROR
 } from './constants'

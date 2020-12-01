@@ -48,8 +48,15 @@ export default () => (
         <Contact />
       </Route>
       <Route path="/payment" exact={true}>
-        <ToastProvider>
-          <PaymentPortal />
+        <ToastProvider
+          placement="top-center"
+          autoDismissTimeout={1000}
+        >
+          <MailAuth
+            childComponent={
+              <PaymentPortal />
+            }
+          />
         </ToastProvider>
       </Route>
       <Route path="/payment_success" exact={true}>
@@ -64,7 +71,7 @@ export default () => (
           />
         </ToastProvider>
       </Route>
-      <Route path="/payment_cancel" exact={true}>
+      <Route path="/payment_canceled" exact={true}>
         <ToastProvider
           placement="top-center"
           autoDismissTimeout={1000}

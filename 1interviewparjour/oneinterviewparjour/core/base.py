@@ -35,16 +35,11 @@ class BaseCommandWithLogger(BaseCommand):
                 except TypeError:
                     return str(result)
             except Exception as exc:
-                if not settings.K8S_ENV:
-                    raise
-
-                elf.logger.exception(str(exc))
-
                 # If the exception was raised from a command running on the
                 # Django Q cluster, we need to raise it again to mark the task
                 # as failed and record the exception in the task result.
-                if hasattr(self, 'scheduling_info'):
-                    raise
+                #if hasattr(self, 'scheduling_info'):
+                raise
 
         obj.handle = types.MethodType(handle, obj)
         return obj

@@ -4,10 +4,10 @@ import Nav from '../../../components/Nav';
 import Section from '../../Home/Section';
 
 // calendar
-import FullCalendar, { formatDate } from '@fullcalendar/react'
+import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
-import interactionPlugin, { Draggable, To } from '@fullcalendar/interaction'
+import interactionPlugin, { Draggable } from '@fullcalendar/interaction'
 import { createEventId } from './event-utils'
 
 // Toast
@@ -42,7 +42,6 @@ export function PlanningComponent({
 
     const [initialCalendarStates, setInitialCalendarStates] = React.useState([])
     const [calendarStates, setCalendarStates] = React.useState([])
-    const [mail, setMail] = React.useState('')
     //modal
     const [openInterviewModal, setOpenInterviewModal] = React.useState([false, {}])
     const { addToast, removeToast } = useToasts()
@@ -52,7 +51,6 @@ export function PlanningComponent({
         //fetch initial planning
         const query = new URLSearchParams(window.location.search)
         const mail = query.get('mail')
-        setMail(mail) // get the mail for saving purposes
         fetchInitialPlanning({mail})
 
         let draggableElements = document.getElementById('external-events');
@@ -128,6 +126,7 @@ export function PlanningComponent({
                 sessionStorage.setItem('1interviewparjour-planning', [])
             }
         }, 2000)
+        // eslint-disable-next-line
     }, [])
 
     useEffect(() => {

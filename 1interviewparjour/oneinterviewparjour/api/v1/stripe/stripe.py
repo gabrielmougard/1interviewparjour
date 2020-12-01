@@ -6,9 +6,9 @@ from django_q.tasks import async_task, result
 
 import stripe
 
-from oneinterviewparjour.core.models import Problem
-from oneinterviewparjour.stripe.models import Price, Session
-from oneinterviewparjour.mail_scheduler.send_mail import send
+from oneinterviewparjour.core.models import Problem, User
+from oneinterviewparjour.stripe.models import Price
+from oneinterviewparjour.mail_scheduler.engine import MailingFactory
 
 
 @csrf_exempt
@@ -77,54 +77,46 @@ def create_checkout_session(request):
 
 @csrf_exempt
 def success_product_buying(request):
-    if request.method == 'GET':
-        session_id = request.GET["session_id"]
-        problem_id = request.GET['problem_id']
-        token = request.GET["token"]
-        mail = request.GET["mail"]
+    session_id = request.GET["session_id"]
+    problem_id = request.GET['problem_id']
+    token = request.GET["token"]
+    mail = request.GET["mail"]
 
-        # check the stripe session_id
-        if settings.STRIPE_LIVE_MODE:
-            stripe.api_key = settings.STRIPE_LIVE_SECRET_KEY
+    try:
+        user = User.objects.get(mail=mail)
+    except User.DoesNotExist:
+        return JsonResponse({'error': f"The user {mail} does not exist.", 'status' : 500})
+
+    try:
+        problem = Problem.objects.get(id=problem_id)
+    except Problem.DoesNotExist:
+        return JsonResponse({'error': f"The problem at id {problem_id} does not exist.", 'status' : 500})
+
+    # check the stripe session_id
+    if settings.STRIPE_LIVE_MODE:
+        stripe.api_key = settings.STRIPE_LIVE_SECRET_KEY
+    else:
+        stripe.api_key = settings.STRIPE_TEST_SECRET_KEY
+    try:
+        stripe_response = stripe.checkout.Session.retrieve(session_id)
+        mailing_instance = MailingFactory("unit")
+        # check if its a single problem or a monthly subscription
+        if stripe_response["mode"] == "payment":
+            # Create a DjangoQ Task for sending the problem to the user in pro mode this time only
+            # and register the session_id
+            mailing_instance.run(user, problem, session_id, False)
+            return JsonResponse({'status' : 200})
+
+        elif stripe_response["mode"] == "subscription":
+            # Create a DjangoQ Task for sending the problem to the user in pro mode this time
+            # , update the DB to put the user in pro and insert the session_id.
+            mailing_instance.run(user, problem, session_id, True)
+            return JsonResponse({'status' : 200})
+
         else:
-            stripe.api_key = settings.STRIPE_TEST_SECRET_KEY
-        try:
-            stripe_response = stripe.checkout.Session.retrieve(session_id)
-
-            # check if its a single problem or a monthly subscription
-            if stripe_response["mode"] == "payment":
-                if not Session.objects.filter(stripe_session_id=session_id).exists():
-                    # Create a DjangoQ Task for sending the problem to the user in pro mode this time only
-                    # and register the session_id
-                    send(exceptionnal_data={
-                        "mail": mail,
-                        "problem_id": problem_id,
-                        "session_id": session_id,
-                        "future_pro_user": False
-                    })
-                    return JsonResponse({'status' : 200})
-                else:
-                    # The session_id already exist, we do not send again the problem for security concerns.
-                    return JsonResponse({'error': "The session_id already exists.", 'status' : 500})
-
-            elif stripe_response["mode"] == "subscription":
-                if not Session.objects.filter(stripe_session_id=session_id).exists():
-                    # Create a DjangoQ Task for sending the problem to the user in pro mode this time
-                    # , update the DB to put the user in pro and insert the session_id.
-                    send(exceptionnal_data={
-                        "mail": mail,
-                        "problem_id": problem_id,
-                        "session_id": session_id,
-                        "future_pro_user": True
-                    })
-                    return JsonResponse({'status' : 200})
-                else:
-                    # The session_id already exist, we do not send again the problem for security concerns.
-                    return JsonResponse({'error': "The session_id already exists.", 'status' : 500})
-            else:
-                return JsonResponse({'error': "Wrong stripe payment mode.", 'status' : 500})  # should never happen in practice.
-        except:
-            return JsonResponse({'error': "Wrong session_id", 'status' : 500})
+            return JsonResponse({'error': "Wrong stripe payment mode.", 'status' : 500})  # should never happen in practice.
+    except:
+        return JsonResponse({'error': "Wrong session_id", 'status' : 500})
 
 
 @csrf_exempt

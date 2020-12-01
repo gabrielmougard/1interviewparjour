@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Box, Heading } from 'grommet';
 import Nav from '../../../components/Nav';
 import Section from '../../Home/Section';

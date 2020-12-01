@@ -23,7 +23,7 @@ const PaymentCancelComponent = () => {
                         Paiement annulé !
                     </Heading>
                     <Paragraph size="xxlarge" textAlign={"center"} color="white">
-                        En raison d'un problème avec votre banque, le paiement n'a pas pu être réalisé. Votre compte ne sera pas débité.
+                        Le paiement n'a pas pu être réalisé. Votre compte ne sera pas débité. À la prochaine !
                     </Paragraph>
                 </Box>
                 <Box align="center" pad={'xlarge'}>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Box, Image, Paragraph, Button, CheckBox, Text, Grid, Heading, Anchor } from 'grommet';
 import Loader from 'react-loader-spinner'
 import { useToasts } from 'react-toast-notifications'
@@ -22,13 +22,13 @@ const LanguageAnimation = ({languages}) => {
 
     const anim_availables = {"go": golang_anim, "rust": rust_anim, "python": python_anim}
     var content
-    if (languages.length == 1) {
-        if (languages[0] != "rust") {
+    if (languages.length === 1) {
+        if (languages[0] !== "rust") {
             content = <Image width={200} src={anim_availables[languages[0]]}/>
         } else {
             content = <Image width={300} src={anim_availables[languages[0]]}/>
         }
-    } else if (languages.length == 2) {
+    } else if (languages.length === 2) {
         if (languages.includes("rust")) {
             let otherIdx = languages.indexOf("rust") === 0 ? 1 : 0
             content =
@@ -63,10 +63,10 @@ const LanguageAnimation = ({languages}) => {
         let rustIdx = languages.indexOf("rust")
         let other1Idx
         let other2Idx
-        if (rustIdx == 0) {
+        if (rustIdx === 0) {
             other1Idx = 1
             other2Idx = 2
-        } else if (rustIdx == 1) {
+        } else if (rustIdx === 1) {
             other1Idx = 0
             other2Idx = 2
         } else {
@@ -133,7 +133,7 @@ const LanguagePicker = (
         setTimeout(() => {
             fetchSupportedLanguages() // call saga to fetch the supported languages
         }, 500);
-
+        // eslint-disable-next-line
     }, []) // call this call back only after the first render
 
     useEffect(() => {

@@ -22,7 +22,7 @@ export default () => {
     >
       <Stack anchor="center">
         <Box direction="row" gap="medium" height="small" width="small">
-          <img src={mailopeningv2} />
+          <img src={mailopeningv2} alt="mailing-process"/>
         </Box>
       </Stack>
     </Tile>

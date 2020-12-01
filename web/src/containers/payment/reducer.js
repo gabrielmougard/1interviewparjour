@@ -1,6 +1,6 @@
 import {
-    VERIFY_IDENTITY_SUCCESS,
-    VERIFY_IDENTITY_ERROR
+    GET_STRIPE_PUB_KEY_SUCCESS,
+    GET_STRIPE_PUB_KEY_ERROR
 } from './constants'
 
 const initialState = {
@@ -10,17 +10,14 @@ const initialState = {
 function paymentReducer(state = initialState, { type, payload }) {
     switch (type) {
 
-        case VERIFY_IDENTITY_ERROR:
+        case GET_STRIPE_PUB_KEY_ERROR:
             return {
-                ...state,
-                identityVerified: false
+                ...state
             }
 
-        case VERIFY_IDENTITY_SUCCESS:
+        case GET_STRIPE_PUB_KEY_SUCCESS:
             return {
                 ...state,
-                identityVerified: true,
-                problemData: payload.data,
                 stripePubKey: payload.publicKey
             }
         default:

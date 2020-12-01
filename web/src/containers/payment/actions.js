@@ -1,26 +1,26 @@
 import {
-    VERIFY_IDENTITY,
-    VERIFY_IDENTITY_ERROR,
-    VERIFY_IDENTITY_SUCCESS,
+    GET_STRIPE_PUB_KEY,
+    GET_STRIPE_PUB_KEY_ERROR,
+    GET_STRIPE_PUB_KEY_SUCCESS,
 } from './constants'
 
-export function verifyIdentityAction(payload) {
+export function getStripePubKeyAction(payload) {
     return {
-        type: VERIFY_IDENTITY,
+        type: GET_STRIPE_PUB_KEY,
         payload,
     }
 }
 
-export function verifyIdentityErrorAction(payload) {
+export function getStripePubKeyErrorAction(payload) {
     return {
-        type: VERIFY_IDENTITY_ERROR,
+        type: GET_STRIPE_PUB_KEY_ERROR,
         payload,
     }
 }
 
-export function verifyIdentitySuccessAction(payload) {
+export function getStripePubKeySuccessAction(payload) {
     return {
-        type: VERIFY_IDENTITY_SUCCESS,
+        type: GET_STRIPE_PUB_KEY_SUCCESS,
         payload,
     }
 }

@@ -1,17 +1,29 @@
-from django.urls import include, path, re_path
+from django.urls import include, path
 
-from oneinterviewparjour.api.v1.views.signup import signup
-from oneinterviewparjour.api.v1.views.identity_check import check
-from oneinterviewparjour.api.v1.views.supported_languages import supported_languages
-from oneinterviewparjour.api.v1.views.interview_metadata import interview_topics, interview_difficulties
-from oneinterviewparjour.api.v1.views.planning import fetch_planning, save_planning
+from oneinterviewparjour.api.v1.signup.signup import signup
+from oneinterviewparjour.api.v1.identity.identity_check import check
+from oneinterviewparjour.api.v1.languages.supported_languages import supported_languages
+from oneinterviewparjour.api.v1.interviews.interview_metadata import interview_topics, interview_difficulties
+from oneinterviewparjour.api.v1.planning.planning import fetch_planning, save_planning
+from oneinterviewparjour.api.v1.stripe.stripe import stripe_config, create_checkout_session, success_product_buying, cancel_product_buying
+
 
 urlpatterns = [
-    path('signup/', signup, name="signup"),
-    path('supported_languages/', supported_languages, name="supported_languages"),
-    path('interview_topics/', interview_topics, name="interview_topics"),
-    path('interview_difficulties/', interview_difficulties, name="interview_difficulties"),
-    path('planning', fetch_planning, name="fetch_planning"),
-    path('save_planning', save_planning, name="save_planning"),
-    re_path(r'^identity_check$', check, name="identity_check")
+    # Signup related
+    path('signup', signup, name="signup"),
+    # Interview languages related
+    path('languages/supported_languages', supported_languages, name="supported_languages"),
+    # Interview topics related
+    path('interviews/interview_topics', interview_topics, name="interview_topics"),
+    path('interviews/interview_difficulties', interview_difficulties, name="interview_difficulties"),
+    # Planning related
+    path('planning/fetch_planning', fetch_planning, name="fetch_planning"),
+    path('planning/save_planning', save_planning, name="save_planning"),
+    # Stripe related
+    path('stripe/config', views.stripe_config),
+    path('stripe/create-checkout-session', views.create_checkout_session),
+    path('stripe/success', views.success_product_buying),
+    path('stripe/cancelled', views.cancel_product_buying),
+    # Identity related
+    path('identity/identity_check', check, name="identity_check")
 ]

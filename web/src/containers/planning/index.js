@@ -6,7 +6,7 @@ import { compose } from 'redux'
 
 // Components
 import { PlanningComponent as DesktopPlanning } from '../../components/Planning/Desktop/index'
-import { PlanningComponent as MobilePlanning } from '../../components/Planning/Mobile/index'
+//import { PlanningComponent as MobilePlanning } from '../../components/Planning/Mobile/index'
 
 // Actions
 import { savePlanningAction, fetchInitialPlanningAction, fetchSupportedTopicsAction, fetchSupportedDifficultiesAction} from './actions'

@@ -19,19 +19,23 @@ function PlanningEventModal({
 
     useEffect(() => {
         event.setExtendedProp("language", languageSelected)
+        // eslint-disable-next-line
     }, [languageSelected])
 
     useEffect(() => {
         event.setExtendedProp("topics", interviewTopics)
+        // eslint-disable-next-line
     }, [interviewTopics])
 
     useEffect(() => {
         event.setExtendedProp("difficulty", difficulty)
+        // eslint-disable-next-line
     }, [difficulty])
 
     useEffect(() => {
         getTopics()
         getDifficulties()
+        // eslint-disable-next-line
     }, [])
 
     const getLanguageLogo = (language, width) => {
