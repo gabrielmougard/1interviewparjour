@@ -9,6 +9,8 @@ from oneinterviewparjour.core.models import (
     User,
     PlanningEvent
 )
+from oneinterviewparjour.observability.metrics import observe_endpoint
+
 
 def generate_initial_planning(user):
     """
@@ -44,6 +46,7 @@ def generate_initial_planning(user):
                 break
 
 
+@observe_endpoint(method="POST", endpoint="signup")
 @csrf_exempt
 def signup(request):
     body_unicode = request.body.decode('utf-8')

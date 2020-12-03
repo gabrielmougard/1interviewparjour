@@ -5,7 +5,10 @@ from oneinterviewparjour.core.models import BuyingHash
 from oneinterviewparjour.mail_scheduler.helpers import (
     hash_token
 )
+from oneinterviewparjour.observability.metrics import observe_endpoint
 
+
+@observe_endpoint(method="GET", endpoint="identity/identity_check")
 @csrf_exempt
 def check(request):
     """

@@ -11,7 +11,7 @@ from oneinterviewparjour.mail_scheduler.helpers import (
     _to_HTML_code,
     hash_token
 )
-from oneinterviewparjour.observability.mailing_metrics import produce_mailing_metric, produce_mailing_metric_dev
+from oneinterviewparjour.observability.ops import produce_mailing_metric, produce_mailing_metric_dev
 from oneinterviewparjour.mail_scheduler.hook_code import MailingHookCode
 from oneinterviewparjour.mail_scheduler.ses import AmazonSender
 

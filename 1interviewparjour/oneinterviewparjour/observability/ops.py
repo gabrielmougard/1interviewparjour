@@ -1,14 +1,9 @@
+import logging
+
+from oneinterviewparjour.core.models import User
 from oneinterviewparjour.stripe.models import Session
 from oneinterviewparjour.mail_scheduler.hook_code import MailingHookCode
-
-
-def expose_sent_mail(task):
-    """
-    Here we expose the metrics when a mail is successfully sent to a customer
-    """
-    result = task.result
-    print(f"Observability : {result}")
-
+from oneinterviewparjour.observability.metrics import mailing_counter
 
 def produce_mailing_metric(task):
     """
@@ -24,17 +19,15 @@ def produce_mailing_metric(task):
                 user = result["data"]["user"]
                 user.pro = True
                 user.save()
-                # TODO : trigger Prometheus client to send a metric
-                print("TODO : [SUCCESS][FUTURE PRO USER]")
+                mailing_counter.labels('unit').inc()
+                logging.info("[SUCCESS][FUTURE PRO USER]")
         elif result["data"].get("event"):
-            # TODO : trigger Prometheus client to send a metric about the event
-            print("TODO : [SUCCESS][BATCH]")
+            mailing_counter.labels('batch').inc()
+            logging.info("[SUCCESS][BATCH]")
         else:
-            # TODO : trigger Prometheus client to send a metric
-            print("TODO : [UNKNOWN_OPS] unknown post-mailing operation.")
+            logging.warning("[UNKNOWN_OPS] unknown post-mailing operation.")
     else:
-        # TODO : trigger Prometheus client to send a metric
-        print(f"TODO : [ERROR] status_code {result['status_code'].value}")
+        logging.error("[ERROR] status_code %s", result['status_code'].value)
 
 
 def produce_mailing_metric_dev(result):
@@ -50,17 +43,21 @@ def produce_mailing_metric_dev(result):
                 user = result["data"]["user"]
                 user.pro = True
                 user.save()
-                # TODO : trigger Prometheus client to send a metric
-                print("TODO : [SUCCESS][UNIT][FUTURE PRO USER]")
+                mailing_counter.labels('unit').inc()
+                logging.info("[SUCCESS][FUTURE PRO USER]")
             else:
                 # TODO : trigger Prometheus client to send a metric
                 print("TODO : [SUCCESS][UNIT]")
         elif result["data"].get("event"):
-            # TODO : trigger Prometheus client to send a metric about the event
-            print("TODO : [SUCCESS][BATCH]")
+            mailing_counter.labels('batch').inc()
+            logging.info("[SUCCESS][BATCH]")
         else:
-            # TODO : trigger Prometheus client to send a metric
-            print("TODO : [UNKNOWN_OPS] unknown post-mailing operation.")
+            logging.warning("[UNKNOWN_OPS] unknown post-mailing operation.")
     else:
-        # TODO : trigger Prometheus client to send a metric
-        print(f"TODO : [ERROR] status_code {result['status_code'].value}")
+        logging.error("[ERROR] status_code %s", result['status_code'].value)
+
+
+def fetch_user_conversion():
+    total = User.objects.count()
+    pro = User.objects.filter(pro=True).count()
+    return pro, total - pro

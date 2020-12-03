@@ -4,16 +4,16 @@ from pygments.lexers import get_all_lexers
 from multiselectfield import MultiSelectField
 
 from oneinterviewparjour.stripe.models import Price
+from oneinterviewparjour.observability.mixins import ExportModelOperationsMixin
 
-
-class Company(models.Model):
+class Company(ExportModelOperationsMixin('company'), models.Model):
     name = models.CharField(max_length=250, default="1interviewparjour")
 
     def __str__(self):
         return f"name : {self.name}\n"
 
 
-class User(models.Model):
+class User(ExportModelOperationsMixin('user'), models.Model):
     mail = models.CharField(max_length=250)
     training_languages = models.CharField(max_length=250, default="python")
     pro = models.BooleanField(default=False)
@@ -28,14 +28,14 @@ class User(models.Model):
             + f"deinscription : {self.deinscription_timestamp}\n"
 
 
-class Topic(models.Model):
+class Topic(ExportModelOperationsMixin('topic'), models.Model):
     topic = models.CharField(max_length=50, default="aléatoire")
 
     def __str__(self):
         return f"topic : {self.topic}"
 
 
-class Problem(models.Model):
+class Problem(ExportModelOperationsMixin('problem'), models.Model):
 
     DIFFICULTY = (
         ("easy","easy"),
@@ -87,7 +87,7 @@ class Problem(models.Model):
             + f"company : {self.company}\n"
 
 
-class ProblemHistory(models.Model):
+class ProblemHistory(ExportModelOperationsMixin('problemHistory'), models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE
@@ -108,7 +108,7 @@ class ProblemHistory(models.Model):
         )
 
 
-class BuyingHash(models.Model):
+class BuyingHash(ExportModelOperationsMixin('buyingHash'), models.Model):
     problem = models.ForeignKey(
         Problem,
         on_delete=models.CASCADE
@@ -139,7 +139,7 @@ class SupportedLanguage(models.Model):
             + f"description : {self.description}\n"
 
 
-class PlanningEvent(models.Model):
+class PlanningEvent(ExportModelOperationsMixin('planningEvent'), models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE

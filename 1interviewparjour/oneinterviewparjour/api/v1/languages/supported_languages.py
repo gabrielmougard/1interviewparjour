@@ -4,8 +4,10 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from oneinterviewparjour.core.models import SupportedLanguage, Problem
+from oneinterviewparjour.observability.metrics import observe_endpoint
 
 
+@observe_endpoint(method="GET", endpoint="languages/supprted_languages")
 @csrf_exempt
 def supported_languages(request):
     """

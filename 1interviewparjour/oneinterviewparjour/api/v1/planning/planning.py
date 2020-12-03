@@ -8,7 +8,8 @@ from django.db import transaction
 from django.core import serializers
 
 from oneinterviewparjour.core.models import User, PlanningEvent
-from oneinterviewparjour.api.v1.views.signup import generate_initial_planning
+from oneinterviewparjour.api.v1.signup.signup import generate_initial_planning
+from oneinterviewparjour.observability.metrics import observe_endpoint
 
 
 def format_planning_data(planning):
@@ -33,6 +34,7 @@ def format_planning_data(planning):
     return formatted_planning_data
 
 
+@observe_endpoint(method="POST", endpoint="planning/save_planning")
 @csrf_exempt
 def save_planning(request):
     """
@@ -72,6 +74,7 @@ def save_planning(request):
         )
 
 
+@observe_endpoint(method="GET", endpoint="planning/fetch_planning")
 @csrf_exempt
 def fetch_planning(request):
     """
