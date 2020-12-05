@@ -134,11 +134,12 @@ backend vault_ui
 
 ## Why Prometheus+Grafana ?
 
-I like to keep all my metrics centralized. Everything, from the containers CPU usage to the number of mails sent is persisted and plotted here.
+I like to keep all my metrics centralized. Everything, from the containers CPU usage to the number of mails sent is persisted and plotted here. We use the Prometheus server to scrap the application endpoint (`/api/v1/observability/metrics`) and we also use a Prometheus Node-exporter service to collect node metrics (CPU%, RAM usage, etc...)
+
 
 ## Why Vault ?
 
-I like to keep all my secrets in one place. Every sensitive data is stored in Vault which is configured to use S3 as its storage engine. The data can either be accessed using `AppRole` authentication (for the apps) or with `Token/MasterKeys` (for root ops) or classical `Userpass` authentication when managing the secrets in the UI at vault.1interviewparjour.com
+I like to keep all my secrets in one place. Every sensitive data is stored in Vault which is configured to use S3 as its storage engine. The vault server is launched as a **systemd** task. The data can either be accessed using `AppRole` authentication (for the apps) or with `Token/MasterKeys` (for root ops) or classical `Userpass` authentication when managing the secrets in the UI at vault.1interviewparjour.com
 
 ## Using the Hashicorp Vault API Client (HVAC)
 
