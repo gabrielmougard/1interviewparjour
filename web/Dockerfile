@@ -4,14 +4,14 @@ WORKDIR /opt/web
 COPY package.json ./
 RUN npm install
 
+# hostname of backend in docker network
+ENV API_URL http://1interviewparjour:8000
+ENV ROOT_URL https://1interviewparjour.com
+
 COPY . ./
 RUN npm run build
 
 FROM nginx:1.16.0-alpine
-
-# set AppRole environment variables
-ENV APPROLE_ID ${approle_id}
-ENV APPROLE_SECRET_ID ${approle_secret_id}
 
 COPY --from=builder /opt/web/build /usr/share/nginx/html
 RUN rm /etc/nginx/conf.d/default.conf

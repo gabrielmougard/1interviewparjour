@@ -15,8 +15,9 @@ ENV DEBUG False
 ENV FRONT_BASE_PATH https://1interviewparjour.com
 # Switch to 'True' in prod mode
 ENV STRIPE_LIVE_MODE False
-ENV DB_HOST 127.0.0.1
-ENV VAULT_ENDPOINT http://127.0.0.1:8200
+ENV DB_HOST dockerhost
+# Vault server run directly in Systemd on the host machine.
+ENV VAULT_ENDPOINT http://dockerhost:8200
 ENV DB_PORT 3306
 ENV ASYNC_WORKER_COUNT 2
 

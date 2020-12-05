@@ -5,44 +5,23 @@ volumes:
     grafana_data: {}
 
 services:
-    # 1interviewparjour-web-blue:
-    #     build:
-    #         context: ../../web
-    #     container_name: 1interviewparjour-web-blue
-    #     hostname: 1interviewparjour-web-blue
-    #     env_file:
-    #         - web.env
-    #     ports:
-    #         - "3000:80"
-    # 1interviewparjour-web-green:
-    #     build:
-    #         context: ../../web
-    #     container_name: 1interviewparjour-web-green
-    #     hostname: 1interviewparjour-web-green
-    #     env_file:
-    #         - web.env
-    #     ports:
-    #         - "3001:80"
-    # 1interviewparjour-backend-blue:
-    #     build:
-    #         context: ../../1interviewparjour
-    #     container_name: 1interviewparjour-backend-blue
-    #     hostname: 1interviewparjour-backend-blue
-    #     env_file:
-    #         - back.env
-    #     ports:
-    #         - "8000:8000"
-    #     network_mode: "host" # can also communicate to service outside of the docker network (example : MySQL and Prometheus which are not dockerized)
-    # 1interviewparjour-backend-green:
-    #     build:
-    #         context: ../../1interviewparjour
-    #     container_name: 1interviewparjour-backend-green
-    #     hostname: 1interviewparjour-backend-green
-    #     env_file:
-    #         - back.env
-    #     ports:
-    #         - "8001:8000"
-    #     network_mode: "host" # can also communicate to service outside of the docker network (example : MySQL and Prometheus which are not dockerized)
+    ####### APP STACK #######
+    1interviewparjour-web:
+        build:
+            context: ../../web
+        container_name: 1interviewparjour-web
+        hostname: 1interviewparjour-web
+        ports:
+            - "3000:80"
+    1interviewparjour:
+        build:
+            context: ../../1interviewparjour
+        container_name: 1interviewparjour
+        hostname: 1interviewparjour
+        ports:
+            - "8000:8000"
+        extra_hosts:
+            - "dockerhost:$DOCKERHOST"
     ####### OBSERVABILITY STACK #######
     prometheus:
         image: prom/prometheus:v2.1.0
@@ -55,8 +34,7 @@ services:
             - '--web.console.libraries=/usr/share/prometheus/console_libraries'
             - '--web.console.templates=/usr/share/prometheus/consoles'
         ports:
-            - 9090:9090
-        network_mode: "host" # can also communicate to service outside of the docker network (example : MySQL and Prometheus which are not dockerized)
+            - "9090:9090"
         restart: always
     node-exporter:
         image: prom/node-exporter
@@ -70,18 +48,14 @@ services:
             - --collector.filesystem.ignored-mount-points
             - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
         ports:
-            - 9100:9100
-        network_mode: "host" # can also communicate to service outside of the docker network (example : MySQL and Prometheus which are not dockerized)
+            - "9100:9100"
         restart: always
         deploy:
             mode: global
     grafana:
         image: grafana/grafana
-        #depends_on:
-        #    - prometheus
         ports:
-            - 3002:3000
+            - "3002:3000"
         volumes:
             - grafana_data:/var/lib/grafana
-        network_mode: "host" # can also communicate to service outside of the docker network (example : MySQL and Prometheus which are not dockerized)
         restart: always
