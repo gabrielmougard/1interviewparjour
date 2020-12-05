@@ -16,8 +16,8 @@ ENV FRONT_BASE_PATH https://1interviewparjour.com
 # Switch to 'True' in prod mode
 ENV STRIPE_LIVE_MODE False
 ENV ASYNC_WORKER_COUNT 2
-ENV VAULT_ENDPOINT http://${DOCKERHOST}:8200
-ENV DB_HOST ${DOCKERHOST}
+ENV VAULT_ENDPOINT http://${dockerhost}:8200
+ENV DB_HOST ${dockerhost}
 ENV DB_PORT 3306
 # set AppRole environment variables
 ENV APPROLE_ID ${approle_id}

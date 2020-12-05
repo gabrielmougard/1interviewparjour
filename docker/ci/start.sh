@@ -4,5 +4,6 @@
 # In order to access to the host services like Vault from inside isolted docker containers.
 # Then we just have to change http://localhost to http://dockerhost in your our code when we want to access such services.
 export DOCKERHOST=$(ifconfig | grep -E "([0-9]{1,3}\.){3}[0-9]{1,3}" | grep -v 127.0.0.1 | awk '{ print $2 }' | cut -f2 -d: | head -n1)
+cd ../../1interviewparjour && sed -e 's/\${dockerhost}/'"${DOCKERHOST}"'/' Dockerfile > Dockerfile-temp && rm Dockerfile && cat Dockerfile-temp > Dockerfile && rm Dockerfile-temp
 docker-compose -f docker-compose.yml build
 docker-compose -f docker-compose.yml up
