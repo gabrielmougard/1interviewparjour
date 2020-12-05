@@ -1,5 +1,9 @@
 version: '3'
 
+volumes:
+    prometheus_data: {}
+    grafana_data: {}
+
 services:
     1interviewparjour-web-blue:
         build:
