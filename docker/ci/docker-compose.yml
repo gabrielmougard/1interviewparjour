@@ -80,7 +80,7 @@ services:
         #depends_on:
         #    - prometheus
         ports:
-            - 3000:3000
+            - 3002:3000
         volumes:
             - grafana_data:/var/lib/grafana
         network_mode: "host" # can also communicate to service outside of the docker network (example : MySQL and Prometheus which are not dockerized)
