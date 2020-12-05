@@ -20,10 +20,6 @@ services:
         hostname: 1interviewparjour
         ports:
             - "8000:8000"
-        environment:
-            - VAULT_ENDPOINT=http://${DOCKERHOST}:8200
-            - DB_HOST=${DOCKERHOST}
-            - DB_PORT=3306
     ####### OBSERVABILITY STACK #######
     prometheus:
         image: prom/prometheus:v2.1.0
