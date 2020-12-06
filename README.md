@@ -141,6 +141,10 @@ I like to keep all my metrics centralized. Everything, from the containers CPU u
 
 I like to keep all my secrets in one place. Every sensitive data is stored in Vault which is configured to use S3 as its storage engine. The vault server is launched as a **systemd** task. The data can either be accessed using `AppRole` authentication (for the apps) or with `Token/MasterKeys` (for root ops) or classical `Userpass` authentication when managing the secrets in the UI at vault.1interviewparjour.com
 
+How to setup on the server ?
+export VAULT_ADDR=http://127.0.0.1:8200
+(see if `vault status` return something. If it's sealed unlock it on the UI with the master keys)
+
 ## Using the Hashicorp Vault API Client (HVAC)
 
 We created a Vault `AppRole` named `1interviewparjour-app` with the following policy :
