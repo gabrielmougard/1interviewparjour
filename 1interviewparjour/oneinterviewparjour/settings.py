@@ -17,7 +17,6 @@ DB_HOST = os.getenv('DB_HOST', '127.0.0.1')
 DB_PORT = os.getenv('DB_PORT', '3306')
 SECRET_KEY="temz1*^52h)yvm7-d6sfnav6n8co#i4o+qe2!x(py$3ertf05b"
 ############ END OF PUBLIC ENV DATA #####################
-print("VAULT_ENDPOINT = "+os.getenv("VAULT_ENDPOINT"))
 ############ START OF SENSITIVE AREA #############
 if ENV == 'prod':
     """
