@@ -37,6 +37,7 @@ RUN pip install -r base.txt
 # copy project
 COPY . /usr/src/1interviewparjour/1interviewparjour
 RUN chmod +x launch-script.sh
-RUN python3 manage.py dbrestore
+RUN python3 manage.py makemigrations
+RUN python3 manage.py migrate
 RUN python3 manage.py collectstatic --no-input
 CMD ["/bin/sh", "-c", "python3 ./oneinterviewparjour/run.py"]
