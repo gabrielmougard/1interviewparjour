@@ -5,6 +5,8 @@ from multiselectfield import MultiSelectField
 
 from oneinterviewparjour.stripe.models import Price
 from oneinterviewparjour.observability.mixins import ExportModelOperationsMixin
+from oneinterviewparjour.core.helpers import get_topics
+
 
 class Company(ExportModelOperationsMixin('company'), models.Model):
     name = models.CharField(max_length=250, default="1interviewparjour")
@@ -62,10 +64,10 @@ class Problem(ExportModelOperationsMixin('problem'), models.Model):
         null=True
     )
 
-    # A Problem model can have up to 3 different topics
-    topic1 = MultiSelectField(choices=tuple([(idx, t['topic']) for idx, t in enumerate(Topic.objects.values('topic'))]), default="Aléatoire")
-    topic2 = MultiSelectField(choices=tuple([(idx, t['topic']) for idx, t in enumerate(Topic.objects.values('topic'))]), default="Aléatoire")
-    topic3 = MultiSelectField(choices=tuple([(idx, t['topic']) for idx, t in enumerate(Topic.objects.values('topic'))]), default="Aléatoire")
+    # A Problem model can have up to 3 different topics (callable here to avoid db error in the app registry)
+    topic1 = MultiSelectField(choices=tuple([(idx, t['topic']) for idx, t in enumerate(get_topics())]), default="Aléatoire")
+    topic2 = MultiSelectField(choices=tuple([(idx, t['topic']) for idx, t in enumerate(get_topics())]), default="Aléatoire")
+    topic3 = MultiSelectField(choices=tuple([(idx, t['topic']) for idx, t in enumerate(get_topics())]), default="Aléatoire")
 
     keywords = models.TextField(default="")
     unit_price = models.ForeignKey(

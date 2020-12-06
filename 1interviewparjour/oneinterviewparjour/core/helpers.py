@@ -6,7 +6,7 @@ import math
 import django
 from django.conf import settings
 
-from oneinterviewparjour.mail_scheduler.helpers import generate_template_mail
+from oneinterviewparjour.core.models import Topic
 
 LOGGER = logging.getLogger(__name__)
 
@@ -56,27 +56,5 @@ def no_debug_logs():
         logging.disable(previous_level)
 
 
-def send_preview(problem, ses_client):
-    """
-    Send a preview mail directly after inserting a Problem into DB
-    """
-    problem_metadata = {
-        "problem": problem,
-        "payment_gateway_link": settings.FRONT_BASE_PATH  # In the preview we do not test the payment, only the mail aspect.
-    }
-
-    if problem.company.name == "1interviewparjour":
-        problem_metadata["company_message"] = "Cette interview est une création originale"
-    else:
-        problem_metadata["company_message"] = "Ce probleme est inspiré d'une interview donnée par"
-
-    mail_content = [generate_template_mail(problem_metadata, True), generate_template_mail(problem_metadata, False)]
-
-    for idx, m in enumerate(mail_content):
-        ses_client.send_email(
-            "h3llb0t@1interviewparjour.com",
-            [problem.mail_preview],
-            f"[1INTERVIEWPARJOUR][PREVIEW]{'[PRO]' if idx == 0 else ''} {problem_metadata['problem'].title}",
-            m
-        )
-
+def get_topics():
+    return Topic.objects.values('topic')
