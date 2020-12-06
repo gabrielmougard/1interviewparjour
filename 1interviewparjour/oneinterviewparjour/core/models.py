@@ -5,7 +5,6 @@ from multiselectfield import MultiSelectField
 
 from oneinterviewparjour.stripe.models import Price
 from oneinterviewparjour.observability.mixins import ExportModelOperationsMixin
-from oneinterviewparjour.core.helpers import get_topics
 
 
 class Company(ExportModelOperationsMixin('company'), models.Model):
@@ -63,6 +62,9 @@ class Problem(ExportModelOperationsMixin('problem'), models.Model):
         on_delete=models.CASCADE,
         null=True
     )
+
+    def get_topics():
+        return Topic.objects.values('topic')
 
     # A Problem model can have up to 3 different topics (callable here to avoid db error in the app registry)
     topic1 = MultiSelectField(choices=tuple([(idx, t['topic']) for idx, t in enumerate(get_topics())]), default="Aléatoire")

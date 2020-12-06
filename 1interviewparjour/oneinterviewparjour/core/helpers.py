@@ -6,7 +6,6 @@ import math
 import django
 from django.conf import settings
 
-from oneinterviewparjour.core.models import Topic
 
 LOGGER = logging.getLogger(__name__)
 
@@ -54,7 +53,3 @@ def no_debug_logs():
         yield
     finally:
         logging.disable(previous_level)
-
-
-def get_topics():
-    return Topic.objects.values('topic')
