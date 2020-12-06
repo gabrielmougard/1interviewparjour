@@ -36,6 +36,10 @@ class Topic(ExportModelOperationsMixin('topic'), models.Model):
         return f"topic : {self.topic}"
 
 
+def get_topics_choices():
+    return tuple([(idx, t['topic']) for idx, t in enumerate(Topic.objects.values('topic'))])
+
+
 class Problem(ExportModelOperationsMixin('problem'), models.Model):
 
     DIFFICULTY = (
@@ -63,13 +67,10 @@ class Problem(ExportModelOperationsMixin('problem'), models.Model):
         null=True
     )
 
-    def get_topics():
-        return Topic.objects.values('topic')
-
     # A Problem model can have up to 3 different topics (callable here to avoid db error in the app registry)
-    topic1 = MultiSelectField(choices=tuple([(idx, t['topic']) for idx, t in enumerate(get_topics())]), default="Aléatoire")
-    topic2 = MultiSelectField(choices=tuple([(idx, t['topic']) for idx, t in enumerate(get_topics())]), default="Aléatoire")
-    topic3 = MultiSelectField(choices=tuple([(idx, t['topic']) for idx, t in enumerate(get_topics())]), default="Aléatoire")
+    topic1 = MultiSelectField(choices=get_topics_choices(), default="Aléatoire")
+    topic2 = MultiSelectField(choices=get_topics_choices(), default="Aléatoire")
+    topic3 = MultiSelectField(choices=get_topics_choices(), default="Aléatoire")
 
     keywords = models.TextField(default="")
     unit_price = models.ForeignKey(
