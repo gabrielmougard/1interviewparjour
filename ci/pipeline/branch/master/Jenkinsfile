@@ -21,18 +21,13 @@ pipeline {
                 sh "cp -r * /home/ubuntu/1interviewparjour"
             }
         }
-        /*
         stage('Blue/Green deployment') {
             steps {
-                echo "> Building the Docker Compose stack at docker/ci/docker-compose.yml ..."
-                sh "cd /home/ubuntu/1interviewparjour/docker/ci && docker-compose build"
-                echo "> Launching the Docker Compose stack at docker/ci/docker-compose.yml ..."
-                echo "> Classic deployment started (the running instances will be stopped for some amount of time)"
+                echo "> Building the project ..."
+                sh "cd /home/ubuntu/1interviewparjour/docker/ci && source start.sh"
+                echo "> Launching the project ..."
                 sh "cd /home/ubuntu/1interviewparjour/docker/ci && docker-compose up -d"
-                //echo "> Blue/Green deployment started ..."
-                //sh "cd /home/ubuntu/1interviewparjour/docker/ci && chmod +x deploy-blue-green.sh && ./deploy-blue-green.sh"
             }
         }
-        */
     }
 }

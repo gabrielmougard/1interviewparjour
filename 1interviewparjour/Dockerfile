@@ -37,7 +37,12 @@ RUN pip install -r base.txt
 # copy project
 COPY . /usr/src/1interviewparjour/1interviewparjour
 RUN chmod +x launch-script.sh
+# If the migrations scheme are not up to date
 RUN python3 manage.py makemigrations
+# If there is anything to migrate
 RUN python3 manage.py migrate
+# Sync with the latest db snapshot
+RUN python3 manage.py dbrestore
+# Collect the static files
 RUN python3 manage.py collectstatic --no-input
 CMD ["/bin/sh", "-c", "python3 ./oneinterviewparjour/run.py"]
