@@ -1,4 +1,5 @@
 from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
 
 from oneinterviewparjour.observability.metrics import observe_endpoint
 
@@ -10,4 +11,4 @@ def landing_page(request):
     Do nothing except counting the number of visitors
     that we have on the landing page.
     """
-    pass
+    return HttpResponse(status=200)

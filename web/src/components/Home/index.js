@@ -20,6 +20,7 @@ import LanguagePicker from './LanguagePicker';
 
 //utils
 import { validateEmail } from '../../utils/formatters'
+import { config } from '../../utils/config'
 
 function HomeComponent({fetchSupportedLanguages, supportedLanguages, finalizeSignup, signupCompleted, closeFromInside, closedFromInside}) {
   const { addToast } = useToasts()
@@ -33,6 +34,14 @@ function HomeComponent({fetchSupportedLanguages, supportedLanguages, finalizeSig
       addToast("Votre email n'est pas valide.", { appearance: 'error' })
     }
   }
+
+  useEffect(() => {
+    const { API_URL } = config
+    fetch(API_URL + "/api/v1/tracking/landing_page")
+    .then((result) => {
+      //pass
+    })
+  }, [])
 
   useEffect(() => {
     setLanguagePicker(false)
