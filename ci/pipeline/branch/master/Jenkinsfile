@@ -21,13 +21,13 @@ pipeline {
                 sh "cp -r * /home/ubuntu/1interviewparjour"
             }
         }
-        stage('Blue/Green deployment') {
-            steps {
-                echo "> Building the project ..."
-                sh "cd /home/ubuntu/1interviewparjour/docker/ci && source start.sh"
-                echo "> Launching the project ..."
-                sh "cd /home/ubuntu/1interviewparjour/docker/ci && docker-compose up -d"
-            }
-        }
+        // stage('Deployment') {
+        //     steps {
+        //         echo "> Building the project ..."
+        //         sh "cd /home/ubuntu/1interviewparjour/docker/ci && source start.sh"
+        //         echo "> Launching the project ..."
+        //         sh "cd /home/ubuntu/1interviewparjour/docker/ci && docker-compose up -d"
+        //     }
+        // }
     }
 }
