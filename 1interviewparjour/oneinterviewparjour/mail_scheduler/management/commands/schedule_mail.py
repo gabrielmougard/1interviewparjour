@@ -12,7 +12,7 @@ from oneinterviewparjour.core.helpers import MINUTES
 from oneinterviewparjour.mail_scheduler.engine import MailingFactory
 
 
-@schedule(every= 1 * MINUTES, starting='10:00:00') # 10am in UTC is noon in France timezone
+@schedule(every= 30 * MINUTES, starting='10:00:00') # 10am in UTC is noon in France timezone
 class Command(BaseCommandWithLogger):
     def handle(self, *args, **kwargs):
         logging.info("Starting schedule test at %s", arrow.utcnow())
