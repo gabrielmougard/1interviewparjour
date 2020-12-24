@@ -1,21 +1,15 @@
 import React, { useEffect } from 'react';
-import { Anchor, Box, Image, Paragraph, TextInput, Button, Layer } from 'grommet';
+import { Anchor, Box, Image, Paragraph, TextInput, Button, Layer, Heading, Text, Card, CardHeader, CardBody, CardFooter } from 'grommet';
 import { ToastProvider, useToasts } from 'react-toast-notifications'
-import { Github, Linkedin } from 'grommet-icons';
-import Nav from '../../components/Nav';
-import Header from '../../components/Header';
+import Nav from '../Nav';
+import Footer from '../Footer';
 import Section from './Section';
 import Hero from './Hero'
-import MailGif from './MailGif';
-import Tree from './Tree';
-import Solution from './Solution';
-import Enonce from './Enonce';
-import PlanningFeature from './PlanningFeature';
-import { Us } from './Us';
-import Tile from './Tile';
+import RoutedAnchor from '../RoutedAnchor'
+import python_logo from '../../img/python-logo-planning.ico'
+import golang_logo from '../../img/golang-logo-planning.png'
+import rust_logo from '../../img/rust-logo-planning.png'
 
-//imgs
-import stak from "../../img/stak-hurrah.svg"
 import LanguagePicker from './LanguagePicker';
 
 //utils
@@ -23,6 +17,7 @@ import { validateEmail } from '../../utils/formatters'
 import { config } from '../../utils/config'
 
 function HomeComponent({fetchSupportedLanguages, supportedLanguages, finalizeSignup, signupCompleted, closeFromInside, closedFromInside}) {
+
   const { addToast } = useToasts()
   const [languagePicker, setLanguagePicker] = React.useState();
   const [mail, setMail] = React.useState("")
@@ -37,9 +32,8 @@ function HomeComponent({fetchSupportedLanguages, supportedLanguages, finalizeSig
 
   useEffect(() => {
     const { API_URL } = config
-    fetch(API_URL + "/api/v1/tracking/landing_page")
+    fetch(API_URL + "/api/v1/tracking/landing_page/home")
     .then((result) => {
-      //pass
     })
   }, [])
 
@@ -49,28 +43,34 @@ function HomeComponent({fetchSupportedLanguages, supportedLanguages, finalizeSig
 
   return (
     <Box>
-      <Section>
+      <Section background="brand">
         <Nav />
-
-        <Hero />
-
-        <Header
-          label="Réussissez vos tests techniques à votre rythme..."
-          summary={
-            <Paragraph size="xxlarge" textAlign="center">
+        <Box align={"center"} pad={{"top": "large", "bottom": "large"}}>
+            <Heading size="large" margin="none" textAlign="center">
+            Réussir vos tests techniques avec l'optimisation de planning
+            </Heading>
+        </Box>
+        <Box direction="row-responsive">
+          <Box pad={{vertical: "large", horizontal: "medium"}}>
+            <Hero />
+          </Box>
+          <Box align="center">
+            <Box align="center">
               <Box
-                direction="row-responsive"
-                gap="large"
-                justify="center"
-                margin={{ vertical: 'large' }}
+                background="light-1"
+                pad="medium"
+                round="medium"
+                elevation="small"
+                gap="medium"
+                margin={{ top: 'medium' }}
               >
                 <TextInput
-                  size="medium"
+                  size="large"
                   placeholder="Votre email !"
                   value={mail}
                   onChange={event => setMail(event.target.value)}
                 />
-                <Button primary label="Inscription gratuite !" onClick={() => handleSignupClick()}/>
+                <Button size="large" primary color="accent-1" label="Inscription gratuite !" onClick={() => handleSignupClick()}/>
                 {languagePicker && (
                   <Layer
                     margin="large"
@@ -91,154 +91,131 @@ function HomeComponent({fetchSupportedLanguages, supportedLanguages, finalizeSig
                   </Layer>
                 )}
               </Box>
-              Ce n'est pas un sprint.. C'est un marathon !{' '}
-              <Anchor href="https://1interviewparjour.com" a11yTitle="1interviewparjour">
-                1 interview par jour
-              </Anchor>
-              {' '}sans prise de tête... Gratuitement.
-            </Paragraph>
-          }
-        />
-      </Section>
-
-      <Section background="light-1" pad={{ top: 'xlarge' }} width="auto">
-        <Header
-          level={2}
-          label="Comment marche notre système ?"
-        />
-
-        <Box direction="row" wrap justify="center">
-          <Box direction="row-responsive" justify="center">
-            <Tile
-              name="1. Inscrivez vous"
-              summary={
-                <span>
-                  Rentrez votre mail ci-dessus. Notre équipe se charge du reste et vous concocte des problèmes intriguant !
-                </span>
-              }
-              direction="row"
-              wrap
-              justify="between"
-            >
-              <Box elevation="medium">
-                <Box
-                  width="medium"
-                  direction="row"
-                  align="center"
-                  justify="between"
-                  gap="medium"
-                  pad={{ vertical: 'small', horizontal: 'medium' }}
-                >
-
-                  <Box animation="fadeIn" align="center" pad={{ vertical: 'small', horizontal: 'large' }}>
-                    <TextInput
-                      size="medium"
-                      placeholder="Votre email !"
-                      value={mail}
-                      onChange={event => setMail(event.target.value)}
-                    />
-                  </Box>
-                </Box>
-                <Box
-                  direction="row"
-                  justify="between"
-                  pad={{ vertical: 'small', horizontal: 'medium' }}
-                  background="light-2"
-                >
-                  <Box direction="row" gap="small" align="center" pad={{ vertical: 'small', horizontal: 'large' }}>
-                      <Box animation="fadeIn">
-                        <Button primary label="Inscription gratuite !" onClick={() => handleSignupClick()} />
-                      </Box>
-                  </Box>
-                </Box>
-              </Box>
-            </Tile>
-            <MailGif />
-          </Box>
-          <Box direction="row-responsive" justify="center">
-            <Tree />
-            <Solution />
-          </Box>
-        </Box>
-      </Section>
-
-      <Enonce />
-
-      <PlanningFeature />
-
-      <Us />
-
-      <Section pad={{ top: 'xlarge', left: 'xlarge', right: 'xlarge' }}>
-
-      <Header
-        level={2}
-        label="1interviewparjour.com"
-        summary={
-          <Paragraph size="xxlarge" textAlign="center">
-            <Box
-              direction="row-responsive"
-              gap="large"
-              justify="center"
-            >
-              <TextInput
-                size="medium"
-                placeholder="Votre email !"
-                value={mail}
-                onChange={event => setMail(event.target.value)}
-              />
-              <Button primary label="Inscription gratuite !" onClick={() => handleSignupClick()} />
             </Box>
-          </Paragraph>
-        }
-      />
-
-      <Box direction="row-responsive" justify="between" align="end">
-        <Box margin={{ vertical: 'xlarge' }}>
-          <Box direction="row" gap="small">
-            <Anchor
-              target="_blank"
-              a11yTitle="Share feedback on Github"
-              href="https://github.com/gabrielmougard"
-              icon={<Github color="brand" size="large" />}
-            />
-            <Anchor
-              target="_blank"
-              a11yTitle="Chat with us on LinkedIn"
-              href="https://linkedin/in/gabriel-mougard"
-              icon={<Linkedin color="brand" size="large" />}
-            />
+            <Box>
+              <Paragraph>
+                <Text size="large"><Anchor>@h3llb0t :</Anchor> Oubliez la "semaine de révision" avant un test technique qui est plus source de stress qu'autre chose...</Text>
+              </Paragraph>
+              <Paragraph>
+                <Text size="large" weight="bold"><Anchor>@h3llb0t :</Anchor> Rentrer dans l'entreprise de vos rêves est avant tout une affaire d'organisation humaine.</Text>
+              </Paragraph>
+              <Paragraph>
+                <Text size="large"><Anchor>@h3llb0t :</Anchor> Heureusement : ça s'apprend, c'est envoutant et ça marche.</Text>
+              </Paragraph>
+            </Box>
           </Box>
-          <Paragraph>
-          <Anchor
-              target="_blank"
-              href="https://1interviewparjour.com"
-            >
-            1interviewparjour.com
-            </Anchor> est une&nbsp;
-            <Anchor
-              target="_blank"
-              href="https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps"
-            >
-              PWA
-            </Anchor>
-            . Vous pouvez la sauvegarder pour la lire en mode offline.
-          </Paragraph>
-          <Paragraph>
-            <Anchor target="_blank" href="https://1interviewparjour.com/cgu">
-              Conditions d'utilisation
-            </Anchor> | <br></br>
-            <Anchor target="_blank" href="https://1interviewparjour.com/privacy">
-              Politique de confidentialité
-            </Anchor> | <br></br>
-            <Anchor target="_blank" href="https://1interviewparjour.com/contact">
-              Contact
-            </Anchor> |
-          </Paragraph>
         </Box>
-        <Image src={stak} a11yTitle="gremlin" />
-      </Box>
-    </Section>
-  </Box>
+      </Section>
+
+      <Section>
+        <Box align={"center"} pad={{bottom: "small"}}>
+          <Text size="xxlarge" weight="bold">La <RoutedAnchor path="/method" label="Méthode" /> est compatible avec les langages</Text>
+        </Box>
+
+        <Box align={"center"} justify="center" direction="row-responsive">
+          <Box pad={{left: "large"}} align={"center"}>
+            <Image width={100} src={python_logo}/>
+            <RoutedAnchor path="https://python.org" label="Python"/>
+          </Box>
+          <Box pad={{left: "large"}} align={"center"}>
+            <Image width={100} src={golang_logo}/>
+            <RoutedAnchor path="https://golang.org" label="Golang"/>
+          </Box>
+          <Box pad={{left: "large"}} align={"center"}>
+            <Image width={100} src={rust_logo}/>
+            <RoutedAnchor path="https://rust-lang.org" label="Rust"/>
+          </Box>
+        </Box>
+      </Section>
+
+      <Section>
+        <Box align={"center"} pad={{"bottom": "medium"}}>
+          <Heading size="large" margin="none" textAlign="center">
+            Que voulez-vous accomplir ?
+          </Heading>
+        </Box>
+        <Box align="center" direction="row-responsive">
+            <Card width="medium" height={{"max": "500"}} background="light-1" margin="medium">
+              <CardHeader pad="medium"><Text size="xlarge" weight="bold">Maîtriser les méthodes et algorithmes courants</Text></CardHeader>
+              <CardBody pad="medium">
+                <Text size="large"><RoutedAnchor path="/example" label="95% du temps" />, les entreprises puisent dans des bases de données d'exercices classiques. Sachez reconnaître ces algorithmes sous leurs formes parfois déguisées et finissez la question en <RoutedAnchor path="/example" label="3min" /> chrono là où les autres finisse en <RoutedAnchor path="/example" label="30min" />.</Text>
+              </CardBody>
+              <CardFooter>
+                <Box
+                  background="light-1"
+                  pad="medium"
+                  round="medium"
+                  gap="medium"
+                  margin={{ top: 'medium' }}
+                >
+                  <TextInput
+                    size="large"
+                    placeholder="Votre email !"
+                    value={mail}
+                    onChange={event => setMail(event.target.value)}
+                  />
+                  <Button size="large" primary color="accent-1" label="Inscription gratuite !" onClick={() => handleSignupClick()}/>
+                </Box>
+              </CardFooter>
+            </Card>
+            <Card width="medium" height={{"max": "500"}} background="light-1" margin="medium">
+              <CardHeader pad="medium"><Text size="xlarge" weight="bold">Affuter vos intuitions et booster votre vitesse de raisonnement</Text></CardHeader>
+              <CardBody pad="medium">
+                <Text size="large">Parfois, trouver certains ploblèmes requiert un certain degré d'intuition. <RoutedAnchor path="/method" label="L'intuition n'est pas que le propre des surdoués" />. Elle peut être développée en s'entraînant sur divers scénario particulier que nous vous proposons gratuitement.</Text>
+              </CardBody>
+              <CardFooter>
+                <Box
+                  background="light-1"
+                  pad="medium"
+                  round="medium"
+                  gap="medium"
+                  margin={{ top: 'medium' }}
+                >
+                  <TextInput
+                    size="large"
+                    placeholder="Votre email !"
+                    value={mail}
+                    onChange={event => setMail(event.target.value)}
+                  />
+                  <Button size="large" primary color="accent-1" label="Inscription gratuite !" onClick={() => handleSignupClick()}/>
+                </Box>
+              </CardFooter>
+            </Card>
+            <Card width="medium" height={{"max": "500"}} background="light-1" margin="medium">
+              <CardHeader pad="medium"><Text size="xlarge" weight="bold">Concevoir des systèmes entiers et complexes</Text></CardHeader>
+              <CardBody pad="medium">
+                <Text size="large">Les tests d'<RoutedAnchor path="/method" label="architecture système" /> ne sont pas rares (en fonction de votre expérience) et sont pourtant parmis les plus difficiles. Nous vous proposons de vous entraîner sur des <RoutedAnchor path="/method" label="mini-projets" /> afin de savoir répondre efficacement à ces situations réelles.</Text>
+              </CardBody>
+              <CardFooter>
+                <Box
+                  background="light-1"
+                  pad="medium"
+                  round="medium"
+                  gap="medium"
+                  margin={{ top: 'medium' }}
+                >
+                  <TextInput
+                    size="large"
+                    placeholder="Votre email !"
+                    value={mail}
+                    onChange={event => setMail(event.target.value)}
+                  />
+                  <Button size="large" primary color="accent-1" label="Inscription gratuite !" onClick={() => handleSignupClick()}/>
+                </Box>
+              </CardFooter>
+            </Card>
+        </Box>
+      </Section>
+
+      <Footer
+        fetchSupportedLanguages={fetchSupportedLanguages}
+        supportedLanguages={supportedLanguages}
+        finalizeSignup={finalizeSignup}
+        signupCompleted={signupCompleted}
+        closeFromInside={closeFromInside}
+        closedFromInside={closedFromInside}
+      />
+    </Box>
   );
 }
 

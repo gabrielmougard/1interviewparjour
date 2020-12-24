@@ -1,18 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Anchor } from 'grommet';
-import { RouterContext } from '../Router';
+import { useHistory } from "react-router-dom";
 
-const RoutedAnchor = ({ icon, label, path, target }) => {
-  const { go } = React.useContext(RouterContext);
+const RoutedAnchor = ({ icon, label, path }) => {
+  const  history = useHistory();
   return (
     <Anchor
       href={path}
       icon={icon}
       label={label}
       onClick={event => {
-        event.preventDefault();
-        go(path, target);
+        // eslint-disable-next-line
+        if (path.match(/(http[s]?:\/\/)?([^\/\s]+\/)(.*)/i)) {
+          window.open(path, "_blank")
+          event.preventDefault();
+        } else {
+          // it's a local path
+          event.preventDefault();
+          history.push(path);
+        }
       }}
     />
   );

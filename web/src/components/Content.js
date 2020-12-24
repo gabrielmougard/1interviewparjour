@@ -8,15 +8,22 @@ import {
 } from "react-router-dom";
 import { ToastProvider } from 'react-toast-notifications'
 
-import Home from '../containers/home/index'
-import CGU from './Legal/CGU'
-import Privacy from './Legal/Privacy'
-import Contact from './Legal/Contact'
+import Home from '../containers/home'
+import Method from '../containers/home/method'
+import Example from '../containers/home/example'
+import Pro from '../containers/home/pro'
+import Introduction from '../containers/home/introduction'
+
 import MailAuth from '../containers/mail_auth/index'
 import Planning from '../containers/planning/index'
 import PaymentPortal from '../containers/payment/index'
 import PaymentSuccess from '../containers/payment_success/index'
 import PaymentCancel from '../containers/payment_cancel/index'
+
+import CGU from './Legal/CGU'
+import Privacy from './Legal/Privacy'
+import Contact from './Legal/Contact'
+
 
 export default () => (
   <Router>
@@ -24,6 +31,26 @@ export default () => (
       <Route path="/" exact={true}>
         <ToastProvider>
           <Home />
+        </ToastProvider>
+      </Route>
+      <Route path="/method" exact={true}>
+        <ToastProvider>
+          <Method />
+        </ToastProvider>
+      </Route>
+      <Route path="/example" exact={true}>
+        <ToastProvider>
+          <Example />
+        </ToastProvider>
+      </Route>
+      <Route path="/pro" exact={true}>
+        <ToastProvider>
+          <Pro />
+        </ToastProvider>
+      </Route>
+      <Route path="/introduction" exact={true}>
+        <ToastProvider>
+          <Introduction />
         </ToastProvider>
       </Route>
       <Route path="/planning" exact={true}>

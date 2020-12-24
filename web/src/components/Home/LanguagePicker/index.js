@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
+import { useMediaQuery } from 'react-responsive'
 import { Box, Image, Paragraph, Button, CheckBox, Text, Grid, Heading, Anchor } from 'grommet';
 import Loader from 'react-loader-spinner'
 import { useToasts } from 'react-toast-notifications'
 import python_anim from '../../../img/pythonAnim.gif'
 import golang_anim from '../../../img/golangAnim.gif'
-import rust_anim from '../../../img/rustAnim.gif'
+import rust_anim from '../../../img/rustAnim.svg'
 import { Checkmark } from 'react-checkmark'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
@@ -19,74 +20,43 @@ const LanguageLoader = () => (
 )
 
 const LanguageAnimation = ({languages}) => {
+    const isPhone = useMediaQuery({
+        query: '(max-width: 479px)'
+    })
 
     const anim_availables = {"go": golang_anim, "rust": rust_anim, "python": python_anim}
     var content
     if (languages.length === 1) {
-        if (languages[0] !== "rust") {
-            content = <Image width={200} src={anim_availables[languages[0]]}/>
-        } else {
-            content = <Image width={300} src={anim_availables[languages[0]]}/>
-        }
+        content = <Image width={isPhone ? 150 : 200} src={anim_availables[languages[0]]}/>
     } else if (languages.length === 2) {
-        if (languages.includes("rust")) {
-            let otherIdx = languages.indexOf("rust") === 0 ? 1 : 0
-            content =
-                <Grid
-                    rows={['xsmall', 'small']}
-                    columns={['small', 'small', 'small']}
-                    gap="xsmall"
-                    areas={[
-                        { name: 'rust', start: [1, 0], end: [2, 0] },
-                        { name: 'other', start: [1, 1], end: [2, 1] },
-                    ]}
-                >
-                    <Box gridArea="rust"><Image width={300} src={anim_availables["rust"]}/></Box>
-                    <Box gridArea="other"><Image width={200} src={anim_availables[languages[otherIdx]]}/></Box>
-                </Grid>
-        } else {
-            content =
-                <Grid
-                    rows={['small']}
-                    columns={['small', 'small']}
-                    gap="small"
-                    areas={[
-                        { name: 'python', start: [0, 0], end: [1, 0] },
-                        { name: 'golang', start: [1, 0], end: [1, 0] },
-                    ]}
-                >
-                    <Box gridArea="python"><Image width={200} src={anim_availables[languages[0]]}/></Box>
-                    <Box gridArea="golang"><Image width={200} src={anim_availables[languages[1]]}/></Box>
-                </Grid>
-        }
-    } else {
-        let rustIdx = languages.indexOf("rust")
-        let other1Idx
-        let other2Idx
-        if (rustIdx === 0) {
-            other1Idx = 1
-            other2Idx = 2
-        } else if (rustIdx === 1) {
-            other1Idx = 0
-            other2Idx = 2
-        } else {
-            other1Idx = 0
-            other2Idx = 1
-        }
         content =
             <Grid
-                rows={['xsmall', 'small']}
-                columns={['small', 'small', 'small']}
+                rows={['small']}
+                columns={[isPhone ? 'xsmall' : 'small', isPhone ? 'xsmall' : 'small']}
                 gap="small"
                 areas={[
-                    { name: 'rust', start: [1, 0], end: [2, 0] },
-                    { name: 'other1', start: [0, 1], end: [1, 1] },
-                    { name: 'other2', start: [2, 1], end: [2, 1] }
+                    { name: 'l1', start: [0, 0], end: [1, 0] },
+                    { name: 'l2', start: [1, 0], end: [1, 0] },
                 ]}
             >
-                <Box gridArea="rust"><Image width={300} src={anim_availables["rust"]}/></Box>
-                <Box gridArea="other1"><Image width={200} src={anim_availables[languages[other1Idx]]}/></Box>
-                <Box gridArea="other2"><Image width={200} src={anim_availables[languages[other2Idx]]}/></Box>
+                <Box gridArea="l1"><Image width={isPhone ? 100 : 200} src={anim_availables[languages[0]]}/></Box>
+                <Box gridArea="l2"><Image width={isPhone ? 100 : 200} src={anim_availables[languages[1]]}/></Box>
+            </Grid>
+    } else {
+        content =
+            <Grid
+                rows={['small']}
+                columns={[isPhone ? 'xsmall' : 'small', isPhone ? 'xsmall' : 'small', isPhone ? 'xsmall' : 'small']}
+                gap="small"
+                areas={[
+                    { name: 'l1', start: [0, 0], end: [1, 0] },
+                    { name: 'l2', start: [1, 0], end: [2, 0] },
+                    { name: 'l3', start: [2, 0], end: [2, 0] }
+                ]}
+            >
+                <Box gridArea="l1"><Image width={isPhone ? 80 : 150} src={anim_availables[languages[0]]}/></Box>
+                <Box gridArea="l2"><Image width={isPhone ? 80 : 150} src={anim_availables[languages[1]]}/></Box>
+                <Box gridArea="l3"><Image width={isPhone ? 80 : 150} src={anim_availables[languages[2]]}/></Box>
             </Grid>
     }
     return (
@@ -104,7 +74,9 @@ const LanguagePicker = (
         closeFromInside,
         closedFromInside
     }) => {
-
+    const isPhone = useMediaQuery({
+        query: '(max-width: 479px)'
+    })
     const { addToast } = useToasts()
     const [availableLanguages, setAvailableLanguages] = React.useState([])
     const [checkedLanguages, setCheckedLanguages] = React.useState(["python"]); // python is always checked by default
@@ -182,7 +154,7 @@ const LanguagePicker = (
                     </Box>
                     {checkedLanguages.includes(availableLanguages[i].language) && (
                         <Box pad="small" round border={{ color: 'brand' }}>
-                            <Text>{availableLanguages[i].description}</Text>
+                            <Text size={isPhone ? "xsmall" : "medium"}>{availableLanguages[i].description}</Text>
                         </Box>)
                     }
                 </Box>
@@ -198,6 +170,9 @@ const LanguagePicker = (
                 {checkboxes}
                 <Box pad={{"top": "medium"}}>
                     <Button primary label="C'est parti !" onClick={() => handleFinalizeSignup()} />
+                    {isPhone  && (
+                        <Button secondary color="status-critical" margin={{top: "small"}} label="Annuler" onClick={() => handleCloseFromInside(closedFromInside)} />
+                    )}
                 </Box>
             </>
     }
@@ -225,7 +200,7 @@ const LanguagePicker = (
                         </Paragraph>
                     </Box>
                     <Box align="center">
-                        <Checkmark size='144' color='#7D4CDB' />
+                        <Box><Checkmark size={isPhone ? '100' : '144'} color='#7D4CDB' /></Box>
                         <Paragraph size="large" textAlign={"center"} color="white">
                             Dans chaque mail, vous trouverez un lien "<Anchor label={"Planning"} />" pour customiser votre programme hebdomadaire !
                         </Paragraph>

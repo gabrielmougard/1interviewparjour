@@ -26,7 +26,7 @@ const Tile = ({
     >
       {children}
     </Box>
-    <Box width="medium" margin={{ top: 'large' }}>
+    <Box width="medium" margin={{ top: 'large', bottom: 'large' }}>
       <Heading level={3} size="xlarge" textAlign="center" margin="none">
         {name}
       </Heading>
