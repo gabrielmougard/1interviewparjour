@@ -34,8 +34,8 @@ def format_planning_data(planning):
     return formatted_planning_data
 
 
-@observe_endpoint(method="POST", endpoint="planning/save_planning")
 @csrf_exempt
+@observe_endpoint(method="POST", endpoint="planning/save_planning")
 def save_planning(request):
     """
     Save the state of the weekly user's planning.
@@ -74,8 +74,8 @@ def save_planning(request):
         )
 
 
-@observe_endpoint(method="GET", endpoint="planning/fetch_planning")
 @csrf_exempt
+@observe_endpoint(method="GET", endpoint="planning/fetch_planning")
 def fetch_planning(request):
     """
     Fetch a planning given a user mail.

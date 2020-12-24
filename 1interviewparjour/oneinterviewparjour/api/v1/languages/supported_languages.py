@@ -7,8 +7,8 @@ from oneinterviewparjour.core.models import SupportedLanguage, Problem
 from oneinterviewparjour.observability.metrics import observe_endpoint
 
 
-@observe_endpoint(method="GET", endpoint="languages/supprted_languages")
 @csrf_exempt
+@observe_endpoint(method="GET", endpoint="languages/supprted_languages")
 def supported_languages(request):
     """
     Find the supported languages, their descriptions and the associated problem count.

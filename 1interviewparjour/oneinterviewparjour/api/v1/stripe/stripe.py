@@ -11,9 +11,8 @@ from oneinterviewparjour.stripe.models import Price
 from oneinterviewparjour.mail_scheduler.engine import MailingFactory
 from oneinterviewparjour.observability.metrics import observe_endpoint
 
-
-@observe_endpoint(method="GET", endpoint="stripe/config")
 @csrf_exempt
+@observe_endpoint(method="GET", endpoint="stripe/config")
 def stripe_config(request):
     if request.method == 'GET':
         if settings.STRIPE_LIVE_MODE:
@@ -23,8 +22,8 @@ def stripe_config(request):
         return JsonResponse(stripe_config, safe=False)
 
 
-@observe_endpoint(method="GET", endpoint="stripe/create-checkout-session")
 @csrf_exempt
+@observe_endpoint(method="GET", endpoint="stripe/create-checkout-session")
 def create_checkout_session(request):
     if request.method == 'GET':
         if settings.STRIPE_LIVE_MODE:
@@ -78,8 +77,8 @@ def create_checkout_session(request):
             return JsonResponse({'error': str(e)})
 
 
-@observe_endpoint(method="GET", endpoint="stripe/success")
 @csrf_exempt
+@observe_endpoint(method="GET", endpoint="stripe/success")
 def success_product_buying(request):
     session_id = request.GET["session_id"]
     problem_id = request.GET['problem_id']
@@ -123,8 +122,8 @@ def success_product_buying(request):
         return JsonResponse({'error': "Wrong session_id", 'status' : 500})
 
 
-@observe_endpoint(method="GET", endpoint="stripe/cancelled")
 @csrf_exempt
+@observe_endpoint(method="GET", endpoint="stripe/cancelled")
 def cancel_product_buying(request):
     # TODO : there is nothing much to be done here
     # We will just produce a metric for observability but that's all

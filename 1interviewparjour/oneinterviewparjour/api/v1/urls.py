@@ -3,11 +3,25 @@ from django.urls import include, path
 from oneinterviewparjour.api.v1.signup.signup import signup
 from oneinterviewparjour.api.v1.identity.identity_check import check
 from oneinterviewparjour.api.v1.languages.supported_languages import supported_languages
-from oneinterviewparjour.api.v1.interviews.interview_metadata import interview_topics, interview_difficulties
+from oneinterviewparjour.api.v1.interviews.interview_metadata import (
+    interview_topics,
+    interview_difficulties
+)
 from oneinterviewparjour.api.v1.planning.planning import fetch_planning, save_planning
-from oneinterviewparjour.api.v1.stripe.stripe import stripe_config, create_checkout_session, success_product_buying, cancel_product_buying
+from oneinterviewparjour.api.v1.stripe.stripe import (
+    stripe_config,
+    create_checkout_session,
+    success_product_buying,
+    cancel_product_buying
+)
 from oneinterviewparjour.api.v1.observability.expose_prometheus_metrics import expose_prometheus_metrics
-from oneinterviewparjour.api.v1.tracking.tracking import landing_page
+from oneinterviewparjour.api.v1.tracking.tracking import (
+    landing_page_home,
+    landing_page_pro,
+    landing_page_example,
+    landing_page_method,
+    landing_page_introduction
+)
 
 
 urlpatterns = [
@@ -29,7 +43,11 @@ urlpatterns = [
     # Identity related
     path('identity/identity_check', check, name="identity_check"),
     # Frontend traffic related
-    path('tracking/landing_page', landing_page, name="landing_page"),
+    path('tracking/landing_page/home', landing_page_home, name="landing_page_home"),
+    path('tracking/landing_page/pro', landing_page_pro, name="landing_page_pro"),
+    path('tracking/landing_page/example', landing_page_example, name="landing_page_example"),
+    path('tracking/landing_page/method', landing_page_method, name="landing_page_method"),
+    path('tracking/landing_page/introduction', landing_page_introduction, name="landing_page_introduction"),
     # Observability related
     path('observability/metrics', expose_prometheus_metrics, name="expose_prometheus_metrics")
 ]

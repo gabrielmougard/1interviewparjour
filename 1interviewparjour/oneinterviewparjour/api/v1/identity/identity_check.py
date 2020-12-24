@@ -8,8 +8,8 @@ from oneinterviewparjour.mail_scheduler.helpers import (
 from oneinterviewparjour.observability.metrics import observe_endpoint
 
 
-@observe_endpoint(method="GET", endpoint="identity/identity_check")
 @csrf_exempt
+@observe_endpoint(method="GET", endpoint="identity/identity_check")
 def check(request):
     """
     Check the token in the mail and redirect to the right payment gateway

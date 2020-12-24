@@ -45,9 +45,8 @@ def generate_initial_planning(user):
                 lang["count"] += 1
                 break
 
-
-@observe_endpoint(method="POST", endpoint="signup")
 @csrf_exempt
+@observe_endpoint(method="POST", endpoint="signup")
 def signup(request):
     body_unicode = request.body.decode('utf-8')
     body = json.loads(body_unicode)
