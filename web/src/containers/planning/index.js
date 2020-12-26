@@ -1,4 +1,5 @@
 import React from 'react'
+import { useMediaQuery } from 'react-responsive'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
@@ -6,7 +7,7 @@ import { compose } from 'redux'
 
 // Components
 import { PlanningComponent as DesktopPlanning } from '../../components/Planning/Desktop/index'
-//import { PlanningComponent as MobilePlanning } from '../../components/Planning/Mobile/index'
+import { PlanningComponent as MobilePlanning } from '../../components/Planning/Mobile/index'
 
 // Actions
 import { savePlanningAction, fetchInitialPlanningAction, fetchSupportedTopicsAction, fetchSupportedDifficultiesAction} from './actions'
@@ -20,17 +21,38 @@ function Planning({
   avaiblableDifficulties,
   initialPlanningData}) {
 
+  const isPhone = useMediaQuery({
+    query: '(max-width: 479px)'
+  })
+  let planningComponent
+  if (isPhone) {
+    planningComponent =
+      <MobilePlanning
+        savePlanning={savePlanningAction}
+        fetchInitialPlanning={fetchInitialPlanningAction}
+        getTopics={fetchSupportedTopicsAction}
+        getDifficulties={fetchSupportedDifficultiesAction}
+        availableTopics={availableTopics}
+        avaiblableDifficulties={avaiblableDifficulties}
+        initialPlanningData={initialPlanningData}
+      />
+  } else {
+    planningComponent =
+      <DesktopPlanning
+        savePlanning={savePlanningAction}
+        fetchInitialPlanning={fetchInitialPlanningAction}
+        getTopics={fetchSupportedTopicsAction}
+        getDifficulties={fetchSupportedDifficultiesAction}
+        availableTopics={availableTopics}
+        avaiblableDifficulties={avaiblableDifficulties}
+        initialPlanningData={initialPlanningData}
+      />
+  }
   // do the window size differentiation here for mobile view or desktop view (for now just desktop view using the fullcalendar.io feature)
   return (
-    <DesktopPlanning
-      savePlanning={savePlanningAction}
-      fetchInitialPlanning={fetchInitialPlanningAction}
-      getTopics={fetchSupportedTopicsAction}
-      getDifficulties={fetchSupportedDifficultiesAction}
-      availableTopics={availableTopics}
-      avaiblableDifficulties={avaiblableDifficulties}
-      initialPlanningData={initialPlanningData}
-    />
+    <>
+    {planningComponent}
+    </>
   )
 }
 

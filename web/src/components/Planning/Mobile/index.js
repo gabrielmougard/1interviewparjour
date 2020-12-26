@@ -11,7 +11,8 @@ export function PlanningComponent() {
                 <Nav />
                 <Box align="center">
                     <Heading textAlign="center" margin="none">
-                        Composez le planning parfait !
+                        Dans une logique d'optimisation de l'expérience utilisateur,
+                        nous vous demandons d'utiliser un ordinateur ou une tablette pour accéder au planning !
                     </Heading>
                 </Box>
             </Section>
