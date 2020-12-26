@@ -45,6 +45,7 @@ def generate_initial_planning(user):
                 lang["count"] += 1
                 break
 
+
 @csrf_exempt
 @observe_endpoint(method="POST", endpoint="signup")
 def signup(request):

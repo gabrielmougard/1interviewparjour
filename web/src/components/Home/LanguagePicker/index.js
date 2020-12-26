@@ -10,6 +10,9 @@ import { Checkmark } from 'react-checkmark'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 
+import { config } from '../../../utils/config'
+import RoutedAnchor from '../../RoutedAnchor'
+
 const LanguageLoader = () => (
     <Loader
         type="Grid"
@@ -72,11 +75,18 @@ const LanguagePicker = (
         finalizeSignup,
         signupCompleted,
         closeFromInside,
-        closedFromInside
+        closedFromInside,
+        // Used for Stripe Direct Payment Funnel
+        becomePRO,
+        getStripePubKey,
+        stripePubKey
     }) => {
     const isPhone = useMediaQuery({
         query: '(max-width: 479px)'
     })
+    if (becomePRO === undefined) { // if unspecified, set it to false by default
+        becomePRO = false
+    }
     const { addToast } = useToasts()
     const [availableLanguages, setAvailableLanguages] = React.useState([])
     const [checkedLanguages, setCheckedLanguages] = React.useState(["python"]); // python is always checked by default
@@ -101,8 +111,29 @@ const LanguagePicker = (
         closeFromInside(count)
     }
 
+    const buyProduct = (userInfo) => {
+        if (stripePubKey !== "") {
+            /* global Stripe */
+            const stripe = Stripe(stripePubKey)
+            const { API_URL } = config
+            let mail = userInfo.mail
+
+            fetch(API_URL + "/api/v1/stripe/create-checkout-session-from-lp?mail="+mail)
+            .then((result) => { return result.json(); })
+            .then((data) => {
+                // Redirect to Stripe Checkout
+                console.log("la data")
+                console.log(data)
+                return stripe.redirectToCheckout({sessionId: data.sessionId})
+            })
+        }
+    }
+
     useEffect(() => {
         setTimeout(() => {
+            if (becomePRO) {
+                getStripePubKey() // in case of direct buying
+            }
             fetchSupportedLanguages() // call saga to fetch the supported languages
         }, 500);
         // eslint-disable-next-line
@@ -182,30 +213,40 @@ const LanguagePicker = (
         // we have a response from the signup
         if (Object.keys(signupResponse).length > 0) {
             if (signupResponse.created) {
+
+                if (becomePRO) {
+                    buyProduct({mail: mail})
+                }
+
                 let currentHour = new Date().getHours()
                 let customMessage
-                if (currentHour < 17) {
-                    customMessage = "Vous recevrez le(s) énoncé(s) et la/les solutions aujourd'hui à 17h !"
+                if (becomePRO) {
+                    customMessage = "Complétez le formulaire de paiement pour profiter de notre expérience ultime ! Vous serez redirigez vers une page de confirmation après l'achat effectué."
                 } else {
-                    customMessage = "Vous recevrez le(s) énoncé(s) et la/les solutions à partir de demain à 17h !"
+                    if (currentHour < 17) {
+                        customMessage = "Vous recevrez le(s) énoncé(s) et la/les solutions aujourd'hui à 17h !"
+                    } else {
+                        customMessage = "Vous recevrez le(s) énoncé(s) et la/les solutions à partir de demain à 17h !"
+                    }
                 }
+
                 finalContent =
                 <Box align="center" pad={'large'} background={"status-ok"} full={true}>
                     <Box align={"center"}>
-                        <Heading textAlign={"center"} margin="none" color="white">
-                            Bienvenue <Anchor label={mail} /> !
+                        <Heading size={isPhone ? "small": "medium"} textAlign={"center"} margin="none" color="white">
+                            Bienvenue <Anchor label={mail} />
                         </Heading>
-                        <Paragraph size="xxlarge" textAlign={"center"} color="white">
+                        <Paragraph size="xlarge" textAlign={"center"} color="white">
                             {customMessage}
                         </Paragraph>
                     </Box>
                     <Box align="center">
                         <Box><Checkmark size={isPhone ? '100' : '144'} color='#7D4CDB' /></Box>
                         <Paragraph size="large" textAlign={"center"} color="white">
-                            Dans chaque mail, vous trouverez un lien "<Anchor label={"Planning"} />" pour customiser votre programme hebdomadaire !
+                            Dans chaque mail, vous trouverez un lien <RoutedAnchor path="/method" label={"'Planning'"} /> pour customiser votre programme hebdomadaire !
                         </Paragraph>
                         <Paragraph size="large" textAlign={"center"} color="white">
-                            Dans chaque mail, vous trouverez un lien "<Anchor label={"Pro"} />" pour vous permettre d'avoir les solutions à chaque fois !
+                            Dans chaque mail, vous trouverez un lien <RoutedAnchor path="/pro" label={"'Pro'"} /> (si vous n'avez pas souscrit à l'offre PRO) pour vous permettre d'avoir les solutions à chaque fois !
                         </Paragraph>
                     </Box>
                     <Box align="center">
@@ -213,20 +254,46 @@ const LanguagePicker = (
                     </Box>
                 </Box>
             } else {
-                finalContent =
-                <Box align="center" pad={'large'} background={"status-error"} full={true}>
-                    <Box align={"center"}>
-                        <Heading textAlign={"center"} margin="none" color="white">
-                            L'adresse <Anchor label={mail} /> existe deja ! Veuillez en sélectionner une autre.
-                        </Heading>
+                if (becomePRO) {
+                    buyProduct({mail: mail})
+
+                    finalContent =
+                    <Box align="center" pad={'large'} background={"accent-4"} full={true}>
+                        <Box align={"center"}>
+                            <Heading textAlign={"center"} margin="none" color="white">
+                                Re-bonjour <Anchor label={mail} /> !
+                            </Heading>
+                            <Paragraph size="xxlarge" textAlign={"center"} color="white">
+                                Complétez le formulaire de paiement pour profiter de notre expérience ultime ! Vous serez redirigez vers une page de confirmation après l'achat effectué.
+                            </Paragraph>
+                        </Box>
+                        <Box align="center">
+                            <Box><Checkmark size={isPhone ? '100' : '144'} color='#7D4CDB' /></Box>
+                            <Paragraph size="large" textAlign={"center"} color="white">
+                                Dans chaque mail, vous trouverez un lien <RoutedAnchor path="/method" label={"'Planning'"} /> pour customiser votre programme hebdomadaire !
+                            </Paragraph>
+                        </Box>
+                        <Box align="center">
+                            <Button primary label="Ok !" onClick={() => handleCloseFromInside(closedFromInside)} />
+                        </Box>
                     </Box>
-                    <Box align="center" pad={'large'}>
-                        <FontAwesomeIcon icon={faTimesCircle} size="8x" color="white"/>
+
+                } else {
+                    finalContent =
+                    <Box align="center" pad={'large'} background={"status-error"} full={true}>
+                        <Box align={"center"}>
+                            <Heading textAlign={"center"} margin="none" color="white">
+                                L'adresse <Anchor label={mail} /> existe deja ! Veuillez en sélectionner une autre.
+                            </Heading>
+                        </Box>
+                        <Box align="center" pad={'large'}>
+                            <FontAwesomeIcon icon={faTimesCircle} size="8x" color="white"/>
+                        </Box>
+                        <Box align="center" pad={'large'}>
+                            <Button primary label="Retour" onClick={() => handleCloseFromInside(closedFromInside)} />
+                        </Box>
                     </Box>
-                    <Box align="center" pad={'large'}>
-                        <Button primary label="Retour" onClick={() => handleCloseFromInside(closedFromInside)} />
-                    </Box>
-                </Box>
+                }
             }
         } else {
             finalContent =

@@ -12,7 +12,7 @@ export default () => {
       summary={
         <span>
           Si vous avez souscrit à l'offre PRO à{' '}
-          <RoutedAnchor path="/pro" label="7€/mois" a11yTitle="1interviewparjour - PRO" />
+          <RoutedAnchor path="/pro" label="6,99€/mois" a11yTitle="1interviewparjour - PRO" />
           {' '}, alors vous recevrez en plus une solution détaillée avec les meilleures pratiques et les analyses en complexité.
         </span>
       }

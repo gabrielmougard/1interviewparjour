@@ -11,6 +11,7 @@ from oneinterviewparjour.api.v1.planning.planning import fetch_planning, save_pl
 from oneinterviewparjour.api.v1.stripe.stripe import (
     stripe_config,
     create_checkout_session,
+    create_checkout_session_from_lp,
     success_product_buying,
     cancel_product_buying
 )
@@ -38,6 +39,7 @@ urlpatterns = [
     # Stripe related
     path('stripe/config', stripe_config),
     path('stripe/create-checkout-session', create_checkout_session),
+    path('stripe/create-checkout-session-from-lp', create_checkout_session_from_lp),
     path('stripe/success', success_product_buying),
     path('stripe/cancelled', cancel_product_buying),
     # Identity related

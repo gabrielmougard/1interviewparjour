@@ -16,7 +16,16 @@ import LanguagePicker from './LanguagePicker';
 import { validateEmail } from '../../utils/formatters'
 import { config } from '../../utils/config'
 
-function ProComponent({fetchSupportedLanguages, supportedLanguages, finalizeSignup, signupCompleted, closeFromInside, closedFromInside}) {
+function ProComponent({
+  fetchSupportedLanguages,
+  supportedLanguages,
+  finalizeSignup,
+  signupCompleted,
+  closeFromInside,
+  closedFromInside,
+  getStripePubKey,
+  stripePubKey
+}) {
 
   const { addToast } = useToasts()
   const [languagePicker, setLanguagePicker] = React.useState();
@@ -48,7 +57,7 @@ function ProComponent({fetchSupportedLanguages, supportedLanguages, finalizeSign
 
           <Box align={"center"} pad={{"top": "large", "bottom": "large"}}>
               <Heading size="large" margin="none" textAlign="center">
-                <Anchor>7€/mois</Anchor> pour les solutions détaillées à tous vos problèmes !
+                <Anchor>6,99€/mois</Anchor> pour les solutions détaillées à tous vos problèmes
               </Heading>
           </Box>
 
@@ -88,6 +97,9 @@ function ProComponent({fetchSupportedLanguages, supportedLanguages, finalizeSign
                           signupCompleted={signupCompleted}
                           closeFromInside={closeFromInside}
                           closedFromInside={closedFromInside}
+                          becomePRO={true}
+                          getStripePubKey={getStripePubKey}
+                          stripePubKey={stripePubKey}
                         />
                       </ToastProvider>
                     </Layer>
@@ -154,7 +166,7 @@ function ProComponent({fetchSupportedLanguages, supportedLanguages, finalizeSign
                       size="large"
                       placeholder="Votre email !"
                     />
-                    <Button size="large" primary color="accent-1" label="Devenez PRO !"/>
+                    <Button size="large" primary color="accent-1" label="Devenez PRO !" onClick={() => handleBecomeProClick()}/>
                   </Box>
                 </CardFooter>
               </Card>
@@ -175,7 +187,7 @@ function ProComponent({fetchSupportedLanguages, supportedLanguages, finalizeSign
                       size="large"
                       placeholder="Votre email !"
                     />
-                    <Button size="large" primary color="accent-1" label="Devenez PRO !"/>
+                    <Button size="large" primary color="accent-1" label="Devenez PRO !" onClick={() => handleBecomeProClick()}/>
                   </Box>
                 </CardFooter>
               </Card>
@@ -196,7 +208,7 @@ function ProComponent({fetchSupportedLanguages, supportedLanguages, finalizeSign
                       size="large"
                       placeholder="Votre email !"
                     />
-                    <Button size="large" primary color="accent-1" label="Devenez PRO !"/>
+                    <Button size="large" primary color="accent-1" label="Devenez PRO !"onClick={() => handleBecomeProClick()}/>
                   </Box>
                 </CardFooter>
               </Card>
