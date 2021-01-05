@@ -15,12 +15,12 @@ pipeline {
                 }
             }
         }
-        stage('Moving project to home directory') {
-            steps {
-                echo "> Moving project to /home/ubuntu ..."
-                sh "cp -r * /home/ubuntu/1interviewparjour"
-            }
-        }
+        // stage('Moving project to home directory') {
+        //     steps {
+        //         echo "> Moving project to /home/ubuntu ..."
+        //         sh "cp -r * /home/ubuntu/1interviewparjour"
+        //     }
+        // }
         // stage('Deployment') {
         //     steps {
         //         echo "> Building the project ..."
