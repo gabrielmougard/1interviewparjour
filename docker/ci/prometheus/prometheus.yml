@@ -7,7 +7,7 @@ scrape_configs:
   - job_name: '1interviewparjour'
     scrape_interval: 5s
     static_configs:
-      - targets: ['1interviewparjour:8000'] # meant to be run in a docker network
+      - targets: ['1interviewparjour-app:8000'] # meant to be run in a docker network
     metrics_path: "/api/v1/observability/metrics"
 
   - job_name: 'node'

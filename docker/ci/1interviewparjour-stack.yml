@@ -14,10 +14,10 @@ services:
       - ./env/frontend.env
     ports:
       - "3000:80"
-  1interviewparjour:
+  1interviewparjour-app:
       image: gabrielmougard/1interviewparjour-app:latest
-      container_name: 1interviewparjour
-      hostname: 1interviewparjour
+      container_name: 1interviewparjour-app
+      hostname: 1interviewparjour-app
       env_file:
         - ./env/backend.env
       ports:
