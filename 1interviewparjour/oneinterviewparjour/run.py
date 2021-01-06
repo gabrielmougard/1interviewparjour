@@ -8,6 +8,7 @@ import sys
 import os
 import textwrap
 import atexit
+import logging
 import functools
 
 import django
@@ -95,6 +96,8 @@ def main():
     args["app_name"] = "oneinterviewparjour"
     args["app_settings"] = "oneinterviewparjour.settings"
 
+    logging.info("Starting with parameters : {params}".format(params=str(args["actions"])))
+
     try:
         sys.exit(run(args))
     except KeyboardInterrupt:
@@ -103,4 +106,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
