@@ -2,26 +2,14 @@ FROM python:3.8-buster
 
 WORKDIR /usr/src/1interviewparjour/1interviewparjour
 
+ARG BUILD_COMMIT_ID
+RUN echo $BUILD_COMMIT_ID
+
 # set general environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV DJANGO_SETTINGS_MODULE oneinterviewparjour.settings
 ENV PYTHONPATH /usr/src/1interviewparjour/1interviewparjour
-
-# Switch to 'dev' to be in dev mode
-ENV ENV prod
-# Switch to 'True' in dev mode
-ENV DEBUG False
-ENV FRONT_BASE_PATH https://1interviewparjour.com
-# Switch to 'True' in prod mode
-ENV STRIPE_LIVE_MODE False
-ENV ASYNC_WORKER_COUNT 2
-ENV VAULT_ENDPOINT http://${dockerhost}:8200
-ENV DB_HOST ${dockerhost}
-ENV DB_PORT 3306
-# set AppRole environment variables
-ENV APPROLE_ID ${approle_id}
-ENV APPROLE_SECRET_ID ${approle_secret_id}
 
 # install dependencies
 RUN apt-get update -y \
@@ -36,13 +24,10 @@ RUN pip install -r base.txt
 
 # copy project
 COPY . /usr/src/1interviewparjour/1interviewparjour
-RUN chmod +x launch-script.sh
-# If the migrations scheme are not up to date
-RUN python3 manage.py makemigrations
-# If there is anything to migrate
-RUN python3 manage.py migrate
+
 # Sync with the latest db snapshot
-RUN python3 manage.py dbrestore
+#RUN python3 manage.py dbrestore
 # Collect the static files
-RUN python3 manage.py collectstatic --no-input
+#RUN python3 manage.py collectstatic --no-input
+
 CMD ["/bin/sh", "-c", "python3 ./oneinterviewparjour/run.py"]

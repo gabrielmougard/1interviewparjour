@@ -1,12 +1,11 @@
 FROM node:14.1-alpine AS builder
 
+ARG BUILD_COMMIT_ID
+ENV REACT_APP_BUILD_COMMIT_ID $BUILD_COMMIT_ID
+
 WORKDIR /opt/web
 COPY package.json ./
 RUN npm install
-
-# hostname of backend in docker network
-ENV API_URL http://1interviewparjour:8000
-ENV ROOT_URL https://1interviewparjour.com
 
 COPY . ./
 RUN npm run build
