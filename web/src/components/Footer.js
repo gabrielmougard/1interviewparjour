@@ -115,7 +115,8 @@ function Footer({fetchSupportedLanguages, supportedLanguages, finalizeSignup, si
                         <RoutedAnchor path="/privacy" label="Politique de confidentialité " />
                         | <br></br>
                         <RoutedAnchor path="/contact" label="Contact " />
-                        |
+                        | <br></br>
+                        <RoutedAnchor path="https://jenkins.1interviewparjour.com" label={<i>Version : {process.env.REACT_APP_BUILD_COMMIT_ID}</i>} />
                     </Paragraph>
                 </Box>
                 <Image src={stak} height={isPhone ? 200 : 550} a11yTitle="gremlin" />
