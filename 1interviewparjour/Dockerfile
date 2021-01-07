@@ -27,9 +27,7 @@ COPY . /usr/src/1interviewparjour/1interviewparjour
 
 # Sync with the latest db snapshot
 #RUN python3 manage.py dbrestore
-# Collect the static files
-#RUN python3 manage.py collectstatic --no-input
 EXPOSE 8000
 #CMD ["/bin/sh", "-c", "python3 ./oneinterviewparjour/run.py"]
 # Only for testing purpose
-CMD ["/bin/sh", "-c", "python3 manage.py runserver 0.0.0.0:8000"]
+CMD ["/bin/sh", "-c", "python3 manage.py collectstatic --no-input && python3 manage.py runserver 0.0.0.0:8000"]
