@@ -18,7 +18,7 @@ pipeline {
                 echo "> Exposing Vault address ..."
                 sh "export VAULT_ADDR=http://127.0.0.1:8200"
                 echo "> Updating/Creating the application stack ..."
-                sh "./update-stack.sh"
+                sh "cd docker/ci && ./update-stack.sh"
             }
         }
     }
