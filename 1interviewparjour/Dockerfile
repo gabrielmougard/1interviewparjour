@@ -30,7 +30,7 @@ EXPOSE 8000
 # Only for testing purpose
 # Build static files, sync with the latest db snapshot fetched from S3, run the server
 CMD [ "/bin/sh", "-c", \
-      "python3 manage.py collectstatic --no-input && ", \
-      "python3 manage.py dbrestore && ", \
+      "python3 manage.py collectstatic --no-input", \
+      "python3 manage.py dbrestore --noinput", \
       "python3 manage.py runserver 0.0.0.0:8000" \
 ]
