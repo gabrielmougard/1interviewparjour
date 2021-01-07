@@ -15,8 +15,8 @@ pipeline {
         }
         stage('Deployment') {
             steps {
-                echo "> Updating the application stack ..."
-                sh "cd docker/ci/ && source update-stack.sh"
+                echo "> Updating/Creating the application stack ..."
+                sh "cd docker/ci/ && . ./update-stack.sh"
             }
         }
     }
