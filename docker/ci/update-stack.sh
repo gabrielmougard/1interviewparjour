@@ -6,39 +6,18 @@ sed -e 's/\${dockerhost}/'"${DOCKERHOST}"'/' backend.env > backend-temp.env && r
 cd ..
 
 SWARM_NAME="1interviewparjour-swarm"
-SWARM_CREATED=1
-declare -a ServiceNameSuffixes=("1interviewparjour-app" "1interviewparjour-web" "prometheus" "node-exporter" "granfana")
 declare -a AppStackServices=("1interviewparjour-app" "1interviewparjour-web")
 
-# Iterate the string array using for loop
-for val in ${ServiceNameSuffixes[@]}; do
-    REACHABLE=$(docker service ps ${SWARM_NAME}_${val} 2>&1)
-    if [ "$REACHABLE" == "no such service: ${SWARM_NAME}_${val}" ]; then
-        SWARM_CREATED=0
-        break
-    fi
+echo "Updating the application stack of the swarm ..."
+for val in ${AppStackServices[@]}; do
+    docker service update -d \
+    --image gabrielmougard/${val}:latest \
+    --update-parallelism 1 \
+    --update-failure-action rollback \
+    --update-order start-first \
+    --update-delay 30s \
+    --with-registry-auth \
+    ${SWARM_NAME}_${val}
 done
-
-if [[ "$SWARM_CREATED" -eq 0 ]]
-then
-    # The swarm is not created yet. Create it.
-    # test commit #4
-    echo "Creating the complete swarm ..."
-    docker stack deploy --compose-file 1interviewparjour-stack.yml 1interviewparjour-swarm --with-registry-auth
-else
-    # The swarm is created (all the services are up and running).
-    # Then, we just update the application stack without shuting it down
-    echo "Updating the application stack of the swarm ..."
-    for val in ${AppStackServices[@]}; do
-        docker service update -d \
-        --image gabrielmougard/${val}:latest \
-        --update-parallelism 1 \
-        --update-failure-action rollback \
-        --update-order start-first \
-        --update-delay 30s \
-        --with-registry-auth \
-        ${SWARM_NAME}_${val}
-    done
-fi
 
 
