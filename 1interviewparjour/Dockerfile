@@ -29,5 +29,5 @@ COPY . /usr/src/1interviewparjour/1interviewparjour
 #RUN python3 manage.py dbrestore
 # Collect the static files
 #RUN python3 manage.py collectstatic --no-input
-
+EXPOSE 8000
 CMD ["/bin/sh", "-c", "python3 ./oneinterviewparjour/run.py"]

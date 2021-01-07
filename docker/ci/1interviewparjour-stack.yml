@@ -15,13 +15,13 @@ services:
     ports:
       - "3000:80"
   1interviewparjour-app:
-      image: gabrielmougard/1interviewparjour-app:latest
-      container_name: 1interviewparjour-app
-      hostname: 1interviewparjour-app
-      env_file:
-        - ./env/backend.env
-      ports:
-        - "8000:8000"
+    image: gabrielmougard/1interviewparjour-app:latest
+    container_name: 1interviewparjour-app
+    hostname: 1interviewparjour-app
+    env_file:
+      - ./env/backend.env
+    ports:
+      - "8000:8000"
   ## OBSERVABILITY STACK ##
   prometheus:
       image: prom/prometheus:v2.1.0
