@@ -1,8 +1,6 @@
 #!/bin/bash
 
-export DOCKERHOST=$(ifconfig | grep -E "([0-9]{1,3}\.){3}[0-9]{1,3}" | grep -v 127.0.0.1 | awk '{ print $2 }' | cut -f2 -d: | head -n1)
-export VAULT_ADDR=http://127.0.0.1:8200
-cd env/
+cd docker/ci/env/
 sed -e 's/\${dockerhost}/'"${DOCKERHOST}"'/' backend.env > backend-temp.env && rm backend.env && cat backend-temp.env > backend.env && rm backend-temp.env
 cd ..
 
