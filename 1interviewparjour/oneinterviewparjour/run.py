@@ -22,7 +22,7 @@ from oneinterviewparjour.core.workers import start_gunicorn_workers
 from oneinterviewparjour.core.queue import start_django_queue_cluster, stop_django_queue_cluster
 
 DEFAULT_GUNICORN_PORT = '8000'
-DEFAULT_GUNICORN_HOST = os.getenv('DEFAULT_GUNICORN_HOST', 'localhost')
+DEFAULT_GUNICORN_HOST = os.getenv('DEFAULT_GUNICORN_HOST', '0.0.0.0')
 
 my_call_command = functools.partial(call_command, **{
     'traceback': True,
@@ -95,8 +95,6 @@ def main():
     args["http_worker_count"] = int(args.pop("--http_worker_count"))
     args["app_name"] = "oneinterviewparjour"
     args["app_settings"] = "oneinterviewparjour.settings"
-
-    logging.info("Starting with parameters : {params}".format(params=str(args["actions"])))
 
     try:
         sys.exit(run(args))

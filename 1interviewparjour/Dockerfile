@@ -17,6 +17,8 @@ RUN apt-get update -y \
     && rm -rf /var/lib/apt/lists/* \
     && pip install cryptography
 RUN apt-get -y install default-libmysqlclient-dev
+# Needed for python3 manage.py dbrestore
+RUN apt-get install mariadb-client-core-10.3
 RUN pip install --upgrade pip
 RUN pip install -U wheel
 COPY requirements/base.txt /usr/src/1interviewparjour/1interviewparjour/base.txt
@@ -26,7 +28,14 @@ RUN pip install -r base.txt
 COPY . /usr/src/1interviewparjour/1interviewparjour
 
 EXPOSE 8000
-#CMD ["/bin/sh", "-c", "python3 ./oneinterviewparjour/run.py"]
+
+# For prod : Bulid static files and
+# * Detect migration and if so migrate models
+# * Start gunicorn server with at 0.0.0.0:8000
+# * Start DjangoQ and 2 async workers for the scheduled tasks.
+# * Sync with DB snapshot regularly sent to S3
+CMD ["/bin/sh", "-c", "python3 manage.py collectstatic --no-input && python3 ./oneinterviewparjour/run.py"]
+
 # Only for testing purpose
-# Build static files, sync with the latest db snapshot fetched from S3, run the server
-CMD ["/bin/sh", "-c", "python3 manage.py collectstatic --no-input && python3 manage.py runserver 0.0.0.0:8000"]
+# Build static files and run the server
+#CMD ["/bin/sh", "-c", "python3 manage.py collectstatic --no-input && python3 manage.py runserver 0.0.0.0:8000"]
