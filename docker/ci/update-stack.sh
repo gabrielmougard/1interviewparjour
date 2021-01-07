@@ -22,12 +22,13 @@ done
 if [[ "$SWARM_CREATED" -eq 0 ]]
 then
     # The swarm is not created yet. Create it.
-    # test commit #3
-    echo "Creating the swarm ..."
-    docker stack deploy --compose-file 1interviewparjour-stack.yml 1interviewparjour-swarm
+    # test commit #4
+    echo "Creating the complete swarm ..."
+    docker stack deploy --compose-file 1interviewparjour-stack.yml 1interviewparjour-swarm --with-registry-auth
 else
     # The swarm is created (all the services are up and running).
     # Then, we just update the application stack without shuting it down
+    echo "Updating the application stack of the swarm ..."
     for val in ${AppStackServices[@]}; do
         docker service update -d \
         --image gabrielmougard/${val}:latest \
@@ -35,6 +36,7 @@ else
         --update-failure-action rollback \
         --update-order start-first \
         --update-delay 30s \
+        --with-registry-auth \
         ${SWARM_NAME}_${val}
     done
 fi
