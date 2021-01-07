@@ -30,4 +30,6 @@ COPY . /usr/src/1interviewparjour/1interviewparjour
 # Collect the static files
 #RUN python3 manage.py collectstatic --no-input
 EXPOSE 8000
-CMD ["/bin/sh", "-c", "python3 ./oneinterviewparjour/run.py"]
+#CMD ["/bin/sh", "-c", "python3 ./oneinterviewparjour/run.py"]
+# Only for testing purpose
+CMD ["/bin/sh", "-c", "python3 manage.py runserver"]
