@@ -97,7 +97,7 @@ else:
 
 ############ END OF SENSITIVE AREA ###############
 
-ALLOWED_HOSTS = ["admin.1interviewparjour.com", "localhost"]
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
