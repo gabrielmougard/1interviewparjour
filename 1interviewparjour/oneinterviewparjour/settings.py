@@ -227,11 +227,7 @@ MEDIA_URL = ''
 STATIC_URL = '/static/'
 
 # CORS PARAMETERS
-CORS_ORIGIN_ALLOW_ALL = False
-
-CORS_ORIGIN_WHITELIST = (
-    'http://localhost:3000','http://localhost:3001',
-)
+CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ALLOW_METHODS = [
     'DELETE',
