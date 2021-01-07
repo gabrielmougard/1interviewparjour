@@ -22,7 +22,7 @@ done
 if [[ "$SWARM_CREATED" -eq 0 ]]
 then
     # The swarm is not created yet. Create it.
-    # test commit #2
+    # test commit #3
     echo "Creating the swarm ..."
     docker stack deploy --compose-file 1interviewparjour-stack.yml 1interviewparjour-swarm
 else
