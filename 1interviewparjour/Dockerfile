@@ -32,4 +32,4 @@ COPY . /usr/src/1interviewparjour/1interviewparjour
 EXPOSE 8000
 #CMD ["/bin/sh", "-c", "python3 ./oneinterviewparjour/run.py"]
 # Only for testing purpose
-CMD ["/bin/sh", "-c", "python3 manage.py runserver"]
+CMD ["/bin/sh", "-c", "python3 manage.py runserver 0.0.0.0:8000"]
