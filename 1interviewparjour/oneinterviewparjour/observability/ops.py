@@ -1,3 +1,4 @@
+import sys
 import logging
 
 from oneinterviewparjour.core.models import User
@@ -20,14 +21,14 @@ def produce_mailing_metric(task):
                 user.pro = True
                 user.save()
                 mailing_counter.labels('unit').inc()
-                logging.info("[SUCCESS][FUTURE PRO USER]")
+                sys.stdout.write("[SUCCESS][FUTURE PRO USER]")
         elif result["data"].get("event"):
             mailing_counter.labels('batch').inc()
-            logging.info("[SUCCESS][BATCH]")
+            sys.stdout.write("[SUCCESS][BATCH]")
         else:
-            logging.warning("[UNKNOWN_OPS] unknown post-mailing operation.")
+            sys.stdout.write("[UNKNOWN_OPS] unknown post-mailing operation.")
     else:
-        logging.error("[ERROR] status_code %s", result['status_code'].value)
+        sys.stdout.write("[ERROR] status_code %s", result['status_code'].value)
 
 
 def produce_mailing_metric_dev(result):
@@ -44,17 +45,17 @@ def produce_mailing_metric_dev(result):
                 user.pro = True
                 user.save()
                 mailing_counter.labels('unit').inc()
-                logging.info("[SUCCESS][FUTURE PRO USER]")
+                sys.stdout.write("[SUCCESS][FUTURE PRO USER]")
             else:
                 # TODO : trigger Prometheus client to send a metric
                 print("TODO : [SUCCESS][UNIT]")
         elif result["data"].get("event"):
             mailing_counter.labels('batch').inc()
-            logging.info("[SUCCESS][BATCH]")
+            sys.stdout.write("[SUCCESS][BATCH]")
         else:
-            logging.warning("[UNKNOWN_OPS] unknown post-mailing operation.")
+            sys.stdout.write("[UNKNOWN_OPS] unknown post-mailing operation.")
     else:
-        logging.error("[ERROR] status_code %s", result['status_code'].value)
+        sys.stdout.write("[ERROR] status_code %s", result['status_code'].value)
 
 
 def fetch_user_conversion():

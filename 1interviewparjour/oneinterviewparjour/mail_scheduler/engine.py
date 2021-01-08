@@ -433,6 +433,7 @@ class BatchMailingProcess(BaseMailingProcess):
         #4) Sending process. Since the network is the bottleneck here, async_task could be useful.
         for entry in event_problem_list:
             if settings.ENV == "prod":
+                sys.stdout.write(f"Async task is going to be launched ....")
                 async_task(
                     super().send_and_update,
                     {
@@ -447,6 +448,7 @@ class BatchMailingProcess(BaseMailingProcess):
                     hook=produce_mailing_metric
                 )
             else:
+                sys.stdout.write(f"Dev task is going to be launched ....")
                 produce_mailing_metric_dev(super().send_and_update(
                     {
                         "event": entry["event"],
