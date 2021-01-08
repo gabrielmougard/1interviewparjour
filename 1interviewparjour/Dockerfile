@@ -1,6 +1,8 @@
 FROM python:3.8-buster
 
 WORKDIR /usr/src/1interviewparjour/1interviewparjour
+# For storing logs of stdout
+RUN touch logs
 
 ARG BUILD_COMMIT_ID
 RUN echo $BUILD_COMMIT_ID
@@ -16,9 +18,14 @@ RUN apt-get update -y \
     && apt-get install -y --no-install-recommends gcc \
     && rm -rf /var/lib/apt/lists/* \
     && pip install cryptography
+
+# Needed for python3 manage.py dbrestore and dbbackup (scheduled tasks)
+RUN apt update -y
+RUN apt -y install mariadb-server
+#
+RUN apt-get -y install libssl-dev
 RUN apt-get -y install default-libmysqlclient-dev
-# Needed for python3 manage.py dbrestore
-RUN apt-get install mariadb-client-core-10.3
+
 RUN pip install --upgrade pip
 RUN pip install -U wheel
 COPY requirements/base.txt /usr/src/1interviewparjour/1interviewparjour/base.txt

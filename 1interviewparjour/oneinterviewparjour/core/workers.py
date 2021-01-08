@@ -36,7 +36,7 @@ def start_gunicorn_workers(application, args):
         "worker_class": "sync",
         "capture-output": True,
         "access-logfile": "/dev/stdout",
-        "error-logfile": "/dev/stderr",
+        "error-logfile": "/usr/src/1interviewparjour/1interviewparjour/logs",
         "loglevel": os.environ.get("LOGLEVEL", "info"),
         "timeout": 45, # seconds
         "config": args.get("gunicorn_config", "python:gunicorn_config"),

@@ -432,7 +432,7 @@ class BatchMailingProcess(BaseMailingProcess):
 
         #4) Sending process. Since the network is the bottleneck here, async_task could be useful.
         for entry in event_problem_list:
-            if not settings.DEBUG:
+            if settings.ENV == "prod":
                 async_task(
                     super().send_and_update,
                     {
@@ -494,7 +494,7 @@ class UnitMailingProcess(BaseMailingProcess):
             payment_gateway_link=f"{settings.FRONT_BASE_PATH}/payment?mail={user.mail}&token={gateway_token}",
             planning_gateway_link=f"{settings.FRONT_BASE_PATH}/planning?mail={user.mail}&token={gateway_token}"
         )
-        if not settings.DEBUG:
+        if settings.ENV =="prod":
             async_task(
                 super().send_and_update,
                 {

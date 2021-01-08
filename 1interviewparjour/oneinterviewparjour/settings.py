@@ -1,5 +1,6 @@
 import os
 import sys
+import logging
 
 from pathlib import Path
 
@@ -10,6 +11,7 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 DEBUG = os.getenv('DEBUG', True)
 DEBUG = False if DEBUG == "False" else True
 ENV = os.getenv('ENV', 'dev')  # either 'prod' or 'dev'
+logging.info(f"Env checking : ENV={ENV}")
 FRONT_BASE_PATH = os.getenv('FRONT_BASE_PATH', 'http://localhost:3000')
 STRIPE_LIVE_MODE = os.getenv('STRIPE_LIVE_MODE', False)  # STRIPE_LIVE_MODE is True for production
 STRIPE_LIVE_MODE = True if STRIPE_LIVE_MODE == "True" else False
