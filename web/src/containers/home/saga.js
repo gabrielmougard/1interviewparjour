@@ -12,12 +12,11 @@ import {
     fetchSupportedLanguagesSuccessAction
 } from './actions'
 
-import { config } from '../../utils/config'
 import request from '../../utils/request'
 
 function* fetchSupportedLanguages({payload}) {
-    const { API_URL } = config
-    const requestURLSupportedLanguages = API_URL + '/api/v1/languages/supported_languages'
+
+    const requestURLSupportedLanguages = '/api/v1/languages/supported_languages'
 
     try {
         const response = yield call(request, requestURLSupportedLanguages)
@@ -33,8 +32,7 @@ function* fetchSupportedLanguages({payload}) {
 }
 
 function* finalizeSignup({payload}) {
-    const { API_URL } = config
-    const requestURLSignup = API_URL + '/api/v1/signup'
+    const requestURLSignup = '/api/v1/signup'
     // payload is like : {"mail": "...", "languages" : ["...", ... , "..."]}
 
     try {

@@ -9,12 +9,11 @@ import {
     sendProductErrorAction
 } from './actions'
 
-import { config } from '../../utils/config'
 import request from '../../utils/request'
 
 function* sendProduct({payload}) {
-    const { API_URL } = config
-    const requestURL = API_URL + "/api/v1/stripe/success?session_id=" + payload.session_id + "&problem_id="+ payload.problem_id + "&mail=" + payload.mail + "&token=" + payload.token
+
+    const requestURL = "/api/v1/stripe/success?session_id=" + payload.session_id + "&problem_id="+ payload.problem_id + "&mail=" + payload.mail + "&token=" + payload.token
     try {
         const response = yield call(request, requestURL)
         if (response.status === 200) {

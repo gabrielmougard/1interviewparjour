@@ -14,7 +14,6 @@ import LanguagePicker from './LanguagePicker';
 
 //utils
 import { validateEmail } from '../../utils/formatters'
-import { config } from '../../utils/config'
 
 function HomeComponent({fetchSupportedLanguages, supportedLanguages, finalizeSignup, signupCompleted, closeFromInside, closedFromInside}) {
 
@@ -31,8 +30,7 @@ function HomeComponent({fetchSupportedLanguages, supportedLanguages, finalizeSig
   }
 
   useEffect(() => {
-    const { API_URL } = config
-    fetch(API_URL + "/api/v1/tracking/landing_page/home")
+    fetch("/api/v1/tracking/landing_page/home")
     .then((result) => {
     })
   }, [])

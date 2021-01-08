@@ -14,7 +14,6 @@ import LanguagePicker from './LanguagePicker';
 
 //utils
 import { validateEmail } from '../../utils/formatters'
-import { config } from '../../utils/config'
 
 function ProComponent({
   fetchSupportedLanguages,
@@ -40,8 +39,7 @@ function ProComponent({
   }
 
   useEffect(() => {
-    const { API_URL } = config
-    fetch(API_URL + "/api/v1/tracking/landing_page/pro")
+    fetch("/api/v1/tracking/landing_page/pro")
     .then((result) => {
     })
   }, [])

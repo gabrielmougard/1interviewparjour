@@ -10,7 +10,6 @@ import { Checkmark } from 'react-checkmark'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 
-import { config } from '../../../utils/config'
 import RoutedAnchor from '../../RoutedAnchor'
 
 const LanguageLoader = () => (
@@ -115,15 +114,12 @@ const LanguagePicker = (
         if (stripePubKey !== "") {
             /* global Stripe */
             const stripe = Stripe(stripePubKey)
-            const { API_URL } = config
             let mail = userInfo.mail
 
-            fetch(API_URL + "/api/v1/stripe/create-checkout-session-from-lp?mail="+mail)
+            fetch("/api/v1/stripe/create-checkout-session-from-lp?mail="+mail)
             .then((result) => { return result.json(); })
             .then((data) => {
                 // Redirect to Stripe Checkout
-                console.log("la data")
-                console.log(data)
                 return stripe.redirectToCheckout({sessionId: data.sessionId})
             })
         }

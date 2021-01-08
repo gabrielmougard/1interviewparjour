@@ -17,7 +17,7 @@ import LanguagePicker from './LanguagePicker';
 
 //utils
 import { validateEmail } from '../../utils/formatters'
-import { config } from '../../utils/config'
+
 
 function MethodComponent({fetchSupportedLanguages, supportedLanguages, finalizeSignup, signupCompleted, closeFromInside, closedFromInside}) {
     const isPhone = useMediaQuery({
@@ -37,8 +37,7 @@ function MethodComponent({fetchSupportedLanguages, supportedLanguages, finalizeS
     }
 
     useEffect(() => {
-        const { API_URL } = config
-        fetch(API_URL + "/api/v1/tracking/landing_page/method")
+        fetch("/api/v1/tracking/landing_page/method")
         .then((result) => {
         })
     }, [])

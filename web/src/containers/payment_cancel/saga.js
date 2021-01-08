@@ -9,12 +9,11 @@ import {
     verifyIdentitySuccessAction
 } from './actions'
 
-import { config } from '../../utils/config'
 import request from '../../utils/request'
 
 function* verifyIdentity({payload}) {
-    const { API_URL } = config
-    const requestURLIdentity = API_URL + '/api/v1/identity/identity_check?mail=' + payload.mail + '&token=' + payload.token
+
+    const requestURLIdentity = '/api/v1/identity/identity_check?mail=' + payload.mail + '&token=' + payload.token
     try {
         const responseIdentity = yield call(request, requestURLIdentity)
         if (responseIdentity.success) {

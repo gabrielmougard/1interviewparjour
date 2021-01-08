@@ -12,12 +12,10 @@ import {
 import Header from '../Header';
 import Section from '../Home/Section';
 import Nav from '../Nav';
-import { config } from '../../utils/config'
 
 const buyProduct = (problem_data) => {
   const stripe = problem_data.stripeClient
-  const { API_URL } = config
-  fetch(API_URL + "/api/v1/stripe/create-checkout-session?problem_id="+problem_data.problem_id+"&subscription_type="+problem_data.subscriptionType+"&mail="+problem_data.mail+"&token="+problem_data.token)
+  fetch("/api/v1/stripe/create-checkout-session?problem_id="+problem_data.problem_id+"&subscription_type="+problem_data.subscriptionType+"&mail="+problem_data.mail+"&token="+problem_data.token)
   .then((result) => { return result.json(); })
   .then((data) => {
     // Redirect to Stripe Checkout

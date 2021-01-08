@@ -18,13 +18,11 @@ import {
     fetchSupportedTopicsSuccessAction
 } from './actions'
 
-import { config } from '../../utils/config'
 import request from '../../utils/request'
 
 function* fetchInitialPlanning({payload}) {
     //we have an unhashed identifier in a payload to identify the planning of a user
-    const { API_URL } = config
-    const requestURL = API_URL + '/api/v1/planning/fetch_planning?mail=' + payload.mail
+    const requestURL = '/api/v1/planning/fetch_planning?mail=' + payload.mail
 
     try {
         const response = yield call(request, requestURL)
@@ -40,8 +38,8 @@ function* fetchInitialPlanning({payload}) {
 }
 
 function* savePlanning({payload}) {
-    const { API_URL } = config
-    const requestURL = API_URL + '/api/v1/planning/save_planning'
+
+    const requestURL = '/api/v1/planning/save_planning'
     // payload is like the caledarStates and we also have a mail to identify the planning of the user
 
     try {
@@ -58,8 +56,8 @@ function* savePlanning({payload}) {
 }
 
 function* fetchSupportedDifficulties({payload}) {
-    const { API_URL } = config
-    const requestURL = API_URL + '/api/v1/interviews/interview_difficulties'
+
+    const requestURL = '/api/v1/interviews/interview_difficulties'
 
     try {
         const response = yield call(request, requestURL)
@@ -75,8 +73,8 @@ function* fetchSupportedDifficulties({payload}) {
 }
 
 function* fetchSupportedTopics({payload}) {
-    const { API_URL } = config
-    const requestURL = API_URL + '/api/v1/interviews/interview_topics'
+
+    const requestURL = '/api/v1/interviews/interview_topics'
 
     try {
         const response = yield call(request, requestURL)

@@ -10,8 +10,6 @@ import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-python";
 import "ace-builds/src-noconflict/theme-tomorrow";
 
-//utils
-import { config } from '../../utils/config'
 
 function ExampleComponent({fetchSupportedLanguages, supportedLanguages, finalizeSignup, signupCompleted, closeFromInside, closedFromInside}) {
     const isPhone = useMediaQuery({
@@ -19,8 +17,7 @@ function ExampleComponent({fetchSupportedLanguages, supportedLanguages, finalize
     })
 
     useEffect(() => {
-        const { API_URL } = config
-        fetch(API_URL + "/api/v1/tracking/landing_page/example")
+        fetch("/api/v1/tracking/landing_page/example")
         .then((result) => {
         })
     }, [])

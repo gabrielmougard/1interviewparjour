@@ -9,12 +9,11 @@ import {
     getStripePubKeySuccessAction
 } from './actions'
 
-import { config } from '../../utils/config'
 import request from '../../utils/request'
 
 function* getStripePubKey({payload}) {
-    const { API_URL } = config
-    const requestURL = API_URL + '/api/v1/stripe/config'
+
+    const requestURL = '/api/v1/stripe/config'
 
     try {
         const response = yield call(request, requestURL)
