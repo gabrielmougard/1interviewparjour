@@ -6,6 +6,8 @@ from oneinterviewparjour.stripe.models import Session
 from oneinterviewparjour.mail_scheduler.hook_code import MailingHookCode
 from oneinterviewparjour.observability.metrics import mailing_counter
 
+logger = logging.getLogger('djangp-q')
+
 def produce_mailing_metric(task):
     """
     Post-mailing ops
@@ -21,14 +23,15 @@ def produce_mailing_metric(task):
                 user.pro = True
                 user.save()
                 mailing_counter.labels('unit').inc()
-                sys.stdout.write("[SUCCESS][FUTURE PRO USER]")
+                logger.info("[SUCCESS][FUTURE PRO USER]")
         elif result["data"].get("event"):
+            logger.info('[SUCCESS][BATCH] before')
             mailing_counter.labels('batch').inc()
-            sys.stdout.write("[SUCCESS][BATCH]")
+            logger.info("[SUCCESS][BATCH]")
         else:
-            sys.stdout.write("[UNKNOWN_OPS] unknown post-mailing operation.")
+            logger.warning("[UNKNOWN_OPS] unknown post-mailing operation.")
     else:
-        sys.stdout.write("[ERROR] status_code %s", result['status_code'].value)
+        logger.warning("[ERROR] status_code %s", result['status_code'].value)
 
 
 def produce_mailing_metric_dev(result):
