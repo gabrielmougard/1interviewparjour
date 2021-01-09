@@ -1,5 +1,6 @@
 import sys
 from enum import Enum
+import logging
 
 from django.conf import settings
 from django.template.loader import get_template
@@ -11,9 +12,10 @@ from oneinterviewparjour.mail_scheduler.helpers import (
     _to_HTML_code,
     hash_token
 )
-from oneinterviewparjour.observability.ops import produce_mailing_metric, produce_mailing_metric_dev
+from oneinterviewparjour.stripe.models import Session
 from oneinterviewparjour.mail_scheduler.hook_code import MailingHookCode
 from oneinterviewparjour.mail_scheduler.ses import AmazonSender
+
 
 class BaseMailingProcess:
     def __init__(self):
@@ -102,13 +104,14 @@ class BaseMailingProcess:
         return ses.send_email(sender, to_adresses, subject, html)
 
 
-    def __update_program_history(self, user, problem):
+    def __update_program_history(self, user, problem, sending_type):
         """
         Update the ProblemHistory of a user.
         """
         ProblemHistory.objects.create(
             problem_id=problem.id,
             user_id=user.id,
+            sent_mailing_type=sending_type
         )
 
 
@@ -150,54 +153,28 @@ class BaseMailingProcess:
 
             if response.get('MessageId'):
                 try:
-                    self.__update_program_history(user, problem)
+                    self.__update_program_history(user, problem, sending_type)
                     try:
                         self.__update_buying_hash(user, problem, gateway_token)
 
                         if sending_type == "unit":
-                            return {
-                                "sending_type": sending_type,
-                                "status_code": MailingHookCode.SENDING_SUCCESS,
-                                "data": {
-                                    "stripe_session": content_data["stripe_session"],
-                                    "future_pro_user": content_data["future_pro_user"],
-                                    "user": user,
-                                    "problem": problem
-                                }
-                            }
-                        return {
-                            "sending_type": sending_type,
-                            "status_code": MailingHookCode.SENDING_SUCCESS,
-                            "data": {"event": content_data["event"], "problem": problem}
-                        }
+                            Session.objects.create(stripe_session_id=content_data["stripe_session"])
+                            if content_data["future_pro_user"]:
+                                # Change the status of the user for the future interview
+                                user.pro = True
+                                user.save()
+
+                            logging.info(f'[UNIT][SUCCESS][CODE-{MailingHookCode.SENDING_SUCCESS.value}] Successfully sent problem.id : {problem.id} as unit mail for user.id : {user.id}')
+                        else:
+                            logging.info(f'[BATCH][SUCCESS][CODE-{MailingHookCode.SENDING_SUCCESS.value}] Successfully sent problem.id : {problem.id} as batch mail for user.id : {user.id}')
                     except:
-                        print("A database error occured while updating BuyingHash models.")
-                        return {
-                            "sending_type": sending_type,
-                            "status_code": MailingHookCode.UPDATE_BUYING_HASH_ERROR,
-                            "data": {}
-                        }
+                        logging.error('A database error occured while updating BuyingHash models.')
                 except:
-                    print("A database error occured while updating ProblemHistory models.")
-                    return {
-                        "sending_type": sending_type,
-                        "status_code": MailingHookCode.UPDATE_PROGRAM_HISTORY_ERROR,
-                        "data": {}
-                    }
+                    logging.error(f'[CODE-{MailingHookCode.UPDATE_PROGRAM_HISTORY_ERROR.value}]A database error occured while updating ProblemHistory models.')
             else:
-                print("A sending error occured with the AWS SES sending process.")
-                return {
-                    "sending_type": sending_type,
-                    "status_code": MailingHookCode.AWS_SES_SENDING_ERROR,
-                    "data": {}
-                }
+                logging.error(f"[CODE-{MailingHookCode.AWS_SES_SENDING_ERROR.value}]A sending error occured with the AWS SES sending process.")
         except:
-            print("A sending error occured with the AWS SES sending process.")
-            return {
-                "sending_type": sending_type,
-                "status_code": MailingHookCode.AWS_SES_SENDING_ERROR,
-                "data": {}
-            }
+            logging.error(f"[CODE-{MailingHookCode.AWS_SES_SENDING_ERROR.value}]A sending error occured with the AWS SES sending process.")
 
 
 class BatchMailingProcess(BaseMailingProcess):
@@ -433,7 +410,6 @@ class BatchMailingProcess(BaseMailingProcess):
         #4) Sending process. Since the network is the bottleneck here, async_task could be useful.
         for entry in event_problem_list:
             if settings.ENV == "prod":
-                sys.stdout.write(f"Async task is going to be launched ....")
                 async_task(
                     super().send_and_update,
                     {
@@ -444,12 +420,10 @@ class BatchMailingProcess(BaseMailingProcess):
                         "gateway_token": entry["gateway_token"],
                         "is_pro_user": entry["event"].user.pro,
                         "sending_type": "batch"
-                    },
-                    hook=produce_mailing_metric
+                    }
                 )
             else:
-                sys.stdout.write(f"Dev task is going to be launched ....")
-                produce_mailing_metric_dev(super().send_and_update(
+                super().send_and_update(
                     {
                         "event": entry["event"],
                         "user": entry["event"].user,
@@ -458,7 +432,7 @@ class BatchMailingProcess(BaseMailingProcess):
                         "gateway_token": entry["gateway_token"],
                         "is_pro_user": entry["event"].user.pro,
                         "sending_type": "batch"
-                    })
+                    }
                 )
 
 
@@ -508,11 +482,10 @@ class UnitMailingProcess(BaseMailingProcess):
                     "future_pro_user": self.future_pro_user,
                     "sending_type": "unit",
                     "stripe_session": self.stripe_session
-                },
-                hook=produce_mailing_metric
+                }
             )
         else:
-            produce_mailing_metric_dev(super().send_and_update(
+            super().send_and_update(
                 {
                     "user": user,
                     "problem": self.unit_problem,
@@ -522,7 +495,7 @@ class UnitMailingProcess(BaseMailingProcess):
                     "future_pro_user": self.future_pro_user,
                     "sending_type": "unit",
                     "stripe_session": self.stripe_session
-                })
+                }
             )
 
 

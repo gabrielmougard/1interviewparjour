@@ -103,7 +103,7 @@ class ProblemHistory(ExportModelOperationsMixin('problemHistory'), models.Model)
     )
 
     sent_timestamp = models.DateTimeField(auto_now_add=True)
-
+    sent_mailing_type = models.CharField(max_length=10, default="batch")
 
     def __str__(self):
         return (

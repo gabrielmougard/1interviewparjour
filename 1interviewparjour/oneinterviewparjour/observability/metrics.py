@@ -43,6 +43,14 @@ not_pro_user_gauge = Gauge(
     registry=registry
 )
 
+#### Specific to mailing ####
+mailing_gauge = Gauge(
+    'mailing_rate',
+    'The number of mail sent',
+    ['sending_type']
+    registry=registry
+)
+
 #### Specific to django models operations ####
 model_inserts_gauge = Gauge(
     'model_inserts_total',
