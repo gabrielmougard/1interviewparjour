@@ -47,7 +47,7 @@ not_pro_user_gauge = Gauge(
 mailing_gauge = Gauge(
     'mailing_rate',
     'The number of mail sent',
-    ['sending_type']
+    ['sending_type'],
     registry=registry
 )
 
