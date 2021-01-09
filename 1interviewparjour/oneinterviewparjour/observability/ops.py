@@ -14,6 +14,6 @@ def fetch_user_conversion():
 
 def fetch_mailing_sent():
     sent_problems = ProblemHistory.objects.all()
-    by_batch = sent_problems.filter(sending_type="batch").count()
-    by_unit = sent_problems.filter(sending_type="unit").count()
+    by_batch = sent_problems.filter(sent_mailing_type="batch").count()
+    by_unit = sent_problems.filter(sent_mailing_type="unit").count()
     return by_batch, by_unit
