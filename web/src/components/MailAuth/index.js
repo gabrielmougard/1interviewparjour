@@ -1,12 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from 'react'
 import { useToasts } from 'react-toast-notifications'
 import Loader from 'react-loader-spinner'
 import {
   Box,
-  Button
+  Button,
+  Text
 } from 'grommet';
 
-import Header from '../Header';
+import Header from '../Header'
+import RoutedAnchor from '../RoutedAnchor'
 
 const MailAuthComponent = ({childComponent, verifyIdentity, identityVerified, problemData}) => {
   const { addToast } = useToasts()
@@ -56,10 +58,12 @@ const MailAuthComponent = ({childComponent, verifyIdentity, identityVerified, pr
         <Box full={true}>
           <Box align="center" pad={'xlarge'} background={"status-error"} full={true} height="xlarge">
             <Header
-              label="Erreur lors de l'identification !"
-              summary="Veuillez contacter le support à l'adresse : contact@1interviewparjour.com"
+              label="Erreur lors de l'identification"
+              summary={<Text alignSelf="center" size="large">Veuillez contacter le support à contact@1interviewparjour.com</Text>}
             />
-            <Button primary label="Retour à l'accueil" />
+            <Box pad={{top: "large"}}>
+              <RoutedAnchor path="/" label={<Button primary label="Retour à l'accueil" />} />
+            </Box>
           </Box>
         </Box>
       )

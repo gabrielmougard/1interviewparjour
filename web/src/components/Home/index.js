@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useMediaQuery } from 'react-responsive'
 import { Anchor, Box, Image, Paragraph, TextInput, Button, Layer, Heading, Text, Card, CardHeader, CardBody, CardFooter } from 'grommet';
 import { ToastProvider, useToasts } from 'react-toast-notifications'
 import Nav from '../Nav';
@@ -17,6 +18,9 @@ import { validateEmail } from '../../utils/formatters'
 
 function HomeComponent({fetchSupportedLanguages, supportedLanguages, finalizeSignup, signupCompleted, closeFromInside, closedFromInside}) {
 
+  const isPhone = useMediaQuery({
+    query: '(max-width: 479px)'
+  })
   const { addToast } = useToasts()
   const [languagePicker, setLanguagePicker] = React.useState();
   const [mail, setMail] = React.useState("")
@@ -50,7 +54,7 @@ function HomeComponent({fetchSupportedLanguages, supportedLanguages, finalizeSig
         </Box>
         <Box direction="row-responsive">
           <Box pad={{vertical: "large", horizontal: "medium"}}>
-            <Hero />
+            <Hero cellPading={isPhone ? "small" : "medium"} linkThickness={isPhone ? "xxsmall" : "xsmall"} />
           </Box>
           <Box align="center">
             <Box align="center">

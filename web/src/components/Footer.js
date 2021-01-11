@@ -91,7 +91,7 @@ function Footer({fetchSupportedLanguages, supportedLanguages, finalizeSignup, si
                         <Anchor
                             target="_blank"
                             a11yTitle="Chat with us on LinkedIn"
-                            href="https://linkedin/in/gabriel-mougard" // TODO : change this broken link
+                            href="https://www.linkedin.com/in/gabriel-mougard" // TODO : change this broken link
                             icon={<Linkedin color="brand" size="large" />}
                         />
                     </Box>

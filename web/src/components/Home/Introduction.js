@@ -9,9 +9,6 @@ import today_problem_picture from "../../img/before_1interviewparjour.gif"
 import today_problem_solution from "../../img/after_1interviewparjour.gif"
 
 
-//utils
-import { config } from '../../utils/config'
-
 function IntroductionComponent({fetchSupportedLanguages, supportedLanguages, finalizeSignup, signupCompleted, closeFromInside, closedFromInside}) {
   const isPhone = useMediaQuery({
     query: '(max-width: 479px)'

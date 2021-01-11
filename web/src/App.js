@@ -45,7 +45,7 @@ const App = ({ initialPath }) => {
       <Helmet titleTemplate="%s - 1interviewparjour.com" defaultTitle="1interviewparjour.com">
         <meta
           name="description"
-          content="1interviewparjour.com - Mettez vous en mode marathon pour réussir toutes vos interviews techniques !" 
+          content="1interviewparjour.com - Mettez vous en mode marathon pour réussir toutes vos interviews techniques !"
         />
         <meta
           name="keywords"

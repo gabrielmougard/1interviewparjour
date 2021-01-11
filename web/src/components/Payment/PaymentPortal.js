@@ -1,11 +1,11 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { useMediaQuery } from 'react-responsive'
 import Loader from 'react-loader-spinner'
 import {
   Anchor,
   Box,
   Image,
   Paragraph,
-  ResponsiveContext,
   Button
 } from 'grommet';
 
@@ -27,10 +27,12 @@ const buyProduct = (problem_data) => {
 }
 
 const Subscription = ({ desc, price, src, problem, subscriptionType, stripeClient }) => {
-  const size = useContext(ResponsiveContext);
-  const imgWidth = size === 'medium' ? 365 : 482;
+  const isPhone = useMediaQuery({
+    query: '(max-width: 479px)'
+  })
+  const imgWidth = isPhone ? 300 : 482;
   return (
-    <Box align="center" size="small" pad={{ horizontal: 'large' }}>
+    <Box align="center" size="small" pad={{ horizontal: 'large', vertical: 'medium' }}>
       <Image width={imgWidth} src={src} a11yTitle={price} />
       <Header
         label={price}
@@ -58,6 +60,7 @@ const Subscription = ({ desc, price, src, problem, subscriptionType, stripeClien
 };
 
 const PaymentPortalComponent = ({problemData, getStripePubKey, stripePubKey}) => {
+
   const [stripeClient, setStripeClient] = React.useState({})
 
   useEffect(() => {
@@ -104,8 +107,7 @@ const PaymentPortalComponent = ({problemData, getStripePubKey, stripePubKey}) =>
           avec les explications détaillées ! C'est moins cher qu'un café !
           </span>
         }
-        price="0,80€"
-        link="https://theme-designer.grommet.io/"
+        price="0,70€"
         src="https://1interviewparjour.s3.eu-central-1.amazonaws.com/landing+pages/payment/unit-solution-logo.png"
         problem={problemData}
         subscriptionType={"unit"}
@@ -115,8 +117,7 @@ const PaymentPortalComponent = ({problemData, getStripePubKey, stripePubKey}) =>
     monthlySubscription =
       <Subscription
         desc="Incroyable ! Vous recevez toutes les solutions des problèmes avec les explications détaillées ! C'est notre expérience ultime !"
-        price="11,99€/mois"
-        link="https://designer.grommet.io/"
+        price="6,99€/mois"
         src="https://1interviewparjour.s3.eu-central-1.amazonaws.com/landing+pages/payment/monthly-solution-logo.png"
         problem={problemData}
         subscriptionType={"monthly"}
@@ -129,7 +130,7 @@ const PaymentPortalComponent = ({problemData, getStripePubKey, stripePubKey}) =>
       <Section>
         <Nav />
       </Section>
-      <Section pad={{ top: 'medium' }}>
+      <Section pad={{ top: 'medium', horizontal: 'medium' }}>
         <Header
           label="Choisissez votre offre !"
           summary="Passez au niveau supérieur en analysant nos solutions optimisées aux petits oignon 😉"

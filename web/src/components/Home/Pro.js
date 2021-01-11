@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useMediaQuery } from 'react-responsive'
 import { Anchor, Box, Image, Paragraph, TextInput, Button, Layer, Heading, Text, Card, CardHeader, CardBody, CardFooter } from 'grommet';
 import { ToastProvider, useToasts } from 'react-toast-notifications'
 import Nav from '../../components/Nav';
@@ -26,6 +27,9 @@ function ProComponent({
   stripePubKey
 }) {
 
+  const isPhone = useMediaQuery({
+    query: '(max-width: 479px)'
+  })
   const { addToast } = useToasts()
   const [languagePicker, setLanguagePicker] = React.useState();
   const [mail, setMail] = React.useState("")
@@ -61,7 +65,7 @@ function ProComponent({
 
           <Box direction="row-responsive">
             <Box pad={{vertical: "large", horizontal: "medium"}}>
-              <Hero pro={true} />
+              <Hero cellPading={isPhone ? "small" : "medium"} linkThickness={isPhone ? "xxsmall" : "xsmall"} pro={true} />
             </Box>
             <Box align="center">
               <Box align="center">

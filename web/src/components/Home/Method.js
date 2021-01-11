@@ -11,8 +11,6 @@ import Tree from './Tree';
 import Solution from './Solution';
 import Tile from './Tile';
 
-import presentationPlanning from '../../img/presentationPlanning.mp4'
-
 import LanguagePicker from './LanguagePicker';
 
 //utils
@@ -69,66 +67,68 @@ function MethodComponent({fetchSupportedLanguages, supportedLanguages, finalizeS
                             wrap
                             justify="between"
                         >
-                        <Box elevation="medium">
-                            <Box
-                                width="medium"
-                                direction="row"
-                                align="center"
-                                justify="between"
-                                gap="medium"
-                                pad={{ vertical: 'small', horizontal: 'medium' }}
-                            >
+                            <Box elevation="medium">
+                                <Box
+                                    width="medium"
+                                    direction="row"
+                                    align="center"
+                                    justify="between"
+                                    gap="medium"
+                                    pad={{ vertical: 'small', horizontal: 'medium' }}
+                                >
 
-                            <Box animation="fadeIn" align="center" pad={{ vertical: 'small', horizontal: 'large' }}>
-                                <TextInput
-                                    size="medium"
-                                    placeholder="Votre email !"
-                                    value={mail}
-                                    onChange={event => setMail(event.target.value)}
-                                />
-                            </Box>
-                        </Box>
-                        <Box
-                            direction="row"
-                            justify="between"
-                            pad={{ vertical: 'small', horizontal: 'medium' }}
-                            background="light-2"
-                        >
-                            <Box direction="row" gap="small" align="center" pad={{ vertical: 'small', horizontal: 'large' }}>
-                                <Box animation="fadeIn">
-                                    <Button
-                                        primary
-                                        label="Inscription gratuite !"
-                                        onClick={() => handleSignupClick()}
-                                    />
-                                    {languagePicker && (
-                                        <Layer
-                                            margin="large"
-                                            onEsc={() => setLanguagePicker(false)}
-                                            onClickOutside={() => setLanguagePicker(false)}
-                                        >
-                                            <ToastProvider>
-                                                <LanguagePicker
-                                                    mail={mail}
-                                                    fetchSupportedLanguages={fetchSupportedLanguages}
-                                                    supportedLanguages={supportedLanguages}
-                                                    finalizeSignup={finalizeSignup}
-                                                    signupCompleted={signupCompleted}
-                                                    closeFromInside={closeFromInside}
-                                                    closedFromInside={closedFromInside}
-                                                />
-                                            </ToastProvider>
-                                        </Layer>
-                                    )}
+                                    <Box animation="fadeIn" align="center" pad={{ vertical: 'small', horizontal: 'large' }}>
+                                        <TextInput
+                                            size="medium"
+                                            placeholder="Votre email !"
+                                            value={mail}
+                                            onChange={event => setMail(event.target.value)}
+                                        />
+                                    </Box>
+                                </Box>
+                                <Box
+                                    direction="row"
+                                    justify="between"
+                                    pad={{ vertical: 'small', horizontal: 'medium' }}
+                                    background="light-2"
+                                >
+                                    <Box direction="row" gap="small" align="center" pad={{ vertical: 'small', horizontal: 'large' }}>
+                                        <Box animation="fadeIn">
+                                            <Button
+                                                primary
+                                                label="Inscription gratuite !"
+                                                onClick={() => handleSignupClick()}
+                                            />
+                                            {languagePicker && (
+                                                <Layer
+                                                    margin="large"
+                                                    onEsc={() => setLanguagePicker(false)}
+                                                    onClickOutside={() => setLanguagePicker(false)}
+                                                >
+                                                    <ToastProvider>
+                                                        <LanguagePicker
+                                                            mail={mail}
+                                                            fetchSupportedLanguages={fetchSupportedLanguages}
+                                                            supportedLanguages={supportedLanguages}
+                                                            finalizeSignup={finalizeSignup}
+                                                            signupCompleted={signupCompleted}
+                                                            closeFromInside={closeFromInside}
+                                                            closedFromInside={closedFromInside}
+                                                        />
+                                                    </ToastProvider>
+                                                </Layer>
+                                            )}
+                                        </Box>
+                                    </Box>
                                 </Box>
                             </Box>
-                        </Box>
-                    </Box>
-                    </Tile>
+                        </Tile>
                     <MailGif />
                 </Box>
                     <Box direction="row-responsive" justify="center">
                         <Tree />
+                    </Box>
+                    <Box direction="row-responsive" justify="center">
                         <Solution />
                     </Box>
                 </Box>
@@ -138,7 +138,7 @@ function MethodComponent({fetchSupportedLanguages, supportedLanguages, finalizeS
                 <Box align={"center"} pad={{"top": "large", "bottom": "large"}}>
                 <Header
                     level={1}
-      label="Une manière unique de créer vos planning personnalisés !"
+      label="Une manière unique de créer vos planning personnalisés"
       summary="Adaptez les difficultés, les sujets que vous voulez traiter, les langages... Tant de combinaisons sont possibles !"
     />
                 </Box>
@@ -146,7 +146,7 @@ function MethodComponent({fetchSupportedLanguages, supportedLanguages, finalizeS
                 <Box direction="row-responsive">
                     <Box pad={{horizontal: "xxlarge"}}>
                         <Video controls="over" fit="contain">
-                            <source key="video" src={presentationPlanning} type="video/mp4" />
+                            <source key="video" src="https://1interviewparjour.s3.eu-central-1.amazonaws.com/landing+pages/method/presentationPlanning.mp4" type="video/mp4" />
                             <track default />
                         </Video>
                     </Box>
